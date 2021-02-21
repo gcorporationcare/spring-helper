@@ -1,14 +1,34 @@
 package com.gcorp.domain;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.gcorp.common.Utils;
 import com.gcorp.notest.Person;
 import com.gcorp.notest.RandomUtils;
 
 public class FieldFilterTest {
+
+	@Test
+	public void testSetAllIfEmpty() {
+		final String fields = "fields";
+		FieldFilter<Person> filter = FieldFilter.fromString(null);
+		Assert.assertNull(Utils.getFieldValue(fields, filter, FieldFilter.class));
+		filter.setToAllIfEmpty();
+		String[] fieldsValue = (String[]) Utils.getFieldValue(fields, filter, FieldFilter.class);
+		Assert.assertArrayEquals(new String[] { FieldFilter.ALL_FIELDS }, fieldsValue);
+
+		FieldFilter<Person> nonEmptyFilter = FieldFilter.fromString("name");
+		nonEmptyFilter.setToAllIfEmpty();
+		String[] nonEmptyFieldsValue = (String[]) Utils.getFieldValue(fields, nonEmptyFilter, FieldFilter.class);
+		Assert.assertFalse(Arrays.stream(nonEmptyFieldsValue).anyMatch(FieldFilter.ALL_FIELDS::equals));
+	}
 
 	@Test
 	public void testReadDefaultFields() {
@@ -25,22 +45,21 @@ public class FieldFilterTest {
 	}
 
 	@Test
-	public void testReadAllFields() {
-//		Account account = Account.builder().person(Person.anonymous()).lastLoginDate(LocalDateTime.now())
-//				.password("alphabet").build();
-//		Account allExceptAccount = FieldFilter.<Account>fromString("-lastLoginDate").parseEntity(account);
-//		Assert.assertNotNull(allExceptAccount.getEmail());
-//		// Role has been removed
-//		Assert.assertNull(allExceptAccount.getLastLoginDate());
-//		// Password should never be serialized
-//		Assert.assertNull(allExceptAccount.getPassword());
-//
-//		Account allAccount = FieldFilter.<Account>allFields().parseEntity(account);
-//		// Role is now present
-//		Assert.assertNull(allAccount.getRole());
-//		// Never ever be serialized
-//		// TODO: Remove this comment to try out if something must be done
-//		// Assert.assertNull(allAccount.getPassword());
+	public void testParseIterable() {
+		List<Person> persons = IntStream.range(0, 10).mapToObj(i -> {
+			Person person = new Person();
+			person.setEmail(RandomUtils.randomEmail());
+			person.setName(String.format("person-%d", i));
+			return person;
+		}).collect(Collectors.toList());
+		FieldFilter<Person> fieldFilter = FieldFilter.fromString("name,email");
+		Assert.assertEquals(persons.size(), ((List<Person>) fieldFilter.parseIterable(persons)).size());
+
+		fieldFilter = FieldFilter.fromString(null);
+		Assert.assertEquals(persons.size(), ((List<Person>) fieldFilter.parseIterable(persons)).size());
+
+		fieldFilter.setToAllIfEmpty();
+		Assert.assertEquals(persons.size(), ((List<Person>) fieldFilter.parseIterable(persons)).size());
 	}
 
 	@Test
