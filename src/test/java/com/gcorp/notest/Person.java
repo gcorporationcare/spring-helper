@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.gcorp.annotation.DefaultField;
+import com.gcorp.constraint.InvalidWhen;
 import com.gcorp.domain.FieldFilter;
 import com.gcorp.entity.BaseEntity;
 
@@ -18,6 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonFilter(FieldFilter.JSON_FILTER_NAME)
+@InvalidWhen("email == null || email.length < 3")
 public class Person extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	private String name;

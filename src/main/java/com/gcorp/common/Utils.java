@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -260,7 +261,7 @@ public final class Utils {
 		if (!superType.isAssignableFrom(type))
 			return new ArrayList<>();
 		List<T> annotations = new ArrayList<>();
-		for (Class<?> clazz = type; clazz != superType; clazz = clazz.getSuperclass()) {
+		for (Class<?> clazz = type; superType.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
 			if (!clazz.isAnnotationPresent(annotationClass))
 				continue;
 			annotations.add(clazz.getAnnotation(annotationClass));
@@ -299,8 +300,12 @@ public final class Utils {
 		if (Strings.isNullOrEmpty(language)) {
 			return DEFAULT_LOCALE;
 		}
-		Locale locale = new Locale(language.trim());
-		return locale.getISO3Language() != null ? locale : DEFAULT_LOCALE;
+		try {
+			Locale locale = new Locale(language.trim());
+			return locale.getISO3Language() != null ? locale : DEFAULT_LOCALE;
+		} catch (MissingResourceException e) {
+			return DEFAULT_LOCALE;
+		}
 	}
 
 	/**
