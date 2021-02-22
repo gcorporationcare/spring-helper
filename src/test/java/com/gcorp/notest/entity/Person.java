@@ -5,9 +5,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -21,7 +18,7 @@ import com.gcorp.annotation.DefaultField;
 import com.gcorp.common.Utils;
 import com.gcorp.constraint.InvalidWhen;
 import com.gcorp.domain.FieldFilter;
-import com.gcorp.entity.BaseEntity;
+import com.gcorp.entity.BaseIdentifiedEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,7 +34,7 @@ import lombok.Setter;
 		@Index(columnList = Person.EMAIL_COLUMN) })
 @JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @InvalidWhen("email == null")
-public class Person extends BaseEntity {
+public class Person extends BaseIdentifiedEntity {
 
 	protected static final String ID_COLUMN = "id";
 	protected static final String EMAIL_COLUMN = "email";
@@ -45,12 +42,6 @@ public class Person extends BaseEntity {
 	protected static final String LANGUAGE_COLUMN = "language";
 
 	private static final long serialVersionUID = 1L;
-	// -------------------------------------------------
-	@Id
-	@DefaultField
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = Person.ID_COLUMN)
-	private Long id;
 	// -------------------------------------------------
 	@NotNull
 	@NotEmpty

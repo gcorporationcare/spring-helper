@@ -2,20 +2,16 @@ package com.gcorp.notest.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.gcorp.annotation.DefaultField;
 import com.gcorp.common.Utils;
 import com.gcorp.constraint.AllOrNone;
 import com.gcorp.domain.FieldFilter;
-import com.gcorp.entity.BaseEntity;
+import com.gcorp.entity.BaseIdentifiedEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,9 +26,8 @@ import lombok.Setter;
 @Table(name = "address", indexes = { @Index(columnList = Address.PERSON_ID_COLUMN) })
 @JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @AllOrNone(value = { Address.ZIP_COLUMN, Address.CITY_COLUMN, Address.STATE_COLUMN })
-public class Address extends BaseEntity {
+public class Address extends BaseIdentifiedEntity {
 
-	protected static final String ID_COLUMN = "id";
 	protected static final String ZIP_COLUMN = "zip";
 	protected static final String NAME_COLUMN = "name";
 	protected static final String CITY_COLUMN = "city";
@@ -42,12 +37,7 @@ public class Address extends BaseEntity {
 	protected static final String PERSON_ID_COLUMN = "person_id";
 
 	private static final long serialVersionUID = 1L;
-	// -------------------------------------------------
-	@Id
-	@DefaultField
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = Address.ID_COLUMN)
-	private Long id;
+	
 	// -------------------------------------------------
 	@Column(name = Address.NAME_COLUMN)
 	private String name;

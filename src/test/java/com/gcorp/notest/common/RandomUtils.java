@@ -1,6 +1,7 @@
 package com.gcorp.notest.common;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -13,6 +14,8 @@ import com.gcorp.field.MobileNumber;
 import com.gcorp.field.PhoneNumber;
 import com.gcorp.notest.entity.Address;
 import com.gcorp.notest.entity.Person;
+import com.gcorp.notest.entity.Promotion;
+import com.gcorp.notest.entity.PromotionTranslation;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -60,13 +63,25 @@ public final class RandomUtils {
 	}
 
 	public static Person randomPerson() {
-		return new Person(null, RandomUtils.randomString(10), RandomUtils.randomEmail(), "en", new int[] { 1, 2 },
+		return new Person(RandomUtils.randomString(10), RandomUtils.randomEmail(), "en", new int[] { 1, 2 },
 				new Double[] { 1.2, 2.3 }, new String[] { "add", "sub" }, new HashSet<>());
 	}
 
 	public static Address randomAddress(Person person) {
 		Person owner = person == null ? randomPerson() : person;
-		return new Address(null, null, "A given street", "12345", "Code-City", "Test-State", true, owner);
+		return new Address(null, "A given street", "12345", "Code-City", "Test-State", true, owner);
+	}
+
+	public static Promotion randomPromotion() {
+		return new Promotion(null, "Super", "This is great", "en", LocalDateTime.now(),
+				LocalDateTime.now().plusDays(30));
+	}
+
+	public static PromotionTranslation randomPromotionTranslation(Promotion promotion) {
+		Promotion source = promotion == null ? randomPromotion() : promotion;
+		PromotionTranslation translation = new PromotionTranslation(source, source.getName(), source.getDescription());
+		translation.setLanguage(source.getLanguage());
+		return translation;
 	}
 
 	public static PhoneNumber randomPhoneNumber(PhoneNumberType type) {

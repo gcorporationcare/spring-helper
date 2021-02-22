@@ -32,7 +32,7 @@ public class FieldFilterTest {
 
 	@Test
 	public void testReadDefaultFields() {
-		Person person = new Person(1L, "Any name", RandomUtils.randomEmail(), "en", new int[] { 1, 2 },
+		Person person = new Person("Any name", RandomUtils.randomEmail(), "en", new int[] { 1, 2 },
 				new Double[] { 1.2, 2.3 }, new String[] { "add", "sub" }, new HashSet<>());
 		Person defaultPerson = FieldFilter.<Person>fromString(null).parseEntity(person);
 		Assert.assertNotNull(defaultPerson.getEmail());
