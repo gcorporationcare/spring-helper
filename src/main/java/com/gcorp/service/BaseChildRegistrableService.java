@@ -162,6 +162,5 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 			children.stream().forEach(c -> Utils.setFieldValue(softDeleteField(c), c, BaseEntity.class, null));
 			repository().saveAll(children);
 		}
-		repository().deleteAll(children);
 	}
 }

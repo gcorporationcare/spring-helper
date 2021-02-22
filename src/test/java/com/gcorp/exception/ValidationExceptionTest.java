@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gcorp.notest.DataProviderTestHelper;
+import com.gcorp.notest.common.DataProviderTestHelper;
 
 import lombok.Data;
 import lombok.Getter;

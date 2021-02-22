@@ -24,7 +24,7 @@ import com.gcorp.serializer.LocalDateTimeSerializer;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
-public class ApiConfig {
+public abstract class ApiConfig {
 	@Bean
 	AuditorAware<String> auditorProvider() {
 		return new AuditorAwareListener();
@@ -46,7 +46,7 @@ public class ApiConfig {
 	}
 
 	@Bean
-	public I18nMessage apiMessage() {
+	public I18nMessage i18nMessage() {
 		I18nMessage i18nMessage = I18nMessage.getInstance();
 		i18nMessage.setMessageSource(messageSource());
 		return i18nMessage;
@@ -66,5 +66,4 @@ public class ApiConfig {
 		return new ObjectMapper().setFilterProvider(new SimpleFilterProvider().setFailOnUnknownId(false))
 				.setSerializationInclusion(JsonInclude.Include.NON_NULL).registerModule(javaTimeModule());
 	}
-
 }

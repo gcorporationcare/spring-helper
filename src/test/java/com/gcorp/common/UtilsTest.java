@@ -28,8 +28,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.gcorp.constraint.InvalidWhen;
 import com.gcorp.entity.BaseEntity;
 import com.gcorp.exception.StandardRuntimeException;
-import com.gcorp.notest.Person;
-import com.gcorp.notest.RandomUtils;
+import com.gcorp.notest.common.RandomUtils;
+import com.gcorp.notest.entity.Person;
 
 import lombok.AllArgsConstructor;
 

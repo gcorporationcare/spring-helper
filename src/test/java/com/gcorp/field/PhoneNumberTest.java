@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.gcorp.enumeration.PhoneNumberType;
-import com.gcorp.notest.RandomUtils;
+import com.gcorp.notest.common.RandomUtils;
 
 public class PhoneNumberTest {
 
@@ -64,8 +64,10 @@ public class PhoneNumberTest {
 				mobileNumber.getPrefix(), mobileNumber.getSuffix());
 		Assert.assertEquals(mobileNumber, copyMobileNumber);
 		copyMobileNumber.setPrefix(null);
+		MobileNumber anotherNumber = RandomUtils.randomMobileNumber();
+		anotherNumber.setPrefix(mobileNumber.getPrefix() + "23");
 		Assert.assertNotEquals(mobileNumber, copyMobileNumber);
-		Assert.assertNotEquals(mobileNumber, RandomUtils.randomMobileNumber());
+		Assert.assertNotEquals(mobileNumber, anotherNumber);
 		Assert.assertNotEquals(mobileNumber, RandomUtils.randomFaxNumber());
 		Assert.assertNotEquals(mobileNumber, "Not a phone number");
 	}
