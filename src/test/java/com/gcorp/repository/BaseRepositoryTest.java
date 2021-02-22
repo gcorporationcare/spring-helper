@@ -52,7 +52,7 @@ public class BaseRepositoryTest {
 
 	@Test
 	public void testSimpleRepository() {
-		Person person = new Person(null, "Any name", RandomUtils.randomEmail(), "en", new int[] { 1, 2 },
+		Person person = new Person("Any name", RandomUtils.randomEmail(), "en", new int[] { 1, 2 },
 				new Double[] { 1.2, 2.3 }, new String[] { "add", "sub" }, new HashSet<>());
 		person = personRepository.save(person);
 		Assert.assertNotNull(person.getId());
