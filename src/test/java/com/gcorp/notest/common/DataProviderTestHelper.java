@@ -1,4 +1,4 @@
-package com.gcorp.notest;
+package com.gcorp.notest.common;
 
 import java.util.List;
 import java.util.Random;

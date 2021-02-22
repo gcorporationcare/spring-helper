@@ -2,7 +2,7 @@ package com.gcorp.constraint;
 
 import org.junit.Test;
 
-import com.gcorp.notest.DataProviderTestHelper;
+import com.gcorp.notest.common.DataProviderTestHelper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

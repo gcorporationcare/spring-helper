@@ -5,7 +5,7 @@ import javax.validation.ValidationException;
 import org.junit.Test;
 
 import com.gcorp.i18n.I18nMessage;
-import com.gcorp.notest.DataProviderTestHelper;
+import com.gcorp.notest.common.DataProviderTestHelper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
