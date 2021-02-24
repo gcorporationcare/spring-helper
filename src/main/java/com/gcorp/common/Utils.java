@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
@@ -344,5 +345,39 @@ public final class Utils {
 		} catch (SecurityException | IllegalArgumentException e) {
 			throw new StandardRuntimeException(e);
 		}
+	}
+
+	/**
+	 * Get annotation in class or in super class
+	 * 
+	 * @return the first occurence of the given annotation
+	 */
+	public static <T extends Annotation> T getAnnotation(Class<T> annotationClass, Class<?> type, Class<?> superType) {
+		List<T> annotations = listAnnotations(annotationClass, type, superType);
+		return annotations.isEmpty() ? null : annotations.get(0);
+	}
+
+	/**
+	 * Check if field is contained in child-parent hierarchy of a class
+	 * 
+	 * @param type      the child class
+	 * @param superType the parent class where to stop the analysis to
+	 * @param field     the name of the checked field
+	 * @return true when field is contained in the hierarchy
+	 */
+	public static boolean isValidField(Class<?> type, Class<?> superType, String field) {
+		List<String> fields = getInheritedFields(type, superType).stream().map(Field::getName)
+				.collect(Collectors.toList());
+		return fields.contains(field);
+	}
+
+	/**
+	 * Get the index of the first non null value
+	 * 
+	 * @param strings the array of String to check
+	 * @return -1 when none found
+	 */
+	public static int indexOfNull(String... strings) {
+		return indexOfNull(Strings::isNullOrEmpty, strings);
 	}
 }
