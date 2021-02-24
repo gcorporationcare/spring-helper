@@ -350,7 +350,11 @@ public final class Utils {
 	/**
 	 * Get annotation in class or in super class
 	 * 
-	 * @return the first occurence of the given annotation
+	 * @param <T>             the annotation type
+	 * @param annotationClass the annotation class
+	 * @param type            the type to start lookup from
+	 * @param superType       the type to stop lookup on (super of previous)
+	 * @return the first occurrence of the given annotation
 	 */
 	public static <T extends Annotation> T getAnnotation(Class<T> annotationClass, Class<?> type, Class<?> superType) {
 		List<T> annotations = listAnnotations(annotationClass, type, superType);

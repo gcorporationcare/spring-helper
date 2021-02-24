@@ -31,6 +31,9 @@ public abstract class PhoneNumberConverter<T extends PhoneNumber> implements Att
 
 	/**
 	 * Converting parent object to child without casting...
+	 * 
+	 * @param phoneNumber the phone number to convert
+	 * @return a converted T instance of given phone number
 	 */
 	protected abstract T fromPhoneNumber(PhoneNumber phoneNumber);
 }
