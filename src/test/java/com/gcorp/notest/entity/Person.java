@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -19,6 +21,7 @@ import com.gcorp.common.Utils;
 import com.gcorp.constraint.InvalidWhen;
 import com.gcorp.domain.FieldFilter;
 import com.gcorp.entity.BaseIdentifiedEntity;
+import com.gcorp.enumeration.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,9 +40,11 @@ import lombok.Setter;
 public class Person extends BaseIdentifiedEntity {
 
 	protected static final String ID_COLUMN = "id";
-	protected static final String EMAIL_COLUMN = "email";
 	protected static final String NAME_COLUMN = "name";
+	protected static final String EMAIL_COLUMN = "email";
+	protected static final String GENDER_COLUMN = "gender";
 	protected static final String LANGUAGE_COLUMN = "language";
+	protected static final String PARENT_ID_COLUMN = "parent_id";
 
 	private static final long serialVersionUID = 1L;
 	// -------------------------------------------------
@@ -55,6 +60,13 @@ public class Person extends BaseIdentifiedEntity {
 	// -------------------------------------------------
 	@Column(name = Person.LANGUAGE_COLUMN)
 	private String language;
+	// -------------------------------------------------
+	@Column(name = Person.GENDER_COLUMN, nullable = false)
+	private Gender gender;
+	// -------------------------------------------------
+	@ManyToOne
+	@JoinColumn(name = Person.PARENT_ID_COLUMN)
+	private Person parent;
 	// -------------------------------------------------
 	@Transient
 	private int[] numbers;

@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import com.gcorp.enumeration.Gender;
 import com.gcorp.enumeration.PhoneNumberType;
 import com.gcorp.field.FaxNumber;
 import com.gcorp.field.HomeNumber;
@@ -63,8 +64,10 @@ public final class RandomUtils {
 	}
 
 	public static Person randomPerson() {
-		return new Person(RandomUtils.randomString(10), RandomUtils.randomEmail(), "en", new int[] { 1, 2 },
-				new Double[] { 1.2, 2.3 }, new String[] { "add", "sub" }, new HashSet<>());
+		Gender[] genders = Gender.values();
+		return new Person(RandomUtils.randomString(10), RandomUtils.randomEmail(), "en",
+				genders[RandomUtils.randomInteger(1)], null, new int[] { 1, 2 }, new Double[] { 1.2, 2.3 },
+				new String[] { "add", "sub" }, new HashSet<>());
 	}
 
 	public static Address randomAddress(Person person) {

@@ -1,6 +1,7 @@
 package com.gcorp.config;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.context.annotation.Bean;
@@ -9,7 +10,12 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,14 +23,63 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.gcorp.common.RequestIdGenerator;
 import com.gcorp.i18n.I18nMessage;
 import com.gcorp.listener.AuditorAwareListener;
+import com.gcorp.resolver.FieldFilterArgumentResolver;
+import com.gcorp.resolver.SearchFiltersArgumentResolver;
 import com.gcorp.serializer.LocalDateTimeDeserializer;
 import com.gcorp.serializer.LocalDateTimeSerializer;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
-public abstract class ApiConfig {
+public abstract class ApiConfig implements WebMvcConfigurer {
+
+	protected String searchFiltersParamName() {
+		return "filters";
+	}
+
+	protected String fieldFiltersParamName() {
+		return "fields";
+	}
+
+	protected String pageParamName() {
+		return "page";
+	}
+
+	protected String sizeParamName() {
+		return "size";
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(requestIdGenerator());
+		registry.addInterceptor(localeChangeInterceptor());
+	}
+
+	@Override
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+		resolver.setPageParameterName(pageParamName());
+		resolver.setSizeParameterName(sizeParamName());
+		resolver.setOneIndexedParameters(true);
+		argumentResolvers.add(resolver);
+		argumentResolvers.add(new SearchFiltersArgumentResolver(searchFiltersParamName()));
+		argumentResolvers.add(new FieldFilterArgumentResolver(fieldFiltersParamName()));
+	}
+
+	@Bean
+	public RequestIdGenerator requestIdGenerator() {
+		return new RequestIdGenerator();
+	}
+
+	@Bean
+	public LocaleChangeInterceptor localeChangeInterceptor() {
+		LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
+		interceptor.setParamName("lang");
+		return interceptor;
+	}
+
 	@Bean
 	AuditorAware<String> auditorProvider() {
 		return new AuditorAwareListener();

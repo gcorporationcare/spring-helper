@@ -17,6 +17,8 @@ import java.lang.annotation.Target;
 public @interface Configure {
 	/**
 	 * Configuration of the default sorting attribute when browsing database
+	 * 
+	 * @return The list of {@link com.gcorp.annotation.FieldSort} to apply on class
 	 */
 	FieldSort[] defaultSort() default {};
 }

@@ -121,6 +121,7 @@ public class BaseRepositoryImpl<T extends BaseEntity, U extends Serializable> im
 		CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
 		Root<T> countRoot = countQuery.from(clazz);
 		if (searchFilters == null) {
+			countQuery.select(builder.count(countQuery.from(clazz)));
 			long total = entityManager.createQuery(countQuery)
 					.setHint(SqlNamingConvention.Graph.PROPERTY_GRAPH, entityGraph).getSingleResult();
 			List<T> content = (pageable != null)

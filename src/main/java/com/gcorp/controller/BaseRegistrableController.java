@@ -69,7 +69,7 @@ public abstract class BaseRegistrableController<E extends BaseEntity, ID extends
 	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	@Transactional
-	public final E update(@PathVariable(I18nMessage.ID_PARAMETER) ID id,
+	public final E update(@PathVariable(I18nMessage.ID_PARAMETER_NAME) ID id,
 			@Validated({ ValidationStep.Complex.class }) @RequestBody E entity, FieldFilter<E> fieldFilter) {
 		log.info("Updating entity {} with values {}", service().getEntityClass(), entity);
 		return registrerService().update(id, entity, fieldFilter);
@@ -82,7 +82,7 @@ public abstract class BaseRegistrableController<E extends BaseEntity, ID extends
 	@PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	@Transactional
-	public final E patch(@PathVariable(I18nMessage.ID_PARAMETER) ID id, @RequestBody E entity,
+	public final E patch(@PathVariable(I18nMessage.ID_PARAMETER_NAME) ID id, @RequestBody E entity,
 			FieldFilter<E> fieldFilter) {
 		log.info("Patching entity {} with values {}", service().getEntityClass(), entity);
 		return registrerService().patch(id, entity, fieldFilter);
@@ -93,7 +93,7 @@ public abstract class BaseRegistrableController<E extends BaseEntity, ID extends
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Transactional
-	public final void delete(@PathVariable(I18nMessage.ID_PARAMETER) ID id) {
+	public final void delete(@PathVariable(I18nMessage.ID_PARAMETER_NAME) ID id) {
 		log.info("Deleting entity {} with id {}", service().getEntityClass(), id);
 		registrerService().delete(id);
 	}
@@ -103,7 +103,7 @@ public abstract class BaseRegistrableController<E extends BaseEntity, ID extends
 	@DeleteMapping(value = "/multiple", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Transactional
-	public final void deleteMultiple(@RequestParam(I18nMessage.IDS_PARAMETER) List<ID> ids) {
+	public final void deleteMultiple(@RequestParam(I18nMessage.IDS_PARAMETER_NAME) List<ID> ids) {
 		log.info("Deleting entities with ids {} with values {}", service().getEntityClass(), ids);
 		registrerService().deleteMultiple(ids);
 	}

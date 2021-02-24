@@ -170,6 +170,9 @@ public abstract class BaseEntity implements Serializable, FieldFilterable {
 
 	/**
 	 * Get the list of fields that can be translated
+	 * 
+	 * @return the fields that can be translated (will be found in linked
+	 *         translation entity)
 	 */
 	public final Set<String> translatableFields() {
 		String[] fields = Utils.getInheritedFields(getClass(), BaseEntity.class).stream()
@@ -179,6 +182,9 @@ public abstract class BaseEntity implements Serializable, FieldFilterable {
 
 	/**
 	 * Getting default sorting order for entity
+	 * 
+	 * @return the Sort object to apply by default when reading records from
+	 *         database
 	 */
 	public final Sort defaultOrder() {
 		Configure configure = retrieveMainConfiguration();
@@ -190,6 +196,9 @@ public abstract class BaseEntity implements Serializable, FieldFilterable {
 
 	/**
 	 * List of fields that cannot be copied
+	 * 
+	 * @return the Sort object to apply by default when reading records from
+	 *         database
 	 */
 	public final Set<String> notCopyableField() {
 		String[] fields = Utils.getInheritedFields(getClass(), BaseEntity.class).stream()
@@ -199,6 +208,9 @@ public abstract class BaseEntity implements Serializable, FieldFilterable {
 
 	/**
 	 * List of fields that will be sent by default in API calls
+	 * 
+	 * @return the list of fields to return when user nothing is explicitly
+	 *         requested
 	 */
 	@Override
 	public final Set<String> defaultFields() {
@@ -209,6 +221,9 @@ public abstract class BaseEntity implements Serializable, FieldFilterable {
 
 	/**
 	 * Copy given object fields in current one
+	 * 
+	 * @param entity         the entity to copy values from
+	 * @param excludedFields the field to ignore in read entity
 	 */
 	protected void copy(BaseEntity entity, String[] excludedFields) {
 		if (entity == null)
@@ -235,6 +250,11 @@ public abstract class BaseEntity implements Serializable, FieldFilterable {
 
 	/**
 	 * Copy current object fields to others
+	 * 
+	 * @param excludedFields the fields to exclude on current object when copying to
+	 *                       others
+	 * @param entities       the entities we want to copy the current instance value
+	 *                       on
 	 */
 	protected void copyTo(String[] excludedFields, BaseEntity... entities) {
 		if (entities == null)

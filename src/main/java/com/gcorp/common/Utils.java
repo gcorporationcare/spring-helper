@@ -115,6 +115,7 @@ public final class Utils {
 	 * Get list of properties which are null
 	 * 
 	 * @param source any object with eventually null properties
+	 * @return the list of properties having null values
 	 */
 	public static String[] getNullPropertyNames(Object source) {
 		final BeanWrapper src = new BeanWrapperImpl(source);
@@ -132,6 +133,8 @@ public final class Utils {
 
 	/**
 	 * Get the principal of current authenticated user
+	 * 
+	 * @return the UserDetails of the current authenticated user (null if none)
 	 */
 	public static UserDetails getAuthenticatedUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -165,6 +168,7 @@ public final class Utils {
 	/**
 	 * Get declared fields for classes and super-classes until expected level
 	 * 
+	 * @param fieldName the field we are looking for
 	 * @param type      class to start the collecting from
 	 * @param superType parent class of former argument where to stop the collecting
 	 * @return the list of fields
@@ -228,6 +232,9 @@ public final class Utils {
 
 	/**
 	 * Get the user's name of current authenticated user
+	 * 
+	 * @return a String representing the name of the current authenticated user or
+	 *         N/A if none
 	 */
 	public static String getUsernameOfAuthenticatedUser() {
 		UserDetails securedUser = getAuthenticatedUser();
@@ -237,6 +244,7 @@ public final class Utils {
 	/**
 	 * Get the index of the first non null value
 	 * 
+	 * @param <T>       any type
 	 * @param predicate method allowing to verify if items are null
 	 * @param items     the array of objects to check
 	 * @return -1 when none found
@@ -254,7 +262,13 @@ public final class Utils {
 	}
 
 	/**
-	 * List annotation in classes
+	 * List annotation in classes between given class and its parent
+	 * 
+	 * @param <T>             a annotation type
+	 * @param annotationClass the annotation we are looking for
+	 * @param type            the starting class
+	 * @param superType       the stopping class (must be superclass of previous)
+	 * @return the list of annotation find between the start and stop
 	 */
 	public static <T extends Annotation> List<T> listAnnotations(Class<T> annotationClass, Class<?> type,
 			Class<?> superType) {
@@ -271,6 +285,8 @@ public final class Utils {
 
 	/**
 	 * Get the list of countries
+	 * 
+	 * @return list containing known countries
 	 */
 	public static List<Country> listCountries() {
 		if (countries == null) {
@@ -281,6 +297,8 @@ public final class Utils {
 
 	/**
 	 * Get the list of currencies
+	 * 
+	 * @return list containing known currencies
 	 */
 	public static List<MoneyCurrency> listCurrencies() {
 		if (currencies == null) {
@@ -294,7 +312,7 @@ public final class Utils {
 	 * default locale
 	 * 
 	 * @param language the locale code
-	 * @return
+	 * @return the Locale to use
 	 */
 	public static Locale safeLocale(String language) {
 		if (Strings.isNullOrEmpty(language)) {

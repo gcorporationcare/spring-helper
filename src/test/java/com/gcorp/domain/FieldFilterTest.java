@@ -1,7 +1,6 @@
 package com.gcorp.domain;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,8 +31,7 @@ public class FieldFilterTest {
 
 	@Test
 	public void testReadDefaultFields() {
-		Person person = new Person("Any name", RandomUtils.randomEmail(), "en", new int[] { 1, 2 },
-				new Double[] { 1.2, 2.3 }, new String[] { "add", "sub" }, new HashSet<>());
+		Person person = RandomUtils.randomPerson();
 		Person defaultPerson = FieldFilter.<Person>fromString(null).parseEntity(person);
 		Assert.assertNotNull(defaultPerson.getEmail());
 		Assert.assertNull(defaultPerson.getLanguage());

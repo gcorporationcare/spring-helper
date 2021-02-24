@@ -10,7 +10,7 @@ public interface FieldFilterable {
 	/**
 	 * List the fields that will be rendered when non selected
 	 * 
-	 * @return
+	 * @return a set containing the list of fields to send by default on serializing
 	 */
 	@NonNull
 	Set<String> defaultFields();

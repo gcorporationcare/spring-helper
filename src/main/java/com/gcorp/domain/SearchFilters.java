@@ -94,6 +94,10 @@ public final class SearchFilters<T> {
 
 	/**
 	 * Generate filter from a given String
+	 * 
+	 * @param <T>     the entity class we are searching on
+	 * @param filters the string version of the filters to apply
+	 * @return an instance containing the list of specifications on the lookup
 	 */
 	public static <T> SearchFilters<T> fromString(String filters) {
 		SearchFilters<T> result = new SearchFilters<>();
