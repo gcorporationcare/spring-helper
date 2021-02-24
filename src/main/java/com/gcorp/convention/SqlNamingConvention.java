@@ -19,16 +19,29 @@ public final class SqlNamingConvention {
 	}
 
 	/**
-	 * 1- In SQL, table names must be lower case<br/>
-	 * 2- Different words must be separated by underscore: class MyTable -> Table
-	 * my_table<br/>
+	 * <p>
+	 * 1- In SQL, table names must be lower case.
+	 * </p>
+	 * <p>
+	 * 2- Different words must be separated by underscore: class MyTable: Table
+	 * my_table.
+	 * </p>
+	 * <p>
 	 * 3- Use singular instead of plural, some words have no differences in plural
-	 * and make it complicated to respect this principle<br/>
+	 * and make it complicated to respect this principle.
+	 * </p>
+	 * <p>
 	 * 4- When naming ManyToMany tables, use the 2 tables names, in alphabetical
-	 * order table1: person, table2: job -> ManyToMany table: job_person<br/>
-	 * 4- Avoid key words like user, they are reserved in some SGBD<br/>
+	 * order table1: person, table2: job: ManyToMany table: job_person.
+	 * </p>
+	 * <p>
+	 * 5- Avoid key words like user, they are reserved in some SGBD.
+	 * </p>
+	 * <p>
 	 * 6- More on
 	 * https://launchbylunch.com/posts/2014/Feb/16/sql-naming-conventions/
+	 * </p>
+	 * 
 	 */
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public final class Table {
@@ -46,12 +59,19 @@ public final class SqlNamingConvention {
 	}
 
 	/**
+	 * <p>
 	 * 1- Primary keys are simply named ID. However, it is acceptable to prefix it
 	 * with the table name, it make the reading more natural when joining table with
-	 * foreign keys<br/>
-	 * 2- Column names must be snake case: FullName -> full_name<br/>
+	 * foreign keys.
+	 * </p>
+	 * <p>
+	 * 2- Column names must be snake case: FullName: full_name.
+	 * </p>
+	 * <p>
 	 * 3- Use functional names rather than generic ones: (Person first_name and
 	 * last_name rather than single column name)
+	 * </p>
+	 * 
 	 */
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public final class Column {

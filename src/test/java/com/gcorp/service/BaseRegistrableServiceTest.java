@@ -135,7 +135,7 @@ public class BaseRegistrableServiceTest {
 
 	@Test
 	public void testUpdate_OK() {
-		Person person = personService.create(RandomUtils.randomPerson(), defaultFieldFilter);
+		Person person = personService.create(RandomUtils.randomPerson(), allFieldFilter);
 		Assert.assertNotNull(person.getId());
 		final String newName = "My New Name";
 		person.setName(newName);

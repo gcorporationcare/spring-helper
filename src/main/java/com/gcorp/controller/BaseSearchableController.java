@@ -32,7 +32,7 @@ public abstract class BaseSearchableController<E extends BaseEntity, ID extends 
 			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER_NAME, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
 	@ApiOperation(value = "read-by-id", notes = "Read the object with the given ID")
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public E read(@PathVariable(I18nMessage.ID_PARAMETER) ID id, FieldFilter<E> fieldFilter) {
+	public E read(@PathVariable(I18nMessage.ID_PARAMETER_NAME) ID id, FieldFilter<E> fieldFilter) {
 		log.info("Reading {} with id {}", service().getEntityClass().getSimpleName(), id);
 		return service().read(id, fieldFilter);
 	}

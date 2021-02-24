@@ -44,6 +44,8 @@ public abstract class BaseChildSearchableService<E extends BaseEntity, ID extend
 
 	/**
 	 * Will be useful when logging message of different services/controllers
+	 * 
+	 * @return the entity targeted by this service
 	 */
 	@SuppressWarnings("unchecked")
 	public Class<E> getEntityClass() {
@@ -63,7 +65,7 @@ public abstract class BaseChildSearchableService<E extends BaseEntity, ID extend
 	public SearchFilters<E> getParentFilters(@NonNull P_ID id) {
 		SearchFilters<E> defaultFilters = getDefaultFilters();
 		if (defaultFilters == null)
-			throw new RequestException(I18nMessage.RequestError.UNSUFFICIENT_RIGHTS, HttpStatus.FORBIDDEN);
+			throw new RequestException(I18nMessage.RequestError.FORBIDDEN_OPERATION, HttpStatus.FORBIDDEN);
 		SearchFilters<E> parentFilters = SearchFilters
 				.of(new SearchFilter(true, getParentIdField(), SearchFilterOperator.IS_EQUAL, id));
 		return parentFilters.and(defaultFilters);

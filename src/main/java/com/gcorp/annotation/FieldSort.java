@@ -14,13 +14,15 @@ import java.lang.annotation.RetentionPolicy;
 public @interface FieldSort {
 	/**
 	 * The field's name
+	 * 
+	 * @return the name of the field to sort's on
 	 */
 	String value();
 
 	/**
 	 * If results must be sorted by ascending or descending order
 	 * 
-	 * @default true
+	 * @return true by default
 	 */
 	boolean ascending() default true;
 }

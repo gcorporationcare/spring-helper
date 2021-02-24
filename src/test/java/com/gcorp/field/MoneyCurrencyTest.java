@@ -17,10 +17,15 @@ public class MoneyCurrencyTest {
 		Assert.assertTrue(
 				englishCurrencies.stream().filter(c -> "XOF".equalsIgnoreCase(c.getCode())).findFirst().isPresent());
 	}
-	
+
 	@Test
 	public void testFind() {
-		Assert.assertNotNull(MoneyCurrency.find("gBp"));
+		MoneyCurrency currency = MoneyCurrency.find("gBp");
+		Assert.assertNotNull(currency);
+		Assert.assertNotNull(currency.getCode());
+		Assert.assertNotNull(currency.getSymbol());
+		Assert.assertNotNull(currency.getName());
+		Assert.assertNotNull(currency.getDisplayName());
 		Assert.assertNotNull(MoneyCurrency.find("GBP"));
 		Assert.assertNull(MoneyCurrency.find("GB"));
 	}

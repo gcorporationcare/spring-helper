@@ -28,6 +28,8 @@ public @interface InvalidWhen {
 	 * {@link SpelExpressionParser}<br>
 	 * Every single expression should determine when <strong>an instance of the
 	 * annotated object is not valid</strong>
+	 * 
+	 * @return the list of expressions to evaluate
 	 */
 	String[] value();
 

@@ -96,6 +96,8 @@ public abstract class BaseTranslatableEntity<T extends BaseTranslation> extends 
 
 	/**
 	 * Create a new translation object from given entity type
+	 * 
+	 * @return a new instance of the translation object
 	 */
 	@SuppressWarnings("unchecked")
 	public T newTranslation() {

@@ -103,7 +103,7 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 		SearchFilters<E> idsFilters = new SearchFilters<>();
 		Streams.stream(ids).filter(i -> i != null)
 				.forEach(i -> idsFilters.or(getIdField(), SearchFilterOperator.IS_EQUAL, i));
-		List<E> entities = repository().findByFilters(idsFilters, null).getContent();
+		List<E> entities = readMultiple(idsFilters, FieldFilter.allFields(), null).getContent();
 		entities.stream().forEach(this::canDelete);
 		repository().deleteAll();
 	}

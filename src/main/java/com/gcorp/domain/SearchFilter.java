@@ -114,6 +114,9 @@ public class SearchFilter implements Serializable {
 
 	/**
 	 * Generate filter from a given String
+	 * 
+	 * @param filter the filter to read value from
+	 * @return an instance of the filter
 	 */
 	public static SearchFilter fromString(String filter) {
 		if (filter == null || filter.isEmpty() || !filter.contains(SearchFilterOperator.FILTER_OPERATOR_DELIMITER))
@@ -297,11 +300,11 @@ public class SearchFilter implements Serializable {
 		 */
 		IS_NOT_NULL("!0", true, null),
 		/**
-		 * Similarities comparisons --> perfectly match SQL "like"
+		 * Similarities comparisons: perfectly match SQL "like"
 		 */
 		IS_LIKE(":"),
 		/**
-		 * Similarities comparisons --> perfectly match SQL "not like"
+		 * Similarities comparisons: perfectly match SQL "not like"
 		 */
 		IS_NOT_LIKE("!:"),
 		/**

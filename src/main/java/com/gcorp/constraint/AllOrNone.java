@@ -27,11 +27,15 @@ public @interface AllOrNone {
 	 * Array of fields that are linked together If any of these fields is non-null,
 	 * then all others must be non-null. In case any of these fields is null, all
 	 * the others must be as well.
+	 * 
+	 * @return the list of fields linked together
 	 */
 	String[] value();
 
 	/**
 	 * The error message that will be displayed
+	 * 
+	 * @return the message to use in exception when is not valid
 	 */
 	String message() default I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED;
 

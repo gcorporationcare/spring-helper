@@ -14,8 +14,7 @@ import com.gcorp.constraint.InvalidWhen;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Dealing with validation for
- * {@link com.gcorp.socialcare.dao.constraint.InvalidWhen}
+ * Dealing with validation for {@link com.gcorp.constraint.InvalidWhen}
  */
 @Slf4j
 public class InvalidWhenValidator implements ConstraintValidator<InvalidWhen, Object> {

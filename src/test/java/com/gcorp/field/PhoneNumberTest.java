@@ -76,6 +76,7 @@ public class PhoneNumberTest {
 	public void testHashCode() {
 		MobileNumber mobileNumber1 = RandomUtils.randomMobileNumber();
 		MobileNumber mobileNumber2 = RandomUtils.randomMobileNumber();
+		mobileNumber2.setExtension(mobileNumber1.getExtension() + "4");
 		Assert.assertNotEquals(mobileNumber1.hashCode(), mobileNumber2.hashCode());
 	}
 
