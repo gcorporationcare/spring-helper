@@ -6,5 +6,5 @@ matrix:
     - jdk: openjdk8
       env:
         - DESC="openjdk8 unit tests"
-        - CMD="mvn clean test -Dcheckstyle.skip=true"
+        - CMD="mvn clean test jacoco:report coveralls:jacoco -Dcheckstyle.skip=true"
         - LANG=en_US.utf8
