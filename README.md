@@ -1,6 +1,6 @@
 # Spring-Helper
 [![Build Status](https://api.travis-ci.com/gcorporationcare/spring-helper.svg?branch=master)](https://api.travis-ci.com/gcorporationcare/spring-helper.svg?branch=master)
-[![Coverage Status](https://coveralls.io/github/gcorporationcare/spring-helper/badge.svg?branch=master)](https://coveralls.io/github/gcorporationcare/spring-helper?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/gcorporationcare/spring-helper/badge.svg?branch=master)](https://coveralls.io/github/gcorporationcare/spring-helper?branch=master)
 
 
 Executing database lookup by using keywords in API urls. Also choose which fields will be returned in JSON responses.
