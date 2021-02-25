@@ -1,0 +1,10 @@
+language: java
+matrix:
+  fast_finish: true
+  include:
+    # unit tests (openjdk8)
+    - jdk: openjdk8
+      env:
+        - DESC="openjdk8 unit tests"
+        - CMD="mvn clean test -Dcheckstyle.skip=true"
+        - LANG=en_US.utf8
