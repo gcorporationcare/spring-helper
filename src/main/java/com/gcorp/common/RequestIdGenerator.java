@@ -10,6 +10,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.google.common.base.Strings;
 
+import lombok.Getter;
+
 /**
  * Assign a request identifier to an HTTP request. Later the request id will be
  * used for logging purpose
@@ -17,17 +19,21 @@ import com.google.common.base.Strings;
  */
 public class RequestIdGenerator extends HandlerInterceptorAdapter {
 
-	protected String requestIdHeaderName() {
-		return "Request-Id";
+	@Getter
+	private final String headerName;
+
+	public RequestIdGenerator(String header) {
+		super();
+		this.headerName = header;
 	}
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
 		String uid = UUID.randomUUID().toString();
 		MDC.put("RequestId", uid);
-		String header = httpServletResponse.getHeader(requestIdHeaderName());
+		String header = httpServletResponse.getHeader(headerName);
 		if (Strings.isNullOrEmpty(header)) {
-			httpServletResponse.setHeader(requestIdHeaderName(), uid);
+			httpServletResponse.setHeader(headerName, uid);
 		}
 		return true;
 	}

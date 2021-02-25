@@ -26,15 +26,15 @@ public class I18nMessage {
 	public static final String BOOLEAN_DATA_TYPE = "boolean";
 
 	// -------------------------------------------------------------
-	public static final String LANGUAGE_PARAMETER_NAME = "language";
-	public static final String PARENT_PARAMETER_NAME = "parent";
-	public static final String ID_PARAMETER_NAME = "id";
-	public static final String IDS_PARAMETER_NAME = "ids";
-	public static final String SORT_PARAMETER_NAME = "sort";
-	public static final String PAGE_PARAMETER_NAME = "page";
-	public static final String SIZE_PARAMETER_NAME = "size";
-	public static final String FIELDS_PARAMETER_NAME = "fields";
-	public static final String FILTERS_PARAMETER_NAME = "filters";
+	public static final String LANGUAGE_PARAMETER = "language";
+	public static final String PARENT_PARAMETER = "parent";
+	public static final String ID_PARAMETER = "id";
+	public static final String IDS_PARAMETER = "ids";
+	public static final String SORT_PARAMETER = "sort";
+	public static final String PAGE_PARAMETER = "page";
+	public static final String SIZE_PARAMETER = "size";
+	public static final String FIELDS_PARAMETER = "fields";
+	public static final String FILTERS_PARAMETER = "filters";
 
 	// -------------------------------------------------------------
 	public static final String PAGE_PARAMETER_DESCRIPTION = "Results page you want to retrieve (0..N)";

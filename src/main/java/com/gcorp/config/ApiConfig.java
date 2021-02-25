@@ -35,6 +35,14 @@ import com.gcorp.serializer.LocalDateTimeSerializer;
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public abstract class ApiConfig implements WebMvcConfigurer {
 
+	protected String requestIdHeaderName() {
+		return "Request-Id";
+	}
+
+	protected String languageParamName() {
+		return "lang";
+	}
+
 	protected String searchFiltersParamName() {
 		return "filters";
 	}
@@ -70,13 +78,13 @@ public abstract class ApiConfig implements WebMvcConfigurer {
 
 	@Bean
 	public RequestIdGenerator requestIdGenerator() {
-		return new RequestIdGenerator();
+		return new RequestIdGenerator(requestIdHeaderName());
 	}
 
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-		interceptor.setParamName("lang");
+		interceptor.setParamName(languageParamName());
 		return interceptor;
 	}
 

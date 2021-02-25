@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import org.springframework.util.ObjectUtils;
+
 import com.gcorp.common.Utils;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
@@ -28,6 +30,22 @@ public class Country implements Serializable {
 	private String name;
 	private String displayName;
 	private int dialCode;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		if (!(obj instanceof Country) || code == null)
+			return false;
+		Country that = (Country) obj;
+		return that.code != null && code.equalsIgnoreCase(that.code);
+	}
+
+	@Override
+	public int hashCode() {
+		int hashValue = 17;
+		return 37 * ObjectUtils.nullSafeHashCode(code) + hashValue;
+	}
 
 	public static int getDialCode(String countryShortCode) {
 		PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();

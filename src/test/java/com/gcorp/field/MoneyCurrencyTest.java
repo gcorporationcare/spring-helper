@@ -10,6 +10,15 @@ import com.gcorp.common.Utils;
 public class MoneyCurrencyTest {
 
 	@Test
+	public void testEqualsAndHashCode() {
+		MoneyCurrency usd = MoneyCurrency.find("usd");
+		MoneyCurrency eur = MoneyCurrency.find("eur");
+		Assert.assertNotEquals(usd, eur);
+		Assert.assertNotEquals(usd.hashCode(), eur.hashCode());
+		Assert.assertEquals(usd, MoneyCurrency.find("uSD"));
+	}
+
+	@Test
 	public void testListCurrencies() {
 		List<MoneyCurrency> englishCurrencies = MoneyCurrency.listCurrencies(Utils.DEFAULT_LOCALE.getLanguage());
 		List<MoneyCurrency> frenchCurrencies = MoneyCurrency.listCurrencies("fr");

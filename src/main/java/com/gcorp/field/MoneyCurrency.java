@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.util.ObjectUtils;
+
 import com.gcorp.common.Utils;
 
 import lombok.AllArgsConstructor;
@@ -28,6 +30,22 @@ public class MoneyCurrency implements Serializable {
 	private String symbol;
 	private String name;
 	private String displayName;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		if (!(obj instanceof MoneyCurrency) || code == null)
+			return false;
+		MoneyCurrency that = (MoneyCurrency) obj;
+		return that.code != null && code.equalsIgnoreCase(that.code);
+	}
+
+	@Override
+	public int hashCode() {
+		int hashValue = 17;
+		return 37 * ObjectUtils.nullSafeHashCode(code) + hashValue;
+	}
 
 	public static MoneyCurrency find(@NonNull final String code) {
 		Optional<MoneyCurrency> currency = Utils.listCurrencies().stream()

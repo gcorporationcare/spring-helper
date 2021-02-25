@@ -1,7 +1,9 @@
 package com.gcorp.notest.common;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -9,11 +11,14 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.gcorp.enumeration.Gender;
 import com.gcorp.enumeration.PhoneNumberType;
+import com.gcorp.field.Country;
 import com.gcorp.field.FaxNumber;
 import com.gcorp.field.HomeNumber;
 import com.gcorp.field.MobileNumber;
+import com.gcorp.field.MoneyCurrency;
 import com.gcorp.field.PhoneNumber;
 import com.gcorp.notest.entity.Address;
+import com.gcorp.notest.entity.Office;
 import com.gcorp.notest.entity.Person;
 import com.gcorp.notest.entity.Promotion;
 import com.gcorp.notest.entity.PromotionTranslation;
@@ -66,7 +71,7 @@ public final class RandomUtils {
 	public static Person randomPerson() {
 		Gender[] genders = Gender.values();
 		return new Person(RandomUtils.randomString(10), RandomUtils.randomEmail(), "en",
-				genders[RandomUtils.randomInteger(1)], null, new int[] { 1, 2 }, new Double[] { 1.2, 2.3 },
+				genders[RandomUtils.randomInteger(1)], null, null, new int[] { 1, 2 }, new Double[] { 1.2, 2.3 },
 				new String[] { "add", "sub" }, new HashSet<>());
 	}
 
@@ -90,7 +95,7 @@ public final class RandomUtils {
 	public static PhoneNumber randomPhoneNumber(PhoneNumberType type) {
 		PhoneNumberType theType = type != null ? type
 				: PhoneNumberType.values()[randomInteger(PhoneNumberType.values().length)];
-		return PhoneNumber.newPhoneNumber(theType, String.valueOf(1), String.valueOf(randomInteger(2)),
+		return PhoneNumber.newPhoneNumber(theType, "us", String.valueOf(randomInteger(2)),
 				String.valueOf(randomInteger(5)), String.valueOf(randomInteger(2)));
 	}
 
@@ -110,5 +115,10 @@ public final class RandomUtils {
 		PhoneNumber phoneNumber = randomPhoneNumber(PhoneNumberType.HOME);
 		return new HomeNumber(phoneNumber.getAreaCode(), phoneNumber.getPrefix(), phoneNumber.getSuffix(),
 				phoneNumber.getExtension());
+	}
+
+	public static Office randomOffice() {
+		return new Office(randomString(), LocalDate.now(), LocalTime.NOON, Country.find("us"),
+				MoneyCurrency.find("USD"), randomFaxNumber(), randomHomeNumber(), randomMobileNumber());
 	}
 }

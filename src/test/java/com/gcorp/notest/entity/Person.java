@@ -39,10 +39,10 @@ import lombok.Setter;
 @InvalidWhen("email == null")
 public class Person extends BaseIdentifiedEntity {
 
-	protected static final String ID_COLUMN = "id";
 	protected static final String NAME_COLUMN = "name";
 	protected static final String EMAIL_COLUMN = "email";
 	protected static final String GENDER_COLUMN = "gender";
+	protected static final String AGE_COLUMN = "age";
 	protected static final String LANGUAGE_COLUMN = "language";
 	protected static final String PARENT_ID_COLUMN = "parent_id";
 
@@ -63,6 +63,9 @@ public class Person extends BaseIdentifiedEntity {
 	// -------------------------------------------------
 	@Column(name = Person.GENDER_COLUMN, nullable = false)
 	private Gender gender;
+	// -------------------------------------------------
+	@Column(name = Person.AGE_COLUMN)
+	private Integer age;
 	// -------------------------------------------------
 	@ManyToOne
 	@JoinColumn(name = Person.PARENT_ID_COLUMN)

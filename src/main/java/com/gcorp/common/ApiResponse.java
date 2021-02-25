@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 
 import com.gcorp.exception.RequestException;
 import com.gcorp.exception.ValidationException;
@@ -76,12 +77,12 @@ public class ApiResponse<T> extends ResponseEntity<T> {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public boolean equals(Object other) {
 		if (!(other instanceof ApiResponse))
 			return false;
-		@SuppressWarnings("unchecked")
-		ResponseEntity<T> o = (ResponseEntity<T>) other;
-		return super.equals(o);
+		ApiResponse<T> o = (ApiResponse<T>) other;
+		return this.success == o.success && ObjectUtils.nullSafeEquals(this.getStatusCode(), o.getStatusCode());
 	}
 
 	@Override

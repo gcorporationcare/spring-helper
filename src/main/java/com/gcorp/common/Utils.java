@@ -38,7 +38,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.ReflectionUtils;
 
-import com.gcorp.entity.BaseEntity;
 import com.gcorp.exception.StandardRuntimeException;
 import com.gcorp.field.Country;
 import com.gcorp.field.MoneyCurrency;
@@ -80,7 +79,7 @@ public final class Utils {
 		AnnotationDescriptor descriptor = new AnnotationDescriptor(clazz);
 		descriptor.setValue("message", message);
 		descriptor.setValue("value", value != null ? new String[] { value.toString() } : new String[] { "" });
-		Field member = getInheritedField(field, bean.getClass(), BaseEntity.class);
+		Field member = getInheritedField(field, bean.getClass(), Object.class);
 		U annotation = AnnotationFactory.create(descriptor);
 		ConstraintAnnotationDescriptor<U> constraintAnnotationDescriptor = new ConstraintAnnotationDescriptor<>(
 				annotation);

@@ -42,11 +42,11 @@ public abstract class BaseChildRegistrableController<E extends BaseEntity, ID ex
 	@ResponseBody
 	@ApiOperation(value = "create", notes = "Save/Update given entity")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER_NAME, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public E create(@PathVariable(I18nMessage.PARENT_PARAMETER_NAME) P_ID parent,
+	public E create(@PathVariable(I18nMessage.PARENT_PARAMETER) P_ID parent,
 			@Validated({ ValidationStep.Simple.class }) @RequestBody E child, FieldFilter<E> fieldFilter) {
 		log.info("Saving entity {} from parent {} with values {}", service().getEntityClass(), parent, child);
 		return registrerService().create(parent, child, fieldFilter);
@@ -55,11 +55,11 @@ public abstract class BaseChildRegistrableController<E extends BaseEntity, ID ex
 	@ResponseBody
 	@ApiOperation(value = "create-multiple", notes = "Save/Update given entities")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER_NAME, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
 	@PostMapping(value = "/multiple", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public Iterable<E> createMultiple(@PathVariable(I18nMessage.PARENT_PARAMETER_NAME) P_ID parent,
+	public Iterable<E> createMultiple(@PathVariable(I18nMessage.PARENT_PARAMETER) P_ID parent,
 			@RequestBody List<E> children, FieldFilter<E> fieldFilter) {
 		log.info("Saving entities {} from parent {} with values {}", service().getEntityClass(), parent, children);
 		return registrerService().createMultiple(parent, children, fieldFilter);
@@ -68,12 +68,12 @@ public abstract class BaseChildRegistrableController<E extends BaseEntity, ID ex
 	@ResponseBody
 	@ApiOperation(value = "update", notes = "Update given entity")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER_NAME, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
 	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	@Transactional
-	public E update(@PathVariable(I18nMessage.PARENT_PARAMETER_NAME) P_ID parent,
-			@PathVariable(I18nMessage.ID_PARAMETER_NAME) ID childId,
+	public E update(@PathVariable(I18nMessage.PARENT_PARAMETER) P_ID parent,
+			@PathVariable(I18nMessage.ID_PARAMETER) ID childId,
 			@Validated({ ValidationStep.Simple.class }) @RequestBody E child, FieldFilter<E> fieldFilter) {
 		log.info("Updating entity {} from parent {} with values {}", service().getEntityClass(), parent, child);
 		return registrerService().update(parent, childId, child, fieldFilter);
@@ -82,12 +82,12 @@ public abstract class BaseChildRegistrableController<E extends BaseEntity, ID ex
 	@ResponseBody
 	@ApiOperation(value = "patch", notes = "Update non-null fields of given entity")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER_NAME, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
 	@PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	@Transactional
-	public E patch(@PathVariable(I18nMessage.PARENT_PARAMETER_NAME) P_ID parent,
-			@PathVariable(I18nMessage.ID_PARAMETER_NAME) ID childId, @RequestBody E child, FieldFilter<E> fieldFilter) {
+	public E patch(@PathVariable(I18nMessage.PARENT_PARAMETER) P_ID parent,
+			@PathVariable(I18nMessage.ID_PARAMETER) ID childId, @RequestBody E child, FieldFilter<E> fieldFilter) {
 		log.info("Patching entity {} from parent {} with values {}", service().getEntityClass(), parent, child);
 		return registrerService().patch(parent, childId, child, fieldFilter);
 	}
@@ -97,8 +97,8 @@ public abstract class BaseChildRegistrableController<E extends BaseEntity, ID ex
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Transactional
-	public void delete(@PathVariable(I18nMessage.PARENT_PARAMETER_NAME) P_ID parent,
-			@PathVariable(I18nMessage.ID_PARAMETER_NAME) ID childId) {
+	public void delete(@PathVariable(I18nMessage.PARENT_PARAMETER) P_ID parent,
+			@PathVariable(I18nMessage.ID_PARAMETER) ID childId) {
 		log.info("Deleting entity {} from parent {} with id {}", service().getEntityClass(), parent, childId);
 		registrerService().delete(parent, childId);
 	}
@@ -108,8 +108,8 @@ public abstract class BaseChildRegistrableController<E extends BaseEntity, ID ex
 	@DeleteMapping(value = "/multiple", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Transactional
-	public void deleteMultiple(@PathVariable(I18nMessage.PARENT_PARAMETER_NAME) P_ID parent,
-			@RequestParam(I18nMessage.IDS_PARAMETER_NAME) List<ID> ids) {
+	public void deleteMultiple(@PathVariable(I18nMessage.PARENT_PARAMETER) P_ID parent,
+			@RequestParam(I18nMessage.IDS_PARAMETER) List<ID> ids) {
 		log.info("Deleting entities from parent {} with ids {} with values {}", service().getEntityClass(), parent,
 				ids);
 		registrerService().deleteMultiple(parent, ids);

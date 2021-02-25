@@ -63,8 +63,8 @@ public class PhoneNumber implements Serializable {
 	}
 
 	private static Country findAreaCode(String areaCode) {
-		int dialCode = Integer.parseInt(areaCode);
-		Optional<Country> country = Utils.listCountries().stream().filter(c -> c.getDialCode() == dialCode).findFirst();
+		Optional<Country> country = Utils.listCountries().stream().filter(c -> c.getCode().equalsIgnoreCase(areaCode))
+				.findFirst();
 		return country.isPresent() ? country.get() : null;
 	}
 
@@ -140,7 +140,7 @@ public class PhoneNumber implements Serializable {
 	@Override
 	public String toString() {
 		List<String> data = new ArrayList<>(
-				Arrays.asList(type.toString(), String.valueOf(areaCode.getDialCode()), extension, prefix, suffix));
+				Arrays.asList(type.toString(), areaCode.getCode(), extension, prefix, suffix));
 		return String.join(PHONE_PART_DELIMITER, data);
 	}
 }

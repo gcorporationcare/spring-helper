@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -12,7 +14,6 @@
 	<description>Realizing filtering operation on Spring API</description>
 
 	<properties>
-		<log4j.version>2.13.2</log4j.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<guava.version>26.0-jre</guava.version>
 		<lombok.version>1.18.16</lombok.version>
@@ -22,15 +23,13 @@
 		<jacoco-maven-plugin.version>0.7.8</jacoco-maven-plugin.version>
 		<sonar.host.url>http://localhost:9090</sonar.host.url>
 		<sonar.scm.disabled>true</sonar.scm.disabled>
-		<sonar.projectKey>com.gcorp.spring-helper</sonar.projectKey>
+		<sonar.projectKey>com.github.gcorporationcare.spring-helper</sonar.projectKey>
 		<sonar.projectName>spring-helper</sonar.projectName>
 		<sonar.java.libraries>${user.home}/.m2/repository/org/projectlombok/lombok/${lombok.version}/lombok-${lombok.version}.jar
 		</sonar.java.libraries>
 		<sonar.projectVersion>1.0</sonar.projectVersion>
 		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec
-		</sonar.jacoco.reportPath>
 		<sonar.binaries>target/classes</sonar.binaries>
 		<sonar.language>java</sonar.language>
 	</properties>
@@ -51,19 +50,6 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
-		</dependency>
-		<!-- LOG4J -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
 		</dependency>
 
 		<!-- Utils -->
@@ -206,7 +192,8 @@
 						</goals>
 						<configuration>
 							<fileSets>
-								<fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
+								<fileSet
+									implementation="org.apache.maven.shared.model.fileset.FileSet">
 									<directory>${project.basedir}</directory>
 									<includes>
 										<include>**/*.exec</include>

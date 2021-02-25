@@ -29,7 +29,9 @@ public class ApiResponseTest {
 		Assert.assertNotNull(new ApiResponse<>(true, HttpStatus.BAD_GATEWAY));
 		Assert.assertNotNull(new ApiResponse<>(new RequestException("simple")));
 		Assert.assertNotNull(new ApiResponse<>(new ValidationException("another")));
-		ApiResponse<String> response = new ApiResponse<>("response", HttpStatus.OK);
-		Assert.assertEquals(response, response);
+		final String body = "response";
+		ApiResponse<String> response = new ApiResponse<>(body, HttpStatus.OK);
+		ApiResponse<String> anotherResponse = new ApiResponse<>(body, HttpStatus.OK);
+		Assert.assertEquals(response, anotherResponse);
 	}
 }

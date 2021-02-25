@@ -18,7 +18,7 @@ public class PhoneNumberTest {
 		} catch (IllegalArgumentException e) {
 			Assert.assertNotNull(e);
 		}
-		PhoneNumber phoneNumber = PhoneNumber.newPhoneNumber(PhoneNumberType.BUSINESS, "1", "33", "44", "55");
+		PhoneNumber phoneNumber = PhoneNumber.newPhoneNumber(PhoneNumberType.BUSINESS, "us", "33", "44", "55");
 		Assert.assertNotNull(phoneNumber);
 	}
 
@@ -27,7 +27,7 @@ public class PhoneNumberTest {
 		StringBuilder sb = new StringBuilder();
 		List<PhoneNumber> phoneNumbers = new ArrayList<>();
 		for (int index = 0; index < 100; index++) {
-			String areaCode = "1";
+			String areaCode = "us";
 			String prefix = String.format("%s%s", index / 2, index / 3);
 			String suffix = String.format("%s%s%s%s", index * 4, index, index, index / 3);
 			PhoneNumberType type = index % 2 == 0 ? PhoneNumberType.BUSINESS : null;
