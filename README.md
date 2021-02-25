@@ -1,5 +1,5 @@
 # Spring-Helper
-[![Build Status](https://travis-ci.com/github/gcorporationcare/spring-helper.svg?branch=master)](https://travis-ci.com/github/gcorporationcare/spring-helper)
+[![Build Status](https://api.travis-ci.com/gcorporationcare/spring-helper.svg?branch=master)](https://api.travis-ci.com/gcorporationcare/spring-helper.svg?branch=master)
 [![Coverage Status](https://coveralls.io/github/gcorporationcare/spring-helper/badge.svg?branch=master)](https://coveralls.io/github/gcorporationcare/spring-helper?branch=master)
 
 
