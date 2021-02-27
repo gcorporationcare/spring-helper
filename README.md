@@ -10,21 +10,21 @@ Refer [wiki](https://github.com/gcorporationcare/spring-helper/wiki) for more De
 
 | Stable Release Version | JDK Version compatibility | Release Date |
 | ------------- | ------------- | ------------|
-| 1.0.3  | 1.8+ | 02/26/2021 |
+| 1.0.3  | 1.8+ | 02/27/2021 |
 
 ## License
 
 Spring-Helper is licensed by **G-Corporation**.
 
 ## News
-* Version **1.0.3** released on 02/26/2021.
+* Version **1.0.3** released on 02/27/2021.
 * Version **1.0.2** released on 02/25/2021.
 * Version **1.0.1** released on 02/24/2021.
 * Version **1.0.0** released on 02/24/2021.
 
-### 1.0.2
+### 1.0.3
 
-* Adding custom fields converters for storing/reading from database.
+* Improving filtering for custom field values.
 
 ## Maven Repository
 
@@ -48,7 +48,7 @@ Alternatively you can  pull Spring-Helper from the central maven repository, jus
 <dependency>
 	<groupId>com.github.gcorporationcare</groupId>
 	<artifactId>spring-helper</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 </dependency>
 ```
 
