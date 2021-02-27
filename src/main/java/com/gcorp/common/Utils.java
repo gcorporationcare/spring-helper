@@ -51,6 +51,7 @@ public final class Utils {
 
 	public static final String API_DATE_FORMAT = "yyyy-MM-dd";
 	public static final String API_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'.'SSSSZ";
+	public static final String API_DATETIME_WITHOUT_OFFSET_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'.'SSSS";
 	public static final String API_TIME_FORMAT = "HH:mm:ss'.'SSSS";
 	private static List<Country> countries;
 	private static List<MoneyCurrency> currencies;

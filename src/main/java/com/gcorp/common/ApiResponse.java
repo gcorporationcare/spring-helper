@@ -15,6 +15,11 @@ import com.gcorp.i18n.I18nMessage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Generic ApiResponse to send from API
+ * 
+ * @param <T> the type of the body contained in the response
+ */
 @Slf4j
 public class ApiResponse<T> extends ResponseEntity<T> {
 
@@ -55,6 +60,14 @@ public class ApiResponse<T> extends ResponseEntity<T> {
 		success = false;
 	}
 
+	/**
+	 * Convert a given Exception to a Map
+	 * 
+	 * @param e          the exception to convert
+	 * @param statusCode the status code to send to API
+	 * @param objects    the list of objects to use in translation
+	 * @return a Map with keys (code, message, time stamp, etc...)
+	 */
 	public static Map<String, Object> exceptionToMap(Exception e, HttpStatus statusCode, Object... objects) {
 		I18nMessage apiMessage = I18nMessage.getInstance();
 

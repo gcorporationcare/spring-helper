@@ -1,5 +1,6 @@
 package com.gcorp.interceptor;
 
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +47,13 @@ public class ExceptionInterceptor {
 	@org.springframework.web.bind.annotation.ExceptionHandler({ InvalidDataAccessApiUsageException.class })
 	public ApiResponse<Map<String, String>> invalidDataAccessApiUsageException(InvalidDataAccessApiUsageException e) {
 		log.error("Error occured because of invalid data access exception {}", e);
+		return new ApiResponse<>(e, HttpStatus.BAD_REQUEST, EMPTY_OBJECTS);
+	}
+
+	@ResponseBody
+	@org.springframework.web.bind.annotation.ExceptionHandler({ DateTimeParseException.class })
+	public ApiResponse<Map<String, String>> dateTimeParseException(DateTimeParseException e) {
+		log.error("Error occured because of date time parse exception {}", e);
 		return new ApiResponse<>(e, HttpStatus.BAD_REQUEST, EMPTY_OBJECTS);
 	}
 

@@ -1,6 +1,10 @@
 package com.gcorp.domain;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -9,27 +13,28 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
+import javax.persistence.criteria.Path;
+
 import org.springframework.util.ObjectUtils;
 
 import com.bpodgursky.jbool_expressions.parsers.ExprParser;
 import com.bpodgursky.jbool_expressions.rules.RuleSet;
 import com.gcorp.common.Utils;
-import com.gcorp.enumeration.Gender;
 import com.gcorp.enumeration.PhoneNumberType;
+import com.gcorp.field.Country;
+import com.gcorp.field.FaxNumber;
+import com.gcorp.field.HomeNumber;
+import com.gcorp.field.MobileNumber;
+import com.gcorp.field.MoneyCurrency;
+import com.gcorp.field.PhoneNumber;
 import com.google.common.collect.ObjectArrays;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Search filter object
  */
-@Slf4j
 @Getter
 public class SearchFilter implements Serializable {
 
@@ -103,13 +108,156 @@ public class SearchFilter implements Serializable {
 			throw new IllegalArgumentException(INVALID_CONSTRUCTOR);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Serializable getSafeValue(@NonNull Path<?> path, Serializable value) {
+		if (value == null || path.getJavaType().isInstance(value)) {
+			return value;
+		}
+		String stringValue = String.valueOf(value);
+		if (path.getJavaType().isEnum()) {
+			return Enum.valueOf((Class<Enum>) path.getJavaType(), stringValue);
+		}
+		if (isTemporalType(path)) {
+			return getTemporalValue(path, stringValue);
+		}
+		if (isCustomFieldType(path)) {
+			return getCustomFieldValue(path, stringValue);
+		}
+		return value;
+	}
+
+	public String getSafeStringValue(@NonNull Path<?> path, Serializable value) {
+		if (value == null) {
+			return null;
+		}
+		if (String.class.isInstance(value)) {
+			return String.valueOf(value);
+		}
+		if (isTemporalType(path)) {
+			return getTemporalStringValue(path, value);
+		}
+		if (isCustomFieldType(path)) {
+			return getCustomFieldStringValue(path, value);
+		}
+		return value.toString();
+	}
+
+	/**
+	 * Check if the target type expect a custom field value. Override this to add
+	 * more tests if needed.
+	 * 
+	 * @param path the path containing the information on targeted type
+	 * @return true if the targeted type is PhoneNumber (or any child),
+	 *         MoneyCurrency or Country
+	 */
+	protected boolean isCustomFieldType(@NonNull Path<?> path) {
+		boolean phoneType = PhoneNumber.class.isAssignableFrom(path.getJavaType());
+		boolean countryOrCurrencyType = Country.class.equals(path.getJavaType())
+				|| MoneyCurrency.class.equals(path.getJavaType());
+		return phoneType || countryOrCurrencyType;
+	}
+
+	/**
+	 * Get the custom field version of given string
+	 * 
+	 * @param path  containing the targeted type
+	 * @param value the string to convert
+	 * @return a PhoneNumber (or any child), MoneyCurrency or Country depending on
+	 *         targeted type
+	 */
+	protected Serializable getCustomFieldValue(@NonNull Path<?> path, @NonNull String value) {
+		if (MoneyCurrency.class.equals(path.getJavaType())) {
+			return MoneyCurrency.find(value);
+		}
+		if (Country.class.equals(path.getJavaType())) {
+			return Country.find(value);
+		}
+		if (PhoneNumber.class.isAssignableFrom(path.getJavaType())) {
+			return getPhoneFieldValue(path, value);
+		}
+		return value;
+	}
+
+	private Serializable getPhoneFieldValue(@NonNull Path<?> path, @NonNull String value) {
+		PhoneNumber phoneNumber = PhoneNumber.fromSingleString(value);
+		if (FaxNumber.class.equals(path.getJavaType()) && PhoneNumberType.FAX.equals(phoneNumber.getType())) {
+			return new FaxNumber(phoneNumber.getAreaCode(), phoneNumber.getExtension(), phoneNumber.getPrefix(),
+					phoneNumber.getSuffix());
+		}
+		if (HomeNumber.class.equals(path.getJavaType()) && PhoneNumberType.HOME.equals(phoneNumber.getType())) {
+			return new HomeNumber(phoneNumber.getAreaCode(), phoneNumber.getExtension(), phoneNumber.getPrefix(),
+					phoneNumber.getSuffix());
+		}
+		if (MobileNumber.class.equals(path.getJavaType()) && PhoneNumberType.MOBILE.equals(phoneNumber.getType())) {
+			return new MobileNumber(phoneNumber.getAreaCode(), phoneNumber.getExtension(), phoneNumber.getPrefix(),
+					phoneNumber.getSuffix());
+		}
+		return phoneNumber;
+	}
+
+	protected String getCustomFieldStringValue(@NonNull Path<?> path, @NonNull Serializable value) {
+		if (MoneyCurrency.class.equals(path.getJavaType())) {
+			return ((MoneyCurrency) value).getCode();
+		}
+		if (Country.class.equals(path.getJavaType())) {
+			return ((Country) value).getCode();
+		}
+		return value.toString();
+	}
+
+	/**
+	 * Check if the target type expect a temporal value. Override this to add more
+	 * tests if needed
+	 * 
+	 * @param path the path containing the information on targeted type
+	 * @return true if the targeted type is LocalDateTime, LocalDate or LocalTime
+	 */
+	protected boolean isTemporalType(@NonNull Path<?> path) {
+		return LocalDateTime.class.equals(path.getJavaType()) || LocalDate.class.equals(path.getJavaType())
+				|| LocalTime.class.equals(path.getJavaType());
+	}
+
+	/**
+	 * Get the temporal version of given string
+	 * 
+	 * @param path  containing the targeted type
+	 * @param value the string to convert
+	 * @return a LocalDateTime/LocalDate/LocalTime depending on targeted type
+	 */
+	protected Serializable getTemporalValue(@NonNull Path<?> path, @NonNull String value) {
+		if (LocalDateTime.class.equals(path.getJavaType())) {
+			return LocalDateTime.parse(value, DateTimeFormatter.ofPattern(Utils.API_DATETIME_FORMAT));
+		}
+		if (LocalDate.class.equals(path.getJavaType())) {
+			return LocalDate.parse(value, DateTimeFormatter.ofPattern(Utils.API_DATE_FORMAT));
+		}
+		if (LocalTime.class.equals(path.getJavaType())) {
+			return LocalTime.parse(value, DateTimeFormatter.ofPattern(Utils.API_TIME_FORMAT));
+		}
+		return value;
+	}
+
+	protected String getTemporalStringValue(@NonNull Path<?> path, @NonNull Serializable value) {
+		if (LocalDateTime.class.equals(path.getJavaType())) {
+			return ((LocalDateTime) value)
+					.format(DateTimeFormatter.ofPattern(Utils.API_DATETIME_WITHOUT_OFFSET_FORMAT));
+		}
+		if (LocalDate.class.equals(path.getJavaType())) {
+			return ((LocalDate) value).format(DateTimeFormatter.ofPattern(Utils.API_DATE_FORMAT));
+		}
+		if (LocalTime.class.equals(path.getJavaType())) {
+			return ((LocalTime) value).format(DateTimeFormatter.ofPattern(Utils.API_TIME_FORMAT));
+		}
+		return value.toString();
+	}
+
 	private Serializable getTypedValue(Serializable value) {
 		if (value == null)
 			return null;
 		String stringValue = value.toString().trim();
 		if ("true".equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue))
 			return Boolean.valueOf(stringValue.toLowerCase());
-		return EnumParser.parseValue(value);
+		return value;
 	}
 
 	/**
@@ -223,8 +371,7 @@ public class SearchFilter implements Serializable {
 		String toString = String.format("%s%s%s", field, SearchFilterOperator.FILTER_OPERATOR_DELIMITER,
 				operator.getSymbol());
 		return (value == null) ? toString
-				: String.format("%s%s%s", toString, SearchFilterOperator.FILTER_OPERATOR_DELIMITER,
-						EnumParser.asString(value));
+				: String.format("%s%s%s", toString, SearchFilterOperator.FILTER_OPERATOR_DELIMITER, value.toString());
 	}
 
 	@Override
@@ -361,67 +508,6 @@ public class SearchFilter implements Serializable {
 				if (operator.getSymbol().equalsIgnoreCase(symbol))
 					return operator;
 			throw new IllegalArgumentException(String.format("Unknown symbol %s", symbol));
-		}
-	}
-
-	@Data
-	public static class EnumParser {
-		private Gender gender;
-		private PhoneNumberType phoneNumberType;
-
-		private static EnumParser instance;
-
-		private static final SpelExpressionParser PARSER = new SpelExpressionParser();
-
-		EnumParser() {
-			this.gender = Gender.MALE;
-			this.phoneNumberType = PhoneNumberType.HOME;
-		}
-
-		public static EnumParser getInstance() {
-			if (instance == null) {
-				instance = new EnumParser();
-			}
-			return instance;
-		}
-
-		public static String asString(Serializable value) {
-			final String strinvalue = "%s.valueOf('%s')";
-			if (value == null) {
-				return "";
-			}
-			if (Gender.class.isAssignableFrom(value.getClass())) {
-				return String.format(strinvalue, "gender", value);
-			}
-			if (PhoneNumberType.class.isAssignableFrom(value.getClass())) {
-				return String.format(strinvalue, "phoneNumberType", value);
-			}
-			return value.toString();
-		}
-
-		public static Serializable parseValue(Serializable value) {
-			try {
-				if (value == null || !String.class.isAssignableFrom(value.getClass())) {
-					return value;
-				}
-				String stringValue = value.toString();
-				final String containKey = ".valueOf('";
-				final String endKey = "')";
-				if (!stringValue.contains(containKey) || !stringValue.endsWith(endKey)) {
-					return value;
-				}
-				stringValue = stringValue.replace(containKey, ".valueOf(\"").replace(endKey, "\")");
-				return parse(stringValue);
-			} catch (Exception e) {
-				log.debug("An error occured during Enumerator value parsing", e);
-				return value;
-			}
-		}
-
-		private static Serializable parse(final String value) {
-			EnumParser enumParser = getInstance();
-			EvaluationContext context = new StandardEvaluationContext(enumParser);
-			return PARSER.parseExpression(value).getValue(context, Serializable.class);
 		}
 	}
 }

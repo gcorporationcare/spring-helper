@@ -13,6 +13,10 @@ public class SearchFilterTest {
 	static final String SIGN = "=";
 	static final Serializable VALUE = 5.6;
 
+	enum Bytes {
+		ZERO, ONE
+	}
+
 	@Test
 	public void testConstructor_WithInvalidFields() {
 		// Null field

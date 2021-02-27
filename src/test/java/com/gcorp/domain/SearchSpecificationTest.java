@@ -3,6 +3,9 @@ package com.gcorp.domain;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,8 +27,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.gcorp.ApiStarter;
+import com.gcorp.common.Utils;
 import com.gcorp.domain.SearchFilter.SearchFilterOperator;
 import com.gcorp.enumeration.Gender;
+import com.gcorp.enumeration.PhoneNumberType;
+import com.gcorp.field.PhoneNumber;
 import com.gcorp.notest.common.RandomUtils;
 import com.gcorp.notest.config.H2Config;
 import com.gcorp.notest.entity.Office;
@@ -44,6 +50,13 @@ public class SearchSpecificationTest {
 	private static final String AGE_FIELD = "age";
 	private static final String NAME_FIELD = "name";
 	private static final String CREATED_FIELD = "created";
+	private static final String COUNTRY_FIELD = "country";
+	private static final String CURRENCY_FIELD = "currency";
+	private static final String FAX_FIELD = "fax";
+	private static final String HOME_FIELD = "home";
+	private static final String MOBILE_FIELD = "mobile";
+	private static final String EXPIRY_FIELD = "expiry";
+	private static final String OPENING_FIELD = "opening";
 
 	private long length;
 	private List<Person> persons = new ArrayList<>();
@@ -188,8 +201,7 @@ public class SearchSpecificationTest {
 		SearchFilters<Person> maleFilter = SearchFilters.of(genderField, SearchFilterOperator.IS_EQUAL, Gender.MALE);
 
 		Page<Person> maleAccounts = personRepository.findByFilters(maleFilter, null);
-		SearchFilters<Person> maleStringFilter = SearchFilters.of(genderField, SearchFilterOperator.IS_EQUAL,
-				"gender.valueOf('MALE')");
+		SearchFilters<Person> maleStringFilter = SearchFilters.of(genderField, SearchFilterOperator.IS_EQUAL, "MALE");
 		Page<Person> maleStringAccounts = personRepository.findByFilters(maleStringFilter, null);
 		Assert.assertEquals(maleAccounts.getTotalElements(), maleStringAccounts.getTotalElements());
 	}
@@ -252,6 +264,67 @@ public class SearchSpecificationTest {
 				.findOneByFilters(getFilters(dateField, SearchFilterOperator.IS_LESS_THAN_OR_EQUAL, today)).getId());
 		Assert.assertEquals(office.getId(), officeRepository
 				.findOneByFilters(getFilters(timeField, SearchFilterOperator.IS_LESS_THAN_OR_EQUAL, noon)).getId());
+
+	}
+
+	@Test
+	public void testCustomFields() {
+		Office office = officeRepository.save(RandomUtils.randomOffice());
+		// 1- Created
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(CREATED_FIELD, SearchFilterOperator.IS_EQUAL, office.getCreated())));
+		ZonedDateTime dateTime = ZonedDateTime.of(office.getCreated(), ZoneId.of(Utils.UTC_ZONE));
+		Assert.assertNotNull(officeRepository.findOneByFilters(getFilters(CREATED_FIELD, SearchFilterOperator.IS_EQUAL,
+				dateTime.format(DateTimeFormatter.ofPattern(Utils.API_DATETIME_FORMAT)))));
+
+		// 2- Country
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(COUNTRY_FIELD, SearchFilterOperator.IS_EQUAL, office.getCountry())));
+		Assert.assertNotNull(officeRepository.findOneByFilters(
+				getFilters(COUNTRY_FIELD, SearchFilterOperator.IS_EQUAL, office.getCountry().getCode())));
+
+		// 3- MoneyCurrency
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(CURRENCY_FIELD, SearchFilterOperator.IS_EQUAL, office.getCurrency())));
+		Assert.assertNotNull(officeRepository.findOneByFilters(
+				getFilters(CURRENCY_FIELD, SearchFilterOperator.IS_EQUAL, office.getCurrency().getCode())));
+
+		// 4- FaxNumber
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(FAX_FIELD, SearchFilterOperator.IS_EQUAL, office.getFax())));
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(FAX_FIELD, SearchFilterOperator.IS_EQUAL, office.getFax().toString())));
+
+		// 5- HomeNumber
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(HOME_FIELD, SearchFilterOperator.IS_EQUAL, office.getHome())));
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(HOME_FIELD, SearchFilterOperator.IS_EQUAL, office.getHome().toString())));
+
+		// 6- MobileNumber
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(MOBILE_FIELD, SearchFilterOperator.IS_EQUAL, office.getMobile())));
+		Assert.assertNotNull(officeRepository.findOneByFilters(
+				getFilters(MOBILE_FIELD, SearchFilterOperator.IS_EQUAL, office.getMobile().toString())));
+		PhoneNumber phoneNumber = PhoneNumber.newPhoneNumber(PhoneNumberType.MOBILE, office.getMobile().getAreaCode(),
+				office.getMobile().getExtension(), office.getMobile().getPrefix(), office.getMobile().getSuffix());
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(MOBILE_FIELD, SearchFilterOperator.IS_EQUAL, phoneNumber)));
+
+		// 7- Expiry
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(EXPIRY_FIELD, SearchFilterOperator.IS_EQUAL, office.getExpiry())));
+		Assert.assertNotNull(officeRepository.findOneByFilters(getFilters(EXPIRY_FIELD, SearchFilterOperator.IS_EQUAL,
+				office.getExpiry().format(DateTimeFormatter.ofPattern(Utils.API_DATE_FORMAT)))));
+
+		// 8- Opening
+		Assert.assertNotNull(officeRepository
+				.findOneByFilters(getFilters(OPENING_FIELD, SearchFilterOperator.IS_EQUAL, office.getOpening())));
+		Assert.assertNotNull(officeRepository.findOneByFilters(getFilters(OPENING_FIELD, SearchFilterOperator.IS_EQUAL,
+				office.getOpening().format(DateTimeFormatter.ofPattern(Utils.API_TIME_FORMAT)))));
+	}
+
+	public void testSafeFiltersValue() {
 
 	}
 

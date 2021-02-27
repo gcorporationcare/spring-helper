@@ -39,7 +39,20 @@ public @interface AllOrNone {
 	 */
 	String message() default I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED;
 
+	/**
+	 * The groups where the constraint will be applied
+	 * 
+	 * @return the list of groups to apply the constraint on
+	 */
 	Class<?>[] groups() default {};
 
+	/**
+	 * Payload type that can be attached to a given constraint declaration.
+	 * 
+	 * Payloads are typically used to carry on metadata information consumed by a
+	 * validation client.
+	 * 
+	 * @return the list of payload classes
+	 */
 	Class<? extends Payload>[] payload() default {};
 }

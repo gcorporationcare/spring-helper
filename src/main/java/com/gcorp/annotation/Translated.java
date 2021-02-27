@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 /**
  * Use this annotation for indicating that a field is translatable
  * 
+ * @see com.gcorp.entity.BaseTranslatableEntity
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
