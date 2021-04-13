@@ -1,26 +1,22 @@
 package com.gcorp.i18n;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.Locale;
 
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.gcorp.ApiStarter;
 import com.gcorp.notest.config.H2Config;
 
 @ActiveProfiles("test")
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class I18nMessageTest {
 
 	private final String KEY = "api.greeting";
@@ -34,8 +30,8 @@ public class I18nMessageTest {
 	public void testGetMessage() {
 		Locale localeEn = Locale.ENGLISH;
 		Locale localeFr = Locale.FRENCH;
-		Assert.assertNotNull(messageKey.getMessage(KEY));
-		Assert.assertEquals(MESSAGE_FR, messageKey.getMessage(KEY, localeFr));
-		Assert.assertEquals(MESSAGE_EN, messageKey.getMessage(KEY, localeEn));
+		assertNotNull(messageKey.getMessage(KEY));
+		assertEquals(MESSAGE_FR, messageKey.getMessage(KEY, localeFr));
+		assertEquals(MESSAGE_EN, messageKey.getMessage(KEY, localeEn));
 	}
 }

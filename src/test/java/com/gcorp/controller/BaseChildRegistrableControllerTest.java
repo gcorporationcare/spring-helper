@@ -12,17 +12,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.gcorp.ApiStarter;
 import com.gcorp.domain.SearchFilter.SearchFilterOperator;
@@ -36,10 +32,8 @@ import com.gcorp.notest.repository.AddressRepository;
 import com.gcorp.notest.repository.PersonRepository;
 
 @ActiveProfiles("test")
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 
 	private static final String PARENT_URL = "persons";
@@ -51,7 +45,7 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	@Autowired
 	AddressRepository addressRepository;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		super.setUp();
 		person = personRepository.save(RandomUtils.randomPerson());

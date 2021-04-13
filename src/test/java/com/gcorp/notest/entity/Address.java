@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gcorp.ApiStarter;
 import com.gcorp.common.Utils;
 import com.gcorp.constraint.AllOrNone;
 import com.gcorp.domain.FieldFilter;
@@ -26,6 +28,7 @@ import lombok.Setter;
 @Table(name = "address", indexes = { @Index(columnList = Address.PERSON_ID_COLUMN) })
 @JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @AllOrNone(value = { Address.ZIP_COLUMN, Address.CITY_COLUMN, Address.STATE_COLUMN })
+@JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class Address extends BaseIdentifiedEntity {
 
 	protected static final String ZIP_COLUMN = "zip";
@@ -37,7 +40,7 @@ public class Address extends BaseIdentifiedEntity {
 	protected static final String PERSON_ID_COLUMN = "person_id";
 
 	private static final long serialVersionUID = 1L;
-	
+
 	// -------------------------------------------------
 	@Column(name = Address.NAME_COLUMN)
 	private String name;

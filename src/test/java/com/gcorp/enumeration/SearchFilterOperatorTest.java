@@ -1,11 +1,14 @@
 package com.gcorp.enumeration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.gcorp.domain.SearchFilter.SearchFilterOperator;
 
@@ -14,21 +17,22 @@ public class SearchFilterOperatorTest {
 	@Test
 	public void testGet() {
 		for (SearchFilterOperator operator : SearchFilterOperator.values()) {
-			Assert.assertEquals(operator, SearchFilterOperator.get(operator.getSymbol()));
+			assertEquals(operator, SearchFilterOperator.get(operator.getSymbol()));
 		}
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void tesGet_WithInvalid() {
-		SearchFilterOperator.get("%*"); // Inexistent
+		// Inexistent
+		assertThrows(IllegalArgumentException.class, () -> SearchFilterOperator.get("%*"));
 	}
 
 	public void testNoDuplicate() {
 		List<String> symbols = new ArrayList<>();
 		Arrays.stream(SearchFilterOperator.values()).forEach(o -> {
-			Assert.fail(String.format("Duplicate found for %s with sign %s", o, o.getSymbol()));
+			fail(String.format("Duplicate found for %s with sign %s", o, o.getSymbol()));
 			symbols.add(o.getSymbol());
 		});
-		Assert.assertEquals(SearchFilterOperator.values().length, symbols.size());
+		assertEquals(SearchFilterOperator.values().length, symbols.size());
 	}
 }

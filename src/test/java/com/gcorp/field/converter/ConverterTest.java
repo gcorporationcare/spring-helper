@@ -1,15 +1,13 @@
 package com.gcorp.field.converter;
 
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.gcorp.ApiStarter;
 import com.gcorp.field.Country;
@@ -22,10 +20,8 @@ import com.gcorp.notest.entity.Office;
 import com.gcorp.notest.repository.OfficeRepository;
 
 @ActiveProfiles("test")
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ConverterTest {
 
 	@Autowired
@@ -43,10 +39,10 @@ public class ConverterTest {
 		office.setHome(homeNumber);
 		office.setMobile(mobileNumber);
 		office = officeRepository.save(office);
-		Assert.assertNotNull(office);
+		assertNotNull(office);
 		Office savedOffice = officeRepository.findById(office.getId()).get();
-		Assert.assertEquals(faxNumber, savedOffice.getFax());
-		Assert.assertEquals(homeNumber, savedOffice.getHome());
-		Assert.assertEquals(mobileNumber, savedOffice.getMobile());
+		assertEquals(faxNumber, savedOffice.getFax());
+		assertEquals(homeNumber, savedOffice.getHome());
+		assertEquals(mobileNumber, savedOffice.getMobile());
 	}
 }

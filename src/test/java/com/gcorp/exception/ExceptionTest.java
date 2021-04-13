@@ -1,14 +1,15 @@
 package com.gcorp.exception;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 public class ExceptionTest {
 
 	@Test
 	public void testException() {
-		Assert.assertNotNull(new StandardRuntimeException());
-		Assert.assertNotNull(new StandardRuntimeException(new Exception()));
-		Assert.assertNotNull(new StandardRuntimeException("message", new Exception()));
+		assertNotNull(new StandardRuntimeException());
+		assertNotNull(new StandardRuntimeException(new Exception()));
+		assertNotNull(new StandardRuntimeException("message", new Exception()));
 	}
 }

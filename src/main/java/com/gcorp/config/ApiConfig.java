@@ -46,54 +46,13 @@ public abstract class ApiConfig implements WebMvcConfigurer {
 	}
 
 	/**
-	 * We will read the requested language from this parameter. Override this method
-	 * in order to choose the query parameter's name
+	 * Location of the message file for i18n. Override this method in order to
+	 * change location
 	 * 
-	 * @return the query parameter's name that will be used
+	 * @return the location of message file
 	 */
-	protected String languageParamName() {
-		return "lang";
-	}
-
-	/**
-	 * When filtering data, the user will send its need through this parameter.
-	 * Override this method in order to choose the filtering parameter's name
-	 * 
-	 * @return the filtering parameter's name that will be used
-	 */
-	protected String searchFiltersParamName() {
-		return "filters";
-	}
-
-	/**
-	 * When filtering fields, the user will send its need through this parameter.
-	 * Override this method in order to choose the fields' filtering parameter's
-	 * name
-	 * 
-	 * @return the fields' filtering parameter's name that will be used
-	 */
-	protected String fieldFiltersParamName() {
-		return "fields";
-	}
-
-	/**
-	 * When requesting a given page of records, this query parameter will be used.
-	 * Override this method in order to choose the page query parameter's name
-	 * 
-	 * @return the page query parameter's name that will be used
-	 */
-	protected String pageParamName() {
-		return "page";
-	}
-
-	/**
-	 * When requesting a given size of page, this query parameter will be used.
-	 * Override this method in order to choose the size query parameter's name
-	 * 
-	 * @return the size query parameter's name that will be used
-	 */
-	protected String sizeParamName() {
-		return "size";
+	protected String i18nMessageSourceLocation() {
+		return "i18n/message";
 	}
 
 	@Override
@@ -105,16 +64,16 @@ public abstract class ApiConfig implements WebMvcConfigurer {
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-		resolver.setPageParameterName(pageParamName());
-		resolver.setSizeParameterName(sizeParamName());
+		resolver.setPageParameterName(I18nMessage.PAGE_PARAMETER);
+		resolver.setSizeParameterName(I18nMessage.SIZE_PARAMETER);
 		resolver.setOneIndexedParameters(true);
 		argumentResolvers.add(resolver);
-		argumentResolvers.add(new SearchFiltersArgumentResolver(searchFiltersParamName()));
-		argumentResolvers.add(new FieldFilterArgumentResolver(fieldFiltersParamName()));
+		argumentResolvers.add(new SearchFiltersArgumentResolver(I18nMessage.FILTERS_PARAMETER));
+		argumentResolvers.add(new FieldFilterArgumentResolver(I18nMessage.FIELDS_PARAMETER));
 	}
 
 	/**
-	 * The Bean that will add an ID to each received request
+	 * The Bean that will add an ID to each received request.
 	 * 
 	 * @return an instance of the given bean
 	 */
@@ -131,7 +90,7 @@ public abstract class ApiConfig implements WebMvcConfigurer {
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-		interceptor.setParamName(languageParamName());
+		interceptor.setParamName(I18nMessage.LANGUAGE_PARAMETER);
 		return interceptor;
 	}
 
@@ -162,7 +121,7 @@ public abstract class ApiConfig implements WebMvcConfigurer {
 	@Bean
 	public ResourceBundleMessageSource messageSource() {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-		source.setBasenames("i18n/message");
+		source.setBasenames(i18nMessageSourceLocation());
 		source.setUseCodeAsDefaultMessage(true);
 		return source;
 	}

@@ -1,15 +1,13 @@
 package com.gcorp.common;
 
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.gcorp.ApiStarter;
 import com.gcorp.exception.RequestException;
@@ -17,21 +15,19 @@ import com.gcorp.exception.ValidationException;
 import com.gcorp.notest.config.H2Config;
 
 @ActiveProfiles("test")
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ApiResponseTest {
 
 	@Test
 	public void testApiResponse() {
-		Assert.assertNotNull(new ApiResponse<>(HttpStatus.ACCEPTED));
-		Assert.assertNotNull(new ApiResponse<>(true, HttpStatus.BAD_GATEWAY));
-		Assert.assertNotNull(new ApiResponse<>(new RequestException("simple")));
-		Assert.assertNotNull(new ApiResponse<>(new ValidationException("another")));
+		assertNotNull(new ApiResponse<>(HttpStatus.ACCEPTED));
+		assertNotNull(new ApiResponse<>(true, HttpStatus.BAD_GATEWAY));
+		assertNotNull(new ApiResponse<>(new RequestException("simple")));
+		assertNotNull(new ApiResponse<>(new ValidationException("another")));
 		final String body = "response";
 		ApiResponse<String> response = new ApiResponse<>(body, HttpStatus.OK);
 		ApiResponse<String> anotherResponse = new ApiResponse<>(body, HttpStatus.OK);
-		Assert.assertEquals(response, anotherResponse);
+		assertEquals(response, anotherResponse);
 	}
 }

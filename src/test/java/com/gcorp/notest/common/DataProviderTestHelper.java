@@ -1,5 +1,7 @@
 package com.gcorp.notest.common;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -9,12 +11,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeAll;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DataProviderTestHelper {
 
 	protected static ValidatorFactory validatorFactory;
@@ -30,7 +28,7 @@ public class DataProviderTestHelper {
 	// Embedded objects
 	// -----------------------------------------------------
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpClass() {
 		validatorFactory = Validation.buildDefaultValidatorFactory();
 		validator = validatorFactory.getValidator();
@@ -38,8 +36,8 @@ public class DataProviderTestHelper {
 
 	protected void validateConstraint(Object obj, int expectedViolations, String exepctedMessage) {
 		Set<ConstraintViolation<Object>> violations = validator.validate(obj);
-		Assert.assertEquals(expectedViolations, violations.size());
+		assertEquals(expectedViolations, violations.size());
 		if (expectedViolations > 0)
-			Assert.assertEquals(exepctedMessage, violations.toArray(new ConstraintViolation[] {})[0].getMessage());
+			assertEquals(exepctedMessage, violations.toArray(new ConstraintViolation[] {})[0].getMessage());
 	}
 }

@@ -1,6 +1,6 @@
 package com.gcorp.constraint;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.gcorp.notest.common.DataProviderTestHelper;
 

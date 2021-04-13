@@ -1,9 +1,11 @@
 package com.gcorp.entity;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.gcorp.exception.ValidationException;
+import org.junit.jupiter.api.Test;
+
 import com.gcorp.notest.common.RandomUtils;
 import com.gcorp.notest.entity.PromotionTranslation;
 
@@ -13,15 +15,16 @@ public class BaseTranslationTest {
 	public void testFormat_OK() {
 		PromotionTranslation translation = RandomUtils.randomPromotionTranslation(null);
 		translation.format();
-		Assert.assertTrue(translation.translated());
+		assertTrue(translation.translated());
 		translation.setDescription(null);
-		Assert.assertFalse(translation.translated());
+		assertFalse(translation.translated());
 	}
 
-	@Test(expected = ValidationException.class)
+	@Test
 	public void testFormat_KO() {
 		PromotionTranslation translation = RandomUtils.randomPromotionTranslation(null);
-		translation.setLanguage("azeaze");
+		translation.setLanguage("AnY");
 		translation.format();
+		assertEquals("any", translation.getLanguage());
 	}
 }

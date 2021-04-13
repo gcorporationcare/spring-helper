@@ -16,6 +16,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gcorp.ApiStarter;
 import com.gcorp.annotation.DefaultField;
 import com.gcorp.common.Utils;
 import com.gcorp.constraint.InvalidWhen;
@@ -37,6 +39,7 @@ import lombok.Setter;
 		@Index(columnList = Person.EMAIL_COLUMN) })
 @JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @InvalidWhen("email == null")
+@JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class Person extends BaseIdentifiedEntity {
 
 	protected static final String NAME_COLUMN = "name";

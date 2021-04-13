@@ -1,12 +1,17 @@
 package com.gcorp.domain;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.gcorp.common.Utils;
 import com.gcorp.notest.common.RandomUtils;
@@ -18,28 +23,28 @@ public class FieldFilterTest {
 	public void testSetAllIfEmpty() {
 		final String fields = "fields";
 		FieldFilter<Person> filter = FieldFilter.fromString(null);
-		Assert.assertNull(Utils.getFieldValue(fields, filter, FieldFilter.class));
+		assertNull(Utils.getFieldValue(fields, filter, FieldFilter.class));
 		filter.setToAllIfEmpty();
 		String[] fieldsValue = (String[]) Utils.getFieldValue(fields, filter, FieldFilter.class);
-		Assert.assertArrayEquals(new String[] { FieldFilter.ALL_FIELDS }, fieldsValue);
+		assertArrayEquals(new String[] { FieldFilter.ALL_FIELDS }, fieldsValue);
 
 		FieldFilter<Person> nonEmptyFilter = FieldFilter.fromString("name");
 		nonEmptyFilter.setToAllIfEmpty();
 		String[] nonEmptyFieldsValue = (String[]) Utils.getFieldValue(fields, nonEmptyFilter, FieldFilter.class);
-		Assert.assertFalse(Arrays.stream(nonEmptyFieldsValue).anyMatch(FieldFilter.ALL_FIELDS::equals));
+		assertFalse(Arrays.stream(nonEmptyFieldsValue).anyMatch(FieldFilter.ALL_FIELDS::equals));
 	}
 
 	@Test
 	public void testReadDefaultFields() {
 		Person person = RandomUtils.randomPerson();
 		Person defaultPerson = FieldFilter.<Person>fromString(null).parseEntity(person);
-		Assert.assertNotNull(defaultPerson.getEmail());
-		Assert.assertNull(defaultPerson.getLanguage());
+		assertNotNull(defaultPerson.getEmail());
+		assertNull(defaultPerson.getLanguage());
 
 		Person defaultPlusPerson = FieldFilter.<Person>fromString("+language").parseEntity(person);
 		// No more null since it has been added
-		Assert.assertNotNull(defaultPlusPerson.getLanguage());
-		Assert.assertNotNull(defaultPlusPerson.getEmail());
+		assertNotNull(defaultPlusPerson.getLanguage());
+		assertNotNull(defaultPlusPerson.getEmail());
 	}
 
 	@Test
@@ -51,13 +56,13 @@ public class FieldFilterTest {
 			return person;
 		}).collect(Collectors.toList());
 		FieldFilter<Person> fieldFilter = FieldFilter.fromString("name,email");
-		Assert.assertEquals(persons.size(), ((List<Person>) fieldFilter.parseIterable(persons)).size());
+		assertEquals(persons.size(), ((List<Person>) fieldFilter.parseIterable(persons)).size());
 
 		fieldFilter = FieldFilter.fromString(null);
-		Assert.assertEquals(persons.size(), ((List<Person>) fieldFilter.parseIterable(persons)).size());
+		assertEquals(persons.size(), ((List<Person>) fieldFilter.parseIterable(persons)).size());
 
 		fieldFilter.setToAllIfEmpty();
-		Assert.assertEquals(persons.size(), ((List<Person>) fieldFilter.parseIterable(persons)).size());
+		assertEquals(persons.size(), ((List<Person>) fieldFilter.parseIterable(persons)).size());
 	}
 
 	@Test
@@ -69,8 +74,8 @@ public class FieldFilterTest {
 		// Even with typo, name is a minimal field (never omitted)
 		Person customPerson = FieldFilter.<Person>fromString("languaage,naame").parseEntity(person);
 		// Email is minimal field so will never be omitted
-		Assert.assertNotNull(customPerson.getEmail());
-		Assert.assertNotNull(customPerson.getName());
-		Assert.assertNull(customPerson.getLanguage());
+		assertNotNull(customPerson.getEmail());
+		assertNotNull(customPerson.getName());
+		assertNull(customPerson.getLanguage());
 	}
 }

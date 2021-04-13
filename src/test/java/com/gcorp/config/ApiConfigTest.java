@@ -1,14 +1,13 @@
 package com.gcorp.config;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.fasterxml.jackson.databind.Module;
@@ -19,7 +18,6 @@ import com.gcorp.notest.config.H2Config;
 
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @ActiveProfiles("Test")
-@RunWith(SpringRunner.class)
 public class ApiConfigTest {
 
 	@Autowired
@@ -37,11 +35,11 @@ public class ApiConfigTest {
 
 	@Test
 	public void testBeans() {
-		Assert.assertNotNull(auditorAware);
-		Assert.assertNotNull(localeResolver);
-		Assert.assertNotNull(resourceBundleMessageSource);
-		Assert.assertNotNull(i18nMessage);
-		Assert.assertNotNull(javaTimeModule);
-		Assert.assertNotNull(objectMapper);
+		assertNotNull(auditorAware);
+		assertNotNull(localeResolver);
+		assertNotNull(resourceBundleMessageSource);
+		assertNotNull(i18nMessage);
+		assertNotNull(javaTimeModule);
+		assertNotNull(objectMapper);
 	}
 }

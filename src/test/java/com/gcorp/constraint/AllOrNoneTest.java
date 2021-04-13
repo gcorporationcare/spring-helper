@@ -1,8 +1,10 @@
 package com.gcorp.constraint;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import javax.validation.ValidationException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.gcorp.i18n.I18nMessage;
 import com.gcorp.notest.common.DataProviderTestHelper;
@@ -54,17 +56,19 @@ public class AllOrNoneTest extends DataProviderTestHelper {
 	class SimpleClass4 {
 	}
 
-	@Test(expected = ValidationException.class)
+	@Test
 	public void testValidation_WithBadClass() {
-		validateConstraint(new SimpleClass4(), 1, null);
+		assertThrows(ValidationException.class, () -> validateConstraint(new SimpleClass4(), 1, null));
 	}
 
 	@Test
 	public void testValidation() {
 		final int zeroViolation = 0;
 		final int twoViolations = 2;
-		validateConstraint(new SimpleClass1(FIELD_1, null), twoViolations, I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
-		validateConstraint(new SimpleClass1(FIELD_1, true), zeroViolation, I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
+		validateConstraint(new SimpleClass1(FIELD_1, null), twoViolations,
+				I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
+		validateConstraint(new SimpleClass1(FIELD_1, true), zeroViolation,
+				I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
 
 		validateConstraint(new SimpleClass2(null, zeroViolation, 2.2), twoViolations,
 				I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);

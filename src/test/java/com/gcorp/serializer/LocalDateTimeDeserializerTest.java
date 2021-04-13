@@ -1,5 +1,7 @@
 package com.gcorp.serializer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -27,6 +28,6 @@ public class LocalDateTimeDeserializerTest {
 		DeserializationContext context = new ObjectMapper().getDeserializationContext();
 		// Needed for reading value
 		parser.nextToken();
-		Assert.assertEquals(date, serializer.deserialize(parser, context));
+		assertEquals(date, serializer.deserialize(parser, context));
 	}
 }

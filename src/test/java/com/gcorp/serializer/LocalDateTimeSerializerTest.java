@@ -1,5 +1,7 @@
 package com.gcorp.serializer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -7,8 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -26,6 +27,6 @@ public class LocalDateTimeSerializerTest {
 		SerializerProvider serializers = new ObjectMapper().getSerializerProvider();
 		serializer.serialize(date, generator, serializers);
 		generator.flush();
-		Assert.assertEquals("\"2021-01-01T00:00:00.0000+0000\"", jsonWriter.toString());
+		assertEquals("\"2021-01-01T00:00:00.0000+0000\"", jsonWriter.toString());
 	}
 }

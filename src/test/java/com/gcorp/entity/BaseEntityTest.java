@@ -1,10 +1,12 @@
 package com.gcorp.entity;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,11 +45,11 @@ public class BaseEntityTest {
 		origin.getBooleans().add(new Person());
 		Person target = new Person();
 		target.merge(origin, null);
-		Assert.assertEquals(origin.getName(), target.getName());
-		Assert.assertEquals(origin.getLastName(), target.getLastName());
-		Assert.assertArrayEquals(origin.getAddresses(), target.getAddresses());
-		Assert.assertArrayEquals(origin.getNumbers(), target.getNumbers());
-		Assert.assertArrayEquals(origin.getFloats(), target.getFloats());
+		assertEquals(origin.getName(), target.getName());
+		assertEquals(origin.getLastName(), target.getLastName());
+		assertArrayEquals(origin.getAddresses(), target.getAddresses());
+		assertArrayEquals(origin.getNumbers(), target.getNumbers());
+		assertArrayEquals(origin.getFloats(), target.getFloats());
 	}
 
 }

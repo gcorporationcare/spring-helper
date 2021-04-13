@@ -10,6 +10,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gcorp.ApiStarter;
 import com.gcorp.convention.SqlNamingConvention;
 import com.gcorp.entity.BaseTranslation;
 import com.google.common.base.Strings;
@@ -26,6 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "promotion_translation", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		SqlNamingConvention.Column.LANGUAGE, PromotionTranslation.SOURCE_ID_COLUMN }) })
+@JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class PromotionTranslation extends BaseTranslation {
 	protected static final String NAME_COLUMN = "name";
 	protected static final String SOURCE_ID_COLUMN = "source_id";
