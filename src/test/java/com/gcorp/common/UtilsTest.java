@@ -8,11 +8,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.constraints.Email;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -25,7 +23,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.gcorp.constraint.InvalidWhen;
 import com.gcorp.entity.BaseEntity;
 import com.gcorp.exception.StandardRuntimeException;
 import com.gcorp.notest.common.RandomUtils;
@@ -104,23 +101,6 @@ public class UtilsTest {
 		public boolean isEnabled() {
 			return true;
 		}
-	}
-
-	@Test
-	public void testGenerateViolations() {
-		final String emailField = "email";
-		final String message = "Email not valid";
-		Person person = new Person();
-		person.setEmail("alpha.com");
-		Set<ConstraintViolation<Object>> violations = Utils.generateViolations(InvalidWhen.class, message, person,
-				emailField, person.getEmail());
-		Assert.assertEquals(1, violations.size());
-		ConstraintViolation<Object> violation = violations.stream().findFirst().get();
-		Assert.assertEquals(person.getEmail(), violation.getInvalidValue());
-		Assert.assertEquals(message, violation.getMessage());
-		Assert.assertEquals(emailField, violation.getPropertyPath().toString());
-
-		Assert.assertFalse(Utils.generateViolations(InvalidWhen.class, message, person, emailField, null).isEmpty());
 	}
 
 	@Test

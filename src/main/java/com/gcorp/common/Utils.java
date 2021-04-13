@@ -1,17 +1,14 @@
 package com.gcorp.common;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.Set;
@@ -20,17 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Path;
-import javax.validation.metadata.ConstraintDescriptor;
-
-import org.hibernate.annotations.common.annotationfactory.AnnotationDescriptor;
-import org.hibernate.annotations.common.annotationfactory.AnnotationFactory;
-import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
-import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.hibernate.validator.internal.metadata.core.ConstraintHelper;
-import org.hibernate.validator.internal.metadata.descriptor.ConstraintDescriptorImpl;
-import org.hibernate.validator.internal.util.annotation.ConstraintAnnotationDescriptor;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.security.core.Authentication;
@@ -58,41 +44,6 @@ public final class Utils {
 
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	public static final String UTC_ZONE = "UTC";
-
-	/**
-	 * Generate javax.validation violations messages
-	 * 
-	 * @param <T>     The bean type
-	 * @param <U>     The constraint type
-	 * @param clazz   The annotation constraint class
-	 * @param message the message that will be displayed
-	 * @param bean    the object having the bad field
-	 * @param field   the field with the non acceptable value
-	 * @param value   the given value
-	 * @return a set of constraint violation message
-	 */
-	public static <T, U extends Annotation> Set<ConstraintViolation<Object>> generateViolations(final Class<U> clazz,
-			final String message, final T bean, final String field, final Object value) {
-		Set<ConstraintViolation<Object>> violations = new HashSet<>();
-		final String messageTemplate = String.format("{%s}", message);
-		final Path path = PathImpl.createPathFromString(field);
-		final ConstraintHelper helper = new ConstraintHelper();
-		AnnotationDescriptor descriptor = new AnnotationDescriptor(clazz);
-		descriptor.setValue("message", message);
-		descriptor.setValue("value", value != null ? new String[] { value.toString() } : new String[] { "" });
-		Field member = getInheritedField(field, bean.getClass(), Object.class);
-		U annotation = AnnotationFactory.create(descriptor);
-		ConstraintAnnotationDescriptor<U> constraintAnnotationDescriptor = new ConstraintAnnotationDescriptor<>(
-				annotation);
-		final ConstraintDescriptor<U> constraintDescriptor = new ConstraintDescriptorImpl<>(helper, member,
-				constraintAnnotationDescriptor, ElementType.FIELD);
-		final Map<String, Object> messageParameters = new HashMap<>();
-		final Map<String, Object> expressionVariables = new HashMap<>();
-		violations.add(ConstraintViolationImpl.forBeanValidation(messageTemplate, messageParameters,
-				expressionVariables, message, Object.class, bean, new Object(), value, path, constraintDescriptor,
-				ElementType.FIELD, null));
-		return violations;
-	}
 
 	/**
 	 * Get the type of a parameterized class

@@ -90,6 +90,7 @@ public class I18nMessage {
 		public static final String EMAIL_VALUE_EXPECTED = PREFIX + "email_value_expected";
 		public static final String FIELD_REQUIRED = PREFIX + "field_required";
 		public static final String MULTIPLE_OR_NONE_EXPECTED = PREFIX + "multiple_or_none_expected";
+		public static final String LANGUAGE_CODE_EXPECTED = PREFIX + "language_code_expected";
 		public static final String INCONSISTENT_VALUE_GIVEN = PREFIX + "inconsistent_value_given";
 		public static final String FORBIDDEN_VALUE_GIVEN = PREFIX + "forbidden_value_given";
 		public static final String UNIDENTIFIED_VALIDATION_ERROR_OCCURED = PREFIX
