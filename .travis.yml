@@ -2,9 +2,9 @@ language: java
 matrix:
   fast_finish: true
   include:
-    # unit tests (openjdk8)
-    - jdk: openjdk8
+    # unit tests (openjdk11)
+    - jdk: openjdk11
       env:
-        - DESC="openjdk8 unit tests"
+        - DESC="openjdk11 unit tests"
         - CMD="mvn clean test jacoco:report coveralls:jacoco -Dcheckstyle.skip=true"
         - LANG=en_US.utf8
