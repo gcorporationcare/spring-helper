@@ -4,6 +4,7 @@
 package com.gcorp.repository.impl;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -67,8 +68,9 @@ public class BaseRepositoryImpl<T extends BaseEntity, U extends Serializable> im
 	private Sort defaultOrder() {
 		try {
 			initParameterizedType();
-			return clazz.newInstance().defaultOrder();
-		} catch (InstantiationException | IllegalAccessException e) {
+			return clazz.getDeclaredConstructor().newInstance().defaultOrder();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
 			log.warn("Couldn't get default order: {}", e);
 			return null;
 		}
@@ -86,7 +88,7 @@ public class BaseRepositoryImpl<T extends BaseEntity, U extends Serializable> im
 
 	private CriteriaQuery<T> getQuery(CriteriaBuilder builder, CriteriaQuery<T> query, Root<T> root,
 			Pageable pageable) {
-		Sort sort = pageable == null || pageable.getSort() == null || Sort.unsorted().equals(pageable.getSort())
+		Sort sort = pageable == null || Sort.unsorted().equals(pageable.getSort())
 				? this.defaultOrder()
 				: pageable.getSort();
 		if (sort == null) {

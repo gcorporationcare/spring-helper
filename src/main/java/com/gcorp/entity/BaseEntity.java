@@ -34,12 +34,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.gcorp.annotation.Configure;
-import com.gcorp.annotation.DefaultField;
 import com.gcorp.annotation.NotCopyable;
 import com.gcorp.annotation.Translated;
 import com.gcorp.common.Utils;
 import com.gcorp.convention.SqlNamingConvention;
+import com.gcorp.domain.Constrainable;
 import com.gcorp.domain.FieldFilterable;
+import com.gcorp.domain.Formattable;
 import com.gcorp.exception.StandardRuntimeException;
 import com.gcorp.exception.ValidationException;
 import com.gcorp.i18n.I18nMessage;
@@ -59,7 +60,7 @@ import lombok.extern.slf4j.Slf4j;
 @MappedSuperclass
 @NoArgsConstructor
 @EntityListeners({ AuditingEntityListener.class, AuditorAwareListener.class })
-public abstract class BaseEntity implements Serializable, FieldFilterable {
+public abstract class BaseEntity implements Serializable, FieldFilterable, Constrainable, Formattable {
 
 	private static final long serialVersionUID = 1L;
 	// -------------------------------------------------
@@ -149,11 +150,6 @@ public abstract class BaseEntity implements Serializable, FieldFilterable {
 		created = updated = null;
 	}
 
-	/**
-	 * Formatting fields
-	 */
-	public abstract void format();
-
 	private List<Configure> retrieveConfiguration() {
 		if (configurations != null)
 			return configurations;
@@ -194,6 +190,11 @@ public abstract class BaseEntity implements Serializable, FieldFilterable {
 		return Sort.by(orders);
 	}
 
+	@Override
+	public final Set<String> defaultFields() {
+		return FieldFilterable.defaultFields(getClass(), BaseEntity.class);
+	}
+
 	/**
 	 * List of fields that cannot be copied
 	 * 
@@ -203,19 +204,6 @@ public abstract class BaseEntity implements Serializable, FieldFilterable {
 	public final Set<String> notCopyableField() {
 		String[] fields = Utils.getInheritedFields(getClass(), BaseEntity.class).stream()
 				.filter(f -> f.isAnnotationPresent(NotCopyable.class)).map(Field::getName).toArray(String[]::new);
-		return new HashSet<>(Arrays.asList(fields));
-	}
-
-	/**
-	 * List of fields that will be sent by default in API calls
-	 * 
-	 * @return the list of fields to return when user nothing is explicitly
-	 *         requested
-	 */
-	@Override
-	public final Set<String> defaultFields() {
-		String[] fields = Utils.getInheritedFields(getClass(), BaseEntity.class).stream()
-				.filter(f -> f.isAnnotationPresent(DefaultField.class)).map(Field::getName).toArray(String[]::new);
 		return new HashSet<>(Arrays.asList(fields));
 	}
 

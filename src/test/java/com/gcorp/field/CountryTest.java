@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 
 import com.gcorp.common.Utils;
 
-public class CountryTest {
+class CountryTest {
 
 	@Test
-	public void testEqualsAndHashCode() {
+	void testEqualsAndHashCode() {
 		Country us = Country.find("us");
 		Country fr = Country.find("fr");
 		assertNotEquals(us, fr);
@@ -24,16 +24,15 @@ public class CountryTest {
 	}
 
 	@Test
-	public void testList() {
+	void testList() {
 		List<Country> englishCountries = Country.listCountries(Utils.DEFAULT_LOCALE.getLanguage());
 		List<Country> frenchCountries = Country.listCountries("fr");
 		assertEquals(englishCountries.size(), frenchCountries.size());
-		assertTrue(
-				englishCountries.stream().filter(c -> "CI".equalsIgnoreCase(c.getCode())).findFirst().isPresent());
+		assertTrue(englishCountries.stream().filter(c -> "CI".equalsIgnoreCase(c.getCode())).findFirst().isPresent());
 	}
 
 	@Test
-	public void testFind() {
+	void testFind() {
 		assertNotNull(Country.find("us"));
 		assertNotNull(Country.find("US"));
 		assertNull(Country.find("usa"));

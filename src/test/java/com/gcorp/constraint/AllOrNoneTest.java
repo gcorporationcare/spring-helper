@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AllOrNoneTest extends DataProviderTestHelper {
+class AllOrNoneTest extends DataProviderTestHelper {
 
 	static final String FIELD_1 = "field1";
 	static final String FIELD_2 = "field2";
@@ -57,12 +57,12 @@ public class AllOrNoneTest extends DataProviderTestHelper {
 	}
 
 	@Test
-	public void testValidation_WithBadClass() {
+	void testValidation_WithBadClass() {
 		assertThrows(ValidationException.class, () -> validateConstraint(new SimpleClass4(), 1, null));
 	}
 
 	@Test
-	public void testValidation() {
+	void testValidation() {
 		final int zeroViolation = 0;
 		final int twoViolations = 2;
 		validateConstraint(new SimpleClass1(FIELD_1, null), twoViolations,

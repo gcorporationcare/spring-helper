@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.MDC;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.google.common.base.Strings;
 
@@ -17,7 +17,7 @@ import lombok.Getter;
  * used for logging purpose
  * 
  */
-public class RequestIdGenerator extends HandlerInterceptorAdapter {
+public class RequestIdGenerator implements HandlerInterceptor {
 
 	@Getter
 	private final String headerName;

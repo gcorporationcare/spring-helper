@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 import com.gcorp.enumeration.PhoneNumberType;
 import com.gcorp.notest.common.RandomUtils;
 
-public class PhoneNumberTest {
+class PhoneNumberTest {
 
 	@Test
-	public void testConstructor() {
+	void testConstructor() {
 		try {
 			PhoneNumber.newPhoneNumber(PhoneNumberType.BUSINESS, "", "prefix", "suffix", null);
 		} catch (IllegalArgumentException e) {
@@ -27,7 +27,7 @@ public class PhoneNumberTest {
 	}
 
 	@Test
-	public void testFromString() {
+	void testFromString() {
 		StringBuilder sb = new StringBuilder();
 		List<PhoneNumber> phoneNumbers = new ArrayList<>();
 		for (int index = 0; index < 100; index++) {
@@ -51,7 +51,7 @@ public class PhoneNumberTest {
 	}
 
 	@Test
-	public void testPhoneNumbers() {
+	void testPhoneNumbers() {
 		assertNotNull(RandomUtils.randomMobileNumber());
 		assertNotNull(new MobileNumber("225", "11", "22", "33"));
 		assertNotNull(RandomUtils.randomFaxNumber());
@@ -61,7 +61,7 @@ public class PhoneNumberTest {
 	}
 
 	@Test
-	public void testEquals() {
+	void testEquals() {
 		MobileNumber mobileNumber = RandomUtils.randomMobileNumber();
 		assertEquals(mobileNumber, mobileNumber);
 		MobileNumber copyMobileNumber = new MobileNumber(mobileNumber.getAreaCode(), mobileNumber.getExtension(),
@@ -73,11 +73,11 @@ public class PhoneNumberTest {
 		assertNotEquals(mobileNumber, copyMobileNumber);
 		assertNotEquals(mobileNumber, anotherNumber);
 		assertNotEquals(mobileNumber, RandomUtils.randomFaxNumber());
-		assertNotEquals(mobileNumber, "Not a phone number");
+		assertNotEquals("Not a phone number", mobileNumber);
 	}
 
 	@Test
-	public void testHashCode() {
+	void testHashCode() {
 		MobileNumber mobileNumber1 = RandomUtils.randomMobileNumber();
 		MobileNumber mobileNumber2 = RandomUtils.randomMobileNumber();
 		mobileNumber2.setExtension(mobileNumber1.getExtension() + "4");

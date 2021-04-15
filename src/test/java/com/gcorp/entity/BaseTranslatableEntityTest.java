@@ -23,13 +23,13 @@ import com.gcorp.notest.repository.PromotionRepository;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class BaseTranslatableEntityTest {
+class BaseTranslatableEntityTest {
 
 	@Autowired
 	PromotionRepository promotionRepository;
 
 	@Test
-	public void testCreate() {
+	void testCreate() {
 		Promotion promotion = RandomUtils.randomPromotion();
 		assertTrue(promotion.getTranslations().isEmpty());
 		promotion = promotionRepository.save(promotion);
@@ -40,7 +40,7 @@ public class BaseTranslatableEntityTest {
 	}
 
 	@Test
-	public void testUpdate() {
+	void testUpdate() {
 		final String englishName = "New name";
 		final String frenchName = "Nouveau nom";
 		Promotion promotion = promotionRepository.save(RandomUtils.randomPromotion());
@@ -57,7 +57,7 @@ public class BaseTranslatableEntityTest {
 	}
 
 	@Test
-	public void testLoad() {
+	void testLoad() {
 		final String englishDescription = "My description";
 		final String frenchDescription = "Ma description";
 		Promotion promotion = RandomUtils.randomPromotion();

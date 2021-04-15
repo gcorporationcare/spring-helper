@@ -17,10 +17,10 @@ import com.gcorp.common.Utils;
 import com.gcorp.notest.common.RandomUtils;
 import com.gcorp.notest.entity.Person;
 
-public class FieldFilterTest {
+class FieldFilterTest {
 
 	@Test
-	public void testSetAllIfEmpty() {
+	void testSetAllIfEmpty() {
 		final String fields = "fields";
 		FieldFilter<Person> filter = FieldFilter.fromString(null);
 		assertNull(Utils.getFieldValue(fields, filter, FieldFilter.class));
@@ -35,7 +35,7 @@ public class FieldFilterTest {
 	}
 
 	@Test
-	public void testReadDefaultFields() {
+	void testReadDefaultFields() {
 		Person person = RandomUtils.randomPerson();
 		Person defaultPerson = FieldFilter.<Person>fromString(null).parseEntity(person);
 		assertNotNull(defaultPerson.getEmail());
@@ -48,7 +48,7 @@ public class FieldFilterTest {
 	}
 
 	@Test
-	public void testParseIterable() {
+	void testParseIterable() {
 		List<Person> persons = IntStream.range(0, 10).mapToObj(i -> {
 			Person person = new Person();
 			person.setEmail(RandomUtils.randomEmail());
@@ -66,7 +66,7 @@ public class FieldFilterTest {
 	}
 
 	@Test
-	public void testReadCustomFields() {
+	void testReadCustomFields() {
 		Person person = new Person();
 		person.setEmail(RandomUtils.randomEmail());
 		person.setLanguage("alpha");

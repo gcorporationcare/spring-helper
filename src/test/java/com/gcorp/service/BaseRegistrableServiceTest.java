@@ -34,7 +34,7 @@ import com.gcorp.notest.service.PersonService;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class BaseRegistrableServiceTest {
+class BaseRegistrableServiceTest {
 
 	@Autowired
 	PersonService personService;
@@ -45,7 +45,7 @@ public class BaseRegistrableServiceTest {
 	FieldFilter<Person> defaultFieldFilter = FieldFilter.defaultFields();
 
 	@Test
-	public void testRead_OK() {
+	void testRead_OK() {
 		Person person = personRepository.save(RandomUtils.randomPerson());
 		Person personExist = personService.read(person.getId(), allFieldFilter);
 		assertEquals(person.getId(), personExist.getId());
@@ -55,12 +55,12 @@ public class BaseRegistrableServiceTest {
 	}
 
 	@Test
-	public void testRead_KO() {
+	void testRead_KO() {
 		assertThrows(RequestException.class, () -> personService.read(0L, allFieldFilter));
 	}
 
 	@Test
-	public void testReadMultiple_OK() {
+	void testReadMultiple_OK() {
 		final String language = "mydeepestlanguage";
 		List<Person> persons = IntStream.range(0, 10).mapToObj(i -> {
 			Person person = RandomUtils.randomPerson();
@@ -76,7 +76,7 @@ public class BaseRegistrableServiceTest {
 	}
 
 	@Test
-	public void testReadMultiple_KO() {
+	void testReadMultiple_KO() {
 		Person person = personRepository.save(RandomUtils.randomPerson());
 		SearchFilters<Person> filters = SearchFilters.of("unknownField", SearchFilterOperator.IS_EQUAL,
 				person.getEmail());
@@ -85,7 +85,7 @@ public class BaseRegistrableServiceTest {
 	}
 
 	@Test
-	public void testReadOne_OK() {
+	void testReadOne_OK() {
 		final String name = "Myname";
 		List<Person> persons = IntStream.range(0, 10).mapToObj(i -> {
 			Person person = RandomUtils.randomPerson();
@@ -99,24 +99,24 @@ public class BaseRegistrableServiceTest {
 	}
 
 	@Test
-	public void testReadOne_KO() {
+	void testReadOne_KO() {
 		Person person = personRepository.save(RandomUtils.randomPerson());
 		SearchFilters<Person> filters = SearchFilters.of("name.id", SearchFilterOperator.IS_EQUAL, person.getEmail());
 		assertThrows(BasicPathUsageException.class, () -> personService.readOne(filters, allFieldFilter));
 	}
 
 	@Test
-	public void testCreate_OK() {
+	void testCreate_OK() {
 		assertNotNull(personService.create(RandomUtils.randomPerson(), defaultFieldFilter).getId());
 	}
 
 	@Test
-	public void testCreate_KO() {
+	void testCreate_KO() {
 		assertThrows(NullPointerException.class, () -> personService.create(new Person(), defaultFieldFilter));
 	}
 
 	@Test
-	public void testCreateMultiple_OK() {
+	void testCreateMultiple_OK() {
 		List<Person> persons = IntStream.range(0, 10).mapToObj(i -> {
 			Person person = RandomUtils.randomPerson();
 			person.setName(String.format("name-%d", i));
@@ -127,13 +127,13 @@ public class BaseRegistrableServiceTest {
 	}
 
 	@Test
-	public void testCreateMultiple_KO() {
+	void testCreateMultiple_KO() {
 		List<Person> persons = Arrays.asList(new Person[] { new Person(), new Person() });
 		assertThrows(NullPointerException.class, () -> personService.createMultiple(persons, defaultFieldFilter));
 	}
 
 	@Test
-	public void testUpdate_OK() {
+	void testUpdate_OK() {
 		Person person = personService.create(RandomUtils.randomPerson(), allFieldFilter);
 		assertNotNull(person.getId());
 		final String newName = "My New Name";
@@ -143,7 +143,7 @@ public class BaseRegistrableServiceTest {
 	}
 
 	@Test
-	public void testUpdate_KO() {
+	void testUpdate_KO() {
 		Person person = personService.create(RandomUtils.randomPerson(), defaultFieldFilter);
 		person.setEmail("Not valid email");
 		assertThrows(TransactionSystemException.class,
@@ -151,7 +151,7 @@ public class BaseRegistrableServiceTest {
 	}
 
 	@Test
-	public void testPatch_OK() {
+	void testPatch_OK() {
 		Person notValidPerson = personService.create(RandomUtils.randomPerson(), defaultFieldFilter);
 		notValidPerson.setLanguage(null);
 		final String newName = "New Name";
@@ -163,25 +163,25 @@ public class BaseRegistrableServiceTest {
 	}
 
 	@Test
-	public void testPatch_KO() {
+	void testPatch_KO() {
 		assertThrows(RequestException.class,
 				() -> personService.patch(0L, RandomUtils.randomPerson(), defaultFieldFilter));
 	}
 
 	@Test
-	public void testDelete_OK() {
+	void testDelete_OK() {
 		Person person = personService.create(RandomUtils.randomPerson(), defaultFieldFilter);
 		personService.delete(person.getId());
 		assertFalse(personRepository.findById(person.getId()).isPresent());
 	}
 
 	@Test
-	public void testDelete_KO() {
+	void testDelete_KO() {
 		assertThrows(RequestException.class, () -> personService.delete(0L));
 	}
 
 	@Test
-	public void testDeleteMutiple_OK() {
+	void testDeleteMutiple_OK() {
 		Person person1 = personService.create(RandomUtils.randomPerson(), defaultFieldFilter);
 		Person person2 = personService.create(RandomUtils.randomPerson(), defaultFieldFilter);
 		personService.deleteMultiple(Arrays.asList(person1.getId(), person2.getId()));

@@ -17,9 +17,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class LocalDateTimeDeserializerTest {
+class LocalDateTimeDeserializerTest {
 	@Test
-	public void testDeserialize() throws IOException {
+	void testDeserialize() throws IOException {
 		LocalDateTime date = LocalDateTime.of(LocalDate.of(2021, 1, 1), LocalTime.of(0, 0));
 		LocalDateTimeDeserializer serializer = new LocalDateTimeDeserializer();
 		final String dateString = "\"2021-01-01T00:00:00.0000+0000\"";

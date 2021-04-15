@@ -45,7 +45,7 @@ import com.gcorp.notest.repository.PersonRepository;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class SearchSpecificationTest {
+class SearchSpecificationTest {
 
 	private static final String AGE_FIELD = "age";
 	private static final String NAME_FIELD = "name";
@@ -85,7 +85,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testFindByEqual() {
+	void testFindByEqual() {
 		final String personNameField = "person.name";
 		final String name = "Name-1.Com";
 		addressRepository.save(RandomUtils.randomAddress(persons.get(1)));
@@ -99,7 +99,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testFindEqualsInsensitive() {
+	void testFindEqualsInsensitive() {
 		final String personNameField = "person.name";
 		final String nameInsensitive = "namE-1.com";
 		addressRepository.save(RandomUtils.randomAddress(persons.get(1)));
@@ -116,7 +116,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testFindByGreaterThan() {
+	void testFindByGreaterThan() {
 		assertEquals(1,
 				personRepository.findByFilters(getFilters(AGE_FIELD, SearchFilterOperator.IS_GREATER_THAN, 8), null)
 						.getTotalElements());
@@ -127,7 +127,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testFindByLessThan() {
+	void testFindByLessThan() {
 		assertEquals(8, personRepository
 				.findByFilters(getFilters(AGE_FIELD, SearchFilterOperator.IS_LESS_THAN, 8), null).getTotalElements());
 		assertEquals(9,
@@ -137,7 +137,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testFindByNull() {
+	void testFindByNull() {
 		// Null age
 		personRepository.save(RandomUtils.randomPerson());
 		assertEquals(1, personRepository.findByFilters(getFilters(AGE_FIELD, SearchFilterOperator.IS_NULL, null), null)
@@ -148,7 +148,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testFindByLike() {
+	void testFindByLike() {
 		final String nameLikeness = "ame-";
 		assertEquals(persons.size(),
 				personRepository.findByFilters(getFilters(NAME_FIELD, SearchFilterOperator.IS_LIKE, nameLikeness), null)
@@ -161,7 +161,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testFindByStartingOrEnding() {
+	void testFindByStartingOrEnding() {
 		assertEquals(persons.size(),
 				personRepository
 						.findByFilters(getFilters(NAME_FIELD, SearchFilterOperator.IS_STARTING_WITH, "Name"), null)
@@ -174,7 +174,7 @@ public class SearchSpecificationTest {
 
 	@Test
 	@Transactional
-	public void testLocalDateTime() {
+	void testLocalDateTime() {
 		Office office = officeRepository.save(RandomUtils.randomOffice());
 		assertEquals(0, officeRepository.findByFilters(
 				getFilters(CREATED_FIELD, SearchFilterOperator.IS_GREATER_THAN, office.getCreated().plusMinutes(1)),
@@ -196,7 +196,7 @@ public class SearchSpecificationTest {
 
 	@Test
 	@Transactional
-	public void testEnum() {
+	void testEnum() {
 		final String genderField = "gender";
 		SearchFilters<Person> maleFilter = SearchFilters.of(genderField, SearchFilterOperator.IS_EQUAL, Gender.MALE);
 
@@ -207,7 +207,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testFindByIsIn() {
+	void testFindByIsIn() {
 		String[] names = { "Name-1.Com", "Name-2.Com" };
 		String namesList = String.join(SearchSpecification.IS_IN_DELIMITER, names);
 		final String nameField = "name";
@@ -226,7 +226,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testDateTypeFields() {
+	void testDateTypeFields() {
 		final String dateField = "expiry";
 		final String timeField = "opening";
 		Office office = officeRepository.save(RandomUtils.randomOffice());
@@ -267,7 +267,7 @@ public class SearchSpecificationTest {
 	}
 
 	@Test
-	public void testCustomFields() {
+	void testCustomFields() {
 		Office office = officeRepository.save(RandomUtils.randomOffice());
 		// In order to avoid issue with millisecond not being the same before and after
 		// save
@@ -327,7 +327,7 @@ public class SearchSpecificationTest {
 				office.getOpening().format(DateTimeFormatter.ofPattern(Utils.API_TIME_FORMAT)))));
 	}
 
-	public void testSafeFiltersValue() {
+	void testSafeFiltersValue() {
 
 	}
 

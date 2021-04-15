@@ -115,7 +115,7 @@ public class SearchFilter implements Serializable {
 		}
 		String stringValue = String.valueOf(value);
 		if (path.getJavaType().isEnum()) {
-			return Enum.valueOf((Class<Enum>) path.getJavaType(), stringValue);
+			return Enum.valueOf((Class<? extends Enum>) path.getJavaType(), stringValue);
 		}
 		if (isTemporalType(path)) {
 			return getTemporalValue(path, stringValue);

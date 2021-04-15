@@ -20,8 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gcorp.ApiStarter;
 import com.gcorp.domain.SearchFilter.SearchFilterOperator;
+import com.gcorp.ApiStarter;
 import com.gcorp.domain.SearchFilters;
 import com.gcorp.notest.common.RandomUtils;
 import com.gcorp.notest.config.H2Config;
@@ -34,7 +34,7 @@ import com.gcorp.notest.repository.PersonRepository;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class BaseChildRegistrableControllerTest extends BaseControllerTest {
+class BaseChildRegistrableControllerTest extends BaseControllerTest {
 
 	private static final String PARENT_URL = "persons";
 	private static final String ROOT_URL = "addresses";
@@ -61,7 +61,7 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testRead_OK() throws Exception {
+	void testRead_OK() throws Exception {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		service.perform(get(String.format("%s%s", read, address.getId())).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
@@ -69,13 +69,13 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testRead_KO() throws Exception {
+	void testRead_KO() throws Exception {
 		service.perform(get(String.format("%s%s", read, 0)).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound());
 	}
 
 	@Test
-	public void testReadMultiple_OK() throws Exception {
+	void testReadMultiple_OK() throws Exception {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		SearchFilters<Address> filters = SearchFilters.of("name", SearchFilterOperator.IS_EQUAL, address.getName());
 		service.perform(get(String.format("%s%s", readByFilters, filters.toString()))
@@ -83,40 +83,40 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testReadMultiple_KO() throws Exception {
+	void testReadMultiple_KO() throws Exception {
 		SearchFilters<Address> filters = SearchFilters.of("created", SearchFilterOperator.IS_EQUAL, "mama");
 		service.perform(get(String.format("%s%s", readByFilters, filters)).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());
 	}
 
 	@Test
-	public void testReadOne_OK() throws Exception {
+	void testReadOne_OK() throws Exception {
 		List<Address> addresses = IntStream.range(0, 10).mapToObj(i -> {
 			Address address = RandomUtils.randomAddress(person);
 			address.setCity(String.format("city-%d", i));
 			return address;
 		}).collect(Collectors.toList());
 		addresses = (List<Address>) addressRepository.saveAll(addresses);
-		SearchFilters<Person> filters = SearchFilters.of("name", SearchFilterOperator.IS_LIKE, "name");
+		SearchFilters<Address> filters = SearchFilters.of("city", SearchFilterOperator.IS_LIKE, "City");
 		service.perform(get(String.format("%s%s", readOne, filters.toString())).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE));
 	}
 
 	@Test
-	public void testReadOne_KO() throws Exception {
+	void testReadOne_KO() throws Exception {
 		SearchFilters<Address> filters = SearchFilters.of("updated", SearchFilterOperator.IS_LIKE, "name");
 		service.perform(get(String.format("%s%s", readOne, filters.toString())).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());
 	}
 
 	@Test
-	public void testCreate_OK() throws Exception {
+	void testCreate_OK() throws Exception {
 		service.perform(post(create).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.content(toJson(RandomUtils.randomAddress(person), false))).andExpect(status().isCreated());
 	}
 
 	@Test
-	public void testCreate_KO() throws Exception {
+	void testCreate_KO() throws Exception {
 		Address address = RandomUtils.randomAddress(person);
 		address.setCity(null);
 		service.perform(
@@ -125,14 +125,14 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testCreateMultiple_OK() throws Exception {
+	void testCreateMultiple_OK() throws Exception {
 		List<Address> addresses = Arrays.asList(RandomUtils.randomAddress(person), RandomUtils.randomAddress(person));
 		service.perform(post(createMultiple).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.content(toJson(addresses, false))).andExpect(status().isCreated());
 	}
 
 	@Test
-	public void testCreateMultiple_KO() throws Exception {
+	void testCreateMultiple_KO() throws Exception {
 		Address address = RandomUtils.randomAddress(person);
 		address.setCity(null);
 		List<Address> addresses = Arrays.asList(RandomUtils.randomAddress(person), address);
@@ -141,7 +141,7 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testUpdate_OK() throws Exception {
+	void testUpdate_OK() throws Exception {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		address.setCity("My new name");
 		service.perform(put(String.format("%s%s", update, address.getId()))
@@ -150,7 +150,7 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testUpdate_KO() throws Exception {
+	void testUpdate_KO() throws Exception {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		address.setCity(null);
 		service.perform(put(String.format("%s%s", update, address.getId()))
@@ -159,7 +159,7 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testPatch_OK() throws Exception {
+	void testPatch_OK() throws Exception {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		Address newAddress = new Address();
 		newAddress.setCity("alphabet");
@@ -169,13 +169,13 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testPatch_KO() throws Exception {
+	void testPatch_KO() throws Exception {
 		service.perform(patch(String.format("%s%s", patch, 0)).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.content(toJson(new Address(), false))).andExpect(status().isNotFound());
 	}
 
 	@Test
-	public void testDelete_OK() throws Exception {
+	void testDelete_OK() throws Exception {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		address.setActive(false);
 		address = addressRepository.save(address);
@@ -185,13 +185,13 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testDelete_KO() throws Exception {
+	void testDelete_KO() throws Exception {
 		service.perform(delete(String.format("%s%s", delete, 0)).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
-	public void testDeleteMultiple_OK() throws Exception {
+	void testDeleteMultiple_OK() throws Exception {
 		Address address1 = addressRepository.save(RandomUtils.randomAddress(person));
 		address1.setActive(false);
 		address1 = addressRepository.save(address1);
@@ -204,7 +204,7 @@ public class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testDeleteMultiple_KO() throws Exception {
+	void testDeleteMultiple_KO() throws Exception {
 		String[] ids = new String[] { "0", "badValue" };
 		service.perform(delete(String.format("%s%s", deleteMultiple, String.join(MULTIPLE_DELIMITER, ids)))
 				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());

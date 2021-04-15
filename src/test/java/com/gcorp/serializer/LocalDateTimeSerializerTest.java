@@ -16,10 +16,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
-public class LocalDateTimeSerializerTest {
+class LocalDateTimeSerializerTest {
 
 	@Test
-	public void testSerialize() throws IOException {
+	void testSerialize() throws IOException {
 		LocalDateTime date = LocalDateTime.of(LocalDate.of(2021, 1, 1), LocalTime.of(0, 0));
 		LocalDateTimeSerializer serializer = new LocalDateTimeSerializer();
 		Writer jsonWriter = new StringWriter();

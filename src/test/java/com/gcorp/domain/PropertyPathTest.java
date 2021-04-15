@@ -21,7 +21,7 @@ import com.gcorp.notest.entity.Address;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class PropertyPathTest {
+class PropertyPathTest {
 	Root<Address> root;
 	CriteriaBuilder builder;
 	CriteriaQuery<Address> query;
@@ -36,18 +36,18 @@ public class PropertyPathTest {
 	}
 
 	@Test
-	public void testGetJoin() {
+	void testGetJoin() {
 		assertNotNull(PropertyPath.getJoin(root, "person.email"));
 		assertNotNull(PropertyPath.getJoin(root, "person.parent.email"));
 	}
 
 	@Test
-	public void testGetPath() {
+	void testGetPath() {
 		assertNotNull(PropertyPath.getPath(root, "person.email"));
 	}
 
 	@Test
-	public void testGetParametizedPath() {
+	void testGetParametizedPath() {
 		assertNotNull(PropertyPath.getParametizedPath(root, "street"));
 		assertNotNull(PropertyPath.getParametizedPath(root, "person.email"));
 	}

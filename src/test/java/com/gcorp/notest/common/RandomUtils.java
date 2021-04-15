@@ -77,7 +77,7 @@ public final class RandomUtils {
 
 	public static Address randomAddress(Person person) {
 		Person owner = person == null ? randomPerson() : person;
-		return new Address(null, "A given street", "12345", "Code-City", "Test-State", true, owner);
+		return new Address("Personal address", "A given street", "12345", "Code-City", "Test-State", true, owner);
 	}
 
 	public static Promotion randomPromotion() {

@@ -12,22 +12,22 @@ import org.junit.jupiter.api.Test;
 
 import com.gcorp.domain.SearchFilter.SearchFilterOperator;
 
-public class SearchFilterOperatorTest {
+class SearchFilterOperatorTest {
 
 	@Test
-	public void testGet() {
+	void testGet() {
 		for (SearchFilterOperator operator : SearchFilterOperator.values()) {
 			assertEquals(operator, SearchFilterOperator.get(operator.getSymbol()));
 		}
 	}
 
 	@Test
-	public void tesGet_WithInvalid() {
+	void testGet_WithInvalid() {
 		// Inexistent
 		assertThrows(IllegalArgumentException.class, () -> SearchFilterOperator.get("%*"));
 	}
 
-	public void testNoDuplicate() {
+	void testNoDuplicate() {
 		List<String> symbols = new ArrayList<>();
 		Arrays.stream(SearchFilterOperator.values()).forEach(o -> {
 			fail(String.format("Duplicate found for %s with sign %s", o, o.getSymbol()));

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public final class SqlNamingConvention {
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public final class ColumnUtils {
 		public static final String UTC_ZONE = "UTC";
 
@@ -49,11 +50,13 @@ public final class SqlNamingConvention {
 		public static final String TEST_TABLE = "test_table";
 	}
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public final class Graph {
 		public static final String GENERAL_GRAPH = "general-graph";
 		public static final String PROPERTY_GRAPH = "javax.persistence.fetchgraph";
 	}
 
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public final class Property {
 		public static final String TRANSLATIONS = "translations";
 	}

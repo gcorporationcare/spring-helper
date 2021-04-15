@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 
 import com.gcorp.common.Utils;
 
-public class MoneyCurrencyTest {
+class MoneyCurrencyTest {
 
 	@Test
-	public void testEqualsAndHashCode() {
+	void testEqualsAndHashCode() {
 		MoneyCurrency usd = MoneyCurrency.find("usd");
 		MoneyCurrency eur = MoneyCurrency.find("eur");
 		assertNotEquals(usd, eur);
@@ -24,7 +24,7 @@ public class MoneyCurrencyTest {
 	}
 
 	@Test
-	public void testListCurrencies() {
+	void testListCurrencies() {
 		List<MoneyCurrency> englishCurrencies = MoneyCurrency.listCurrencies(Utils.DEFAULT_LOCALE.getLanguage());
 		List<MoneyCurrency> frenchCurrencies = MoneyCurrency.listCurrencies("fr");
 		assertEquals(englishCurrencies.size(), frenchCurrencies.size());
@@ -32,7 +32,7 @@ public class MoneyCurrencyTest {
 	}
 
 	@Test
-	public void testFind() {
+	void testFind() {
 		MoneyCurrency currency = MoneyCurrency.find("gBp");
 		assertNotNull(currency);
 		assertNotNull(currency.getCode());

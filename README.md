@@ -10,7 +10,7 @@ Refer [wiki](https://github.com/gcorporationcare/spring-helper/wiki) for more De
 
 | Stable Release Version | JDK Version compatibility | Release Date |
 | ------------- | ------------- | ------------|
-| 2.0.0  |1.11+ | 04/14/2021 |
+| 2.0.1  |1.11+ | 04/15/2021 |
 | 1.0.4  | 1.8+ | 04/14/2021 |
 
 ## License
@@ -18,6 +18,7 @@ Refer [wiki](https://github.com/gcorporationcare/spring-helper/wiki) for more De
 Spring-Helper is licensed by **G-Corporation**.
 
 ## News
+* Version **2.0.1** released on 04/15/2021.
 * Version **2.0.0** released on 04/14/2021.
 * Version **1.0.4** released on 04/14/2021.
 * Version **1.0.3** released on 02/27/2021.
@@ -51,7 +52,7 @@ Alternatively you can  pull Spring-Helper from the central maven repository, jus
 <dependency>
 	<groupId>com.github.gcorporationcare</groupId>
 	<artifactId>spring-helper</artifactId>
-	<version>2.0.0</version>
+	<version>2.0.1</version>
 </dependency>
 ```
 

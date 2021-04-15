@@ -2,6 +2,7 @@ package com.gcorp.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -101,7 +102,7 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 	@Transactional
 	public void deleteMultiple(@NonNull Iterable<ID> ids) {
 		SearchFilters<E> idsFilters = new SearchFilters<>();
-		Streams.stream(ids).filter(i -> i != null)
+		Streams.stream(ids).filter(Objects::nonNull)
 				.forEach(i -> idsFilters.or(getIdField(), SearchFilterOperator.IS_EQUAL, i));
 		List<E> entities = readMultiple(idsFilters, FieldFilter.allFields(), null).getContent();
 		entities.stream().forEach(this::canDelete);

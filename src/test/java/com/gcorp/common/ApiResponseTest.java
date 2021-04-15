@@ -17,10 +17,10 @@ import com.gcorp.notest.config.H2Config;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class ApiResponseTest {
+class ApiResponseTest {
 
 	@Test
-	public void testApiResponse() {
+	void testApiResponse() {
 		assertNotNull(new ApiResponse<>(HttpStatus.ACCEPTED));
 		assertNotNull(new ApiResponse<>(true, HttpStatus.BAD_GATEWAY));
 		assertNotNull(new ApiResponse<>(new RequestException("simple")));

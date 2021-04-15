@@ -25,7 +25,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class ValidationExceptionTest extends DataProviderTestHelper {
+class ValidationExceptionTest extends DataProviderTestHelper {
 	@Data
 	@NoArgsConstructor
 	public class SimpleObject {
@@ -49,7 +49,7 @@ public class ValidationExceptionTest extends DataProviderTestHelper {
 	final static int MAX_LENGTH = 100;
 
 	@Test
-	public void testSerialization() throws JsonProcessingException {
+	void testSerialization() throws JsonProcessingException {
 		SimpleObject invalid = new SimpleObject();
 		Set<ConstraintViolation<Object>> violations = validator.validate(invalid);
 		assertEquals(3, violations.size()); // (NotNull + NotEmpty + Min)
@@ -64,7 +64,7 @@ public class ValidationExceptionTest extends DataProviderTestHelper {
 	}
 
 	@Test
-	public void testToMap() {
+	void testToMap() {
 		assertFalse((new ValidationException()).toMap().isEmpty());
 		assertFalse((new ValidationException("With message")).toMap().isEmpty());
 		assertNotNull(new ValidationException(new IOException(), null));

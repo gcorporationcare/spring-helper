@@ -32,14 +32,14 @@ import com.gcorp.notest.repository.PersonRepository;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class BaseRepositoryTest {
+class BaseRepositoryTest {
 	@PersistenceContext
 	EntityManager entityManager;
 	@Autowired
 	PersonRepository personRepository;
 
 	@Test
-	public void testSorting() {
+	void testSorting() {
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Person> query = builder.createQuery(Person.class);
 		Root<Person> root = query.from(Person.class);
@@ -49,7 +49,7 @@ public class BaseRepositoryTest {
 	}
 
 	@Test
-	public void testFindFilters() {
+	void testFindFilters() {
 		Pageable pageable = PageRequest.of(0, 1);
 		personRepository.save(RandomUtils.randomPerson());
 		SearchFilters<Person> searchFilters = null;
@@ -60,7 +60,7 @@ public class BaseRepositoryTest {
 	}
 
 	@Test
-	public void testSimpleRepository() {
+	void testSimpleRepository() {
 		Person person = RandomUtils.randomPerson();
 		person.setGender(Gender.FEMALE);
 		person = personRepository.save(person);

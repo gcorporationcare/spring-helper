@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class BaseEntityTest {
+class BaseEntityTest {
 	@Getter
 	@Setter
 	@NoArgsConstructor
@@ -34,7 +34,7 @@ public class BaseEntityTest {
 	}
 
 	@Test
-	public void testCopy_WithNothing() {
+	void testCopy_WithNothing() {
 		Person origin = new Person();
 		origin.setName("name");
 		origin.setLastName("lastName");

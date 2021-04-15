@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import com.gcorp.notest.common.RandomUtils;
 import com.gcorp.notest.entity.PromotionTranslation;
 
-public class BaseTranslationTest {
+class BaseTranslationTest {
 
 	@Test
-	public void testFormat_OK() {
+	void testFormat_OK() {
 		PromotionTranslation translation = RandomUtils.randomPromotionTranslation(null);
 		translation.format();
 		assertTrue(translation.translated());
@@ -21,7 +21,7 @@ public class BaseTranslationTest {
 	}
 
 	@Test
-	public void testFormat_KO() {
+	void testFormat_KO() {
 		PromotionTranslation translation = RandomUtils.randomPromotionTranslation(null);
 		translation.setLanguage("AnY");
 		translation.format();

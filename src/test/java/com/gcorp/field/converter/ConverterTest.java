@@ -22,13 +22,13 @@ import com.gcorp.notest.repository.OfficeRepository;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class ConverterTest {
+class ConverterTest {
 
 	@Autowired
 	OfficeRepository officeRepository;
 
 	@Test
-	public void testConverter() {
+	void testConverter() {
 		final String number = "01";
 		final Country country = Country.find("us");
 		FaxNumber faxNumber = new FaxNumber(country, number, number, number);

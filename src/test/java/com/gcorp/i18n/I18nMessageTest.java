@@ -17,7 +17,7 @@ import com.gcorp.notest.config.H2Config;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class I18nMessageTest {
+class I18nMessageTest {
 
 	private final String KEY = "api.greeting";
 	private final String MESSAGE_EN = "Welcome to life";
@@ -27,7 +27,7 @@ public class I18nMessageTest {
 	I18nMessage messageKey;
 
 	@Test
-	public void testGetMessage() {
+	void testGetMessage() {
 		Locale localeEn = Locale.ENGLISH;
 		Locale localeFr = Locale.FRENCH;
 		assertNotNull(messageKey.getMessage(KEY));

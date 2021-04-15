@@ -1,5 +1,6 @@
 package com.gcorp.entity;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -108,11 +109,12 @@ public abstract class BaseTranslatableEntity<T extends BaseTranslation> extends 
 				ParameterizedType parameterizedType = (ParameterizedType) type;
 				Type[] typeArguments = parameterizedType.getActualTypeArguments();
 				clazz = (Class<T>) typeArguments[0];
-				return clazz.newInstance();
+				return clazz.getDeclaredConstructor().newInstance();
 			} else {
-				return (T) BaseEntity.class.newInstance();
+				return (T) BaseEntity.class.getDeclaredConstructor().newInstance();
 			}
-		} catch (InstantiationException | IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
 			throw new StandardRuntimeException(e);
 		}
 	}

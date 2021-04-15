@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.gcorp.domain.SearchFilter.SearchFilterOperator;
 
-public class SearchFilterTest {
+class SearchFilterTest {
 
 	static final String FIELD = "field";
 	static final String SIGN = "=";
@@ -22,7 +22,7 @@ public class SearchFilterTest {
 	}
 
 	@Test
-	public void testConstructor_WithInvalidFields() {
+	void testConstructor_WithInvalidFields() {
 		// Null field
 		try {
 			new SearchFilter(false, null, SearchFilterOperator.IS_EQUAL, VALUE);
@@ -53,7 +53,7 @@ public class SearchFilterTest {
 	}
 
 	@Test
-	public void testConstructor_WithValidFields() {
+	void testConstructor_WithValidFields() {
 		// Null field
 		assertNotNull(new SearchFilter(false, FIELD, SearchFilterOperator.IS_EQUAL, VALUE));
 		assertNotNull(new SearchFilter(false, FIELD, "=", VALUE));
@@ -61,7 +61,7 @@ public class SearchFilterTest {
 	}
 
 	@Test
-	public void testFromString() {
+	void testFromString() {
 		final String d = SearchFilterOperator.FILTER_OPERATOR_DELIMITER;
 		SearchFilter filter1 = new SearchFilter(true, FIELD, SearchFilterOperator.IS_EQUAL, VALUE);
 		String string1 = filter1.toString();
@@ -78,7 +78,7 @@ public class SearchFilterTest {
 	}
 
 	@Test
-	public void testSearchFilters() {
+	void testSearchFilters() {
 		// Bad order field
 		try {
 			SearchFilters.fromString(String.format("%s%s%s",
@@ -94,29 +94,29 @@ public class SearchFilterTest {
 	}
 
 	@Test
-	public void testFromString_WithNull() {
+	void testFromString_WithNull() {
 		assertThrows(IllegalArgumentException.class, () -> SearchFilter.fromString(null));
 	}
 
 	@Test
-	public void testFromString_WithInvalidField() {
+	void testFromString_WithInvalidField() {
 		assertThrows(IllegalArgumentException.class, () -> SearchFilter.fromString("1"));
 	}
 
 	@Test
-	public void testSearchFilter_WithSingleOperator() {
+	void testSearchFilter_WithSingleOperator() {
 		assertThrows(IllegalArgumentException.class,
 				() -> new SearchFilter(true, "alpha", SearchFilterOperator.IS_EQUAL));
 	}
 
 	@Test
-	public void testSearchFilter_WithoutOperator() {
+	void testSearchFilter_WithoutOperator() {
 		SearchFilterOperator no = null;
 		assertThrows(IllegalArgumentException.class, () -> new SearchFilter(true, "alpha", no, null));
 	}
 
 	@Test
-	public void testAndOr() {
+	void testAndOr() {
 		final SearchFilterOperator operator = SearchFilterOperator.IS_EQUAL;
 		final String field = "field";
 		final long value = 2;

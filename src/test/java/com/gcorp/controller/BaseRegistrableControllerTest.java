@@ -20,8 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.gcorp.ApiStarter;
 import com.gcorp.domain.SearchFilter.SearchFilterOperator;
+import com.gcorp.ApiStarter;
 import com.gcorp.domain.SearchFilters;
 import com.gcorp.notest.common.RandomUtils;
 import com.gcorp.notest.config.H2Config;
@@ -32,7 +32,7 @@ import com.gcorp.notest.repository.PersonRepository;
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class BaseRegistrableControllerTest extends BaseControllerTest {
+class BaseRegistrableControllerTest extends BaseControllerTest {
 
 	private static final String ROOT_URL = "persons";
 	@Autowired
@@ -53,7 +53,7 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testRead_OK() throws Exception {
+	void testRead_OK() throws Exception {
 		Person person = personRepository.save(RandomUtils.randomPerson());
 		service.perform(get(String.format("%s%s", read, person.getId())).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
@@ -61,13 +61,13 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testRead_KO() throws Exception {
+	void testRead_KO() throws Exception {
 		service.perform(get(String.format("%s%s", read, 0)).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNotFound());
 	}
 
 	@Test
-	public void testReadMultiple_OK() throws Exception {
+	void testReadMultiple_OK() throws Exception {
 		Person person = personRepository.save(RandomUtils.randomPerson());
 		SearchFilters<Person> filters = SearchFilters.of("name", SearchFilterOperator.IS_EQUAL, person.getName());
 		service.perform(get(String.format("%s%s", readByFilters, filters.toString()))
@@ -75,40 +75,40 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testReadMultiple_KO() throws Exception {
+	void testReadMultiple_KO() throws Exception {
 		SearchFilters<Person> filters = SearchFilters.of("created", SearchFilterOperator.IS_EQUAL, "mama");
 		service.perform(get(String.format("%s%s", readByFilters, filters)).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());
 	}
 
 	@Test
-	public void testReadOne_OK() throws Exception {
+	void testReadOne_OK() throws Exception {
 		List<Person> persons = IntStream.range(0, 10).mapToObj(i -> {
 			Person person = RandomUtils.randomPerson();
 			person.setName(String.format("name-%d", i));
 			return person;
 		}).collect(Collectors.toList());
 		persons = (List<Person>) personRepository.saveAll(persons);
-		SearchFilters<Person> filters = SearchFilters.of("name", SearchFilterOperator.IS_LIKE, "name");
+		SearchFilters<Person> filters = SearchFilters.of("name", SearchFilterOperator.IS_LIKE, "Name");
 		service.perform(get(String.format("%s%s", readOne, filters.toString())).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE));
 	}
 
 	@Test
-	public void testReadOne_KO() throws Exception {
+	void testReadOne_KO() throws Exception {
 		SearchFilters<Person> filters = SearchFilters.of("updated", SearchFilterOperator.IS_LIKE, "name");
 		service.perform(get(String.format("%s%s", readOne, filters.toString())).header(BaseControllerTest.CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());
 	}
 
 	@Test
-	public void testCreate_OK() throws Exception {
+	void testCreate_OK() throws Exception {
 		service.perform(post(create).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.content(toJson(RandomUtils.randomPerson(), false))).andExpect(status().isCreated());
 	}
 
 	@Test
-	public void testCreate_KO() throws Exception {
+	void testCreate_KO() throws Exception {
 		Person existing = personRepository.save(RandomUtils.randomPerson());
 		Person person = RandomUtils.randomPerson();
 		person.setEmail(existing.getEmail());
@@ -119,14 +119,14 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testCreateMultiple_OK() throws Exception {
+	void testCreateMultiple_OK() throws Exception {
 		List<Person> persons = Arrays.asList(RandomUtils.randomPerson(), RandomUtils.randomPerson());
 		service.perform(post(createMultiple).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.content(toJson(persons, false))).andExpect(status().isCreated());
 	}
 
 	@Test
-	public void testCreateMultiple_KO() throws Exception {
+	void testCreateMultiple_KO() throws Exception {
 		Person person = RandomUtils.randomPerson();
 		person.setName(null);
 		List<Person> persons = Arrays.asList(RandomUtils.randomPerson(), person);
@@ -135,7 +135,7 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testUpdate_OK() throws Exception {
+	void testUpdate_OK() throws Exception {
 		Person person = personRepository.save(RandomUtils.randomPerson());
 		person.setName("My new name");
 		service.perform(put(String.format("%s%s", update, person.getId()))
@@ -144,7 +144,7 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testUpdate_KO() throws Exception {
+	void testUpdate_KO() throws Exception {
 		Person person = personRepository.save(RandomUtils.randomPerson());
 		person.setName(null);
 		service.perform(put(String.format("%s%s", update, person.getId()))
@@ -153,7 +153,7 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testPatch_OK() throws Exception {
+	void testPatch_OK() throws Exception {
 		Person person = personRepository.save(RandomUtils.randomPerson());
 		Person newPerson = new Person();
 		newPerson.setName("alphabet");
@@ -163,13 +163,13 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testPatch_KO() throws Exception {
+	void testPatch_KO() throws Exception {
 		service.perform(patch(String.format("%s%s", patch, 0)).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.content(toJson(new Person(), false))).andExpect(status().isNotFound());
 	}
 
 	@Test
-	public void testDelete_OK() throws Exception {
+	void testDelete_OK() throws Exception {
 		Person person = personRepository.save(RandomUtils.randomPerson());
 		service.perform(delete(String.format("%s%s", delete, person.getId())).header(CONTENT_TYPE,
 				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNoContent());
@@ -177,13 +177,13 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testDelete_KO() throws Exception {
+	void testDelete_KO() throws Exception {
 		service.perform(delete(String.format("%s%s", delete, 0)).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
-	public void testDeleteMultiple_OK() throws Exception {
+	void testDeleteMultiple_OK() throws Exception {
 		Person person1 = personRepository.save(RandomUtils.randomPerson());
 		Person person2 = personRepository.save(RandomUtils.randomPerson());
 		String[] ids = new String[] { person1.getId().toString(), person2.getId().toString() };
@@ -192,7 +192,7 @@ public class BaseRegistrableControllerTest extends BaseControllerTest {
 	}
 
 	@Test
-	public void testDeleteMultiple_KO() throws Exception {
+	void testDeleteMultiple_KO() throws Exception {
 		String[] ids = new String[] { "0", "badValue" };
 		service.perform(delete(String.format("%s%s", deleteMultiple, String.join(MULTIPLE_DELIMITER, ids)))
 				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isBadRequest());

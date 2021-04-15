@@ -3,6 +3,7 @@ package com.gcorp.service;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -152,7 +153,7 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 	@Transactional
 	public void deleteMultiple(@NonNull P_ID parentId, @NonNull Iterable<ID> ids) {
 		SearchFilters<E> idsFilters = new SearchFilters<>();
-		Streams.stream(ids).filter(i -> i != null)
+		Streams.stream(ids).filter(Objects::nonNull)
 				.forEach(i -> idsFilters.or(getIdField(), SearchFilterOperator.IS_EQUAL, i));
 		List<E> children = repository().findByFilters(idsFilters, null).getContent();
 		children.stream().forEach(c -> canDelete(parentId, c));

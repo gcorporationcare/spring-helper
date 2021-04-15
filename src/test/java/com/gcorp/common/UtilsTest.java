@@ -36,7 +36,7 @@ import com.gcorp.notest.entity.Person;
 
 import lombok.AllArgsConstructor;
 
-public class UtilsTest {
+class UtilsTest {
 	@Target(ElementType.TYPE)
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface SimpleAnnotation {
@@ -110,22 +110,22 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testGetParameterizedType() {
+	void testGetParameterizedType() {
 		assertEquals(String.class, Utils.getParameterizedType(SimpleType.class));
 	}
 
 	@Test
-	public void testGetParameterizedType_WithNoArgument() {
+	void testGetParameterizedType_WithNoArgument() {
 		assertThrows(NullPointerException.class, () -> Utils.getParameterizedType(null));
 	}
 
 	@Test
-	public void testGetParameterizedType_WithNoGenericClass() {
+	void testGetParameterizedType_WithNoGenericClass() {
 		assertThrows(IllegalArgumentException.class, () -> Utils.getParameterizedType(String.class));
 	}
 
 	@Test
-	public void testGetNullPropertyNames() {
+	void testGetNullPropertyNames() {
 		Person person = new Person();
 		String[] nullProperties = Utils.getNullPropertyNames(person);
 		assertNotNull(nullProperties);
@@ -135,7 +135,7 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testGetAuthenticatedUser() {
+	void testGetAuthenticatedUser() {
 		assertNull(Utils.getAuthenticatedUser());
 		final String username = "a given user";
 		User user = new User(username, Arrays.asList(new AccessRight[] { new AccessRight() }));
@@ -152,7 +152,7 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testGetFieldValue() {
+	void testGetFieldValue() {
 		final String nameField = "name";
 		Person person = new Person();
 		person.setName("A given name");
@@ -161,40 +161,40 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testGetFieldValue_WithBadClass() {
+	void testGetFieldValue_WithBadClass() {
 		assertThrows(StandardRuntimeException.class,
 				() -> Utils.getFieldValue("unknown field", "Alphabet", Person.class));
 	}
 
 	@Test
-	public void testGetFieldValue_WithUnknownField() {
+	void testGetFieldValue_WithUnknownField() {
 		Person person = new Person();
 		assertThrows(StandardRuntimeException.class, () -> Utils.getFieldValue("weird field", person, Person.class));
 	}
 
 	@Test
-	public void testGetInheritedField() {
+	void testGetInheritedField() {
 		assertNotNull(Utils.getInheritedField("created", Person.class, BaseEntity.class));
 	}
 
 	@Test
-	public void testGetInheritedFields() {
+	void testGetInheritedFields() {
 		assertFalse(Utils.getInheritedFields(Person.class, BaseEntity.class).isEmpty());
 	}
 
 	@Test
-	public void testGetInheritedFields_WithBadSuperType() {
+	void testGetInheritedFields_WithBadSuperType() {
 		assertTrue(Utils.getInheritedFields(Person.class, String.class).isEmpty());
 	}
 
 	@Test
-	public void testGetFieldValue_WithNotDeepSuperClass() {
+	void testGetFieldValue_WithNotDeepSuperClass() {
 		Person person = new Person();
 		assertThrows(StandardRuntimeException.class, () -> Utils.getFieldValue("createdBy", person, Person.class));
 	}
 
 	@Test
-	public void testGetProperNoun() {
+	void testGetProperNoun() {
 		final String expected = "John Doe";
 		assertEquals(expected, Utils.getProperNoun(expected));
 		assertEquals(expected, Utils.getProperNoun("john doe"));
@@ -205,12 +205,12 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testGetProperNoun_WithBadInput() {
+	void testGetProperNoun_WithBadInput() {
 		assertThrows(NullPointerException.class, () -> Utils.getProperNoun(null));
 	}
 
 	@Test
-	public void testGetUsernameOfAuthenticatedUser() {
+	void testGetUsernameOfAuthenticatedUser() {
 		assertNotNull(Utils.getUsernameOfAuthenticatedUser());
 		final String username = "another user";
 		User user = new User(username, Arrays.asList(new AccessRight[] { new AccessRight() }));
@@ -222,7 +222,7 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testIndexOfNull() {
+	void testIndexOfNull() {
 		Person[] persons = new Person[10];
 		IntStream.range(0, 10).forEach(i -> {
 			Person person = new Person();
@@ -241,12 +241,12 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testIndexOfNull_WithEmptyArray() {
+	void testIndexOfNull_WithEmptyArray() {
 		assertThrows(NullPointerException.class, () -> Utils.indexOfNull(null, new Person[0]));
 	}
 
 	@Test
-	public void testListAnnotations() {
+	void testListAnnotations() {
 		assertTrue(Utils.listAnnotations(SimpleAnnotation.class, SimpleType.class, String.class).isEmpty());
 		assertEquals(1, Utils.listAnnotations(SimpleAnnotation.class, SimpleType.class, SimpleType.class).size());
 		assertEquals(2, Utils.listAnnotations(SimpleAnnotation.class, SimpleType.class, GenericType.class).size());
@@ -254,13 +254,13 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testListCountriesAndCurrencies() {
+	void testListCountriesAndCurrencies() {
 		assertFalse(Utils.listCountries().isEmpty());
 		assertFalse(Utils.listCurrencies().isEmpty());
 	}
 
 	@Test
-	public void testSafeLocale() {
+	void testSafeLocale() {
 		assertEquals(Locale.ENGLISH, Utils.safeLocale(Locale.ENGLISH.getLanguage()));
 		assertEquals(Locale.FRENCH, Utils.safeLocale(Locale.FRENCH.getLanguage()));
 		assertEquals(Utils.DEFAULT_LOCALE, Utils.safeLocale("unknown locale"));
@@ -268,7 +268,7 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testSetFieldValue() {
+	void testSetFieldValue() {
 		final String languageField = "language";
 		final String createdByField = "createdBy";
 		final String language1 = "en";
@@ -284,13 +284,13 @@ public class UtilsTest {
 	}
 
 	@Test
-	public void testSetFieldValue_WithBadSupertype() {
+	void testSetFieldValue_WithBadSupertype() {
 		assertThrows(StandardRuntimeException.class,
 				() -> Utils.setFieldValue("created", new Person(), Person.class, LocalDateTime.now()));
 	}
 
 	@Test
-	public void testSetFieldValue_WithBadValue() {
+	void testSetFieldValue_WithBadValue() {
 		assertThrows(StandardRuntimeException.class,
 				() -> Utils.setFieldValue("updated", new Person(), BaseEntity.class, "Wrong value"));
 	}

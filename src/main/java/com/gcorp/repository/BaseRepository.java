@@ -8,6 +8,12 @@ import org.springframework.data.domain.Pageable;
 import com.gcorp.domain.SearchFilters;
 import com.gcorp.entity.BaseEntity;
 
+/**
+ * 
+ *
+ * @param <T> The entity representing the table in database
+ * @param <U> The type of the primary key of the previous table
+ */
 public interface BaseRepository<T extends BaseEntity, U extends Serializable> {
 	/**
 	 * Find objects where searchFilters' conditions are satisfied

@@ -18,7 +18,7 @@ import com.gcorp.notest.config.H2Config;
 
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @ActiveProfiles("Test")
-public class ApiConfigTest {
+class ApiConfigTest {
 
 	@Autowired
 	AuditorAware<String> auditorAware;
@@ -34,7 +34,7 @@ public class ApiConfigTest {
 	ObjectMapper objectMapper;
 
 	@Test
-	public void testBeans() {
+	void testBeans() {
 		assertNotNull(auditorAware);
 		assertNotNull(localeResolver);
 		assertNotNull(resourceBundleMessageSource);
