@@ -20,10 +20,8 @@ public class I18nMessage {
 	private static I18nMessage i18nMessage;
 
 	// -------------------------------------------------------------
-	public static final String INTEGER_DATA_TYPE = "integer";
 	public static final String QUERY_PARAM_TYPE = "query";
-	public static final String STRING_DATA_TYPE = "string";
-	public static final String BOOLEAN_DATA_TYPE = "boolean";
+	public static final String INTEGER_DEFAULT_VALUE = "0";
 
 	// -------------------------------------------------------------
 	public static final String LANGUAGE_PARAMETER = "lang";
@@ -32,11 +30,14 @@ public class I18nMessage {
 	public static final String IDS_PARAMETER = "ids";
 	public static final String SORT_PARAMETER = "sort";
 	public static final String PAGE_PARAMETER = "page";
+	public static final String PAGE_PARAMETER_DEFAULT = "1";
 	public static final String SIZE_PARAMETER = "size";
+	public static final String SIZE_PARAMETER_DEFAULT = "20";
 	public static final String FIELDS_PARAMETER = "fields";
 	public static final String FILTERS_PARAMETER = "filters";
 
 	// -------------------------------------------------------------
+	public static final String IGNORE_PARAMETER = "Ignored because Swagger UI shows wrong value";
 	public static final String PAGE_PARAMETER_DESCRIPTION = "Results page you want to retrieve (0..N)";
 	public static final String LANGUAGE_PARAMETER_DESCRIPTION = "Language for searching data (default en)";
 	public static final String SIZE_PARAMETER_DESCRIPTION = "Number of records per page";

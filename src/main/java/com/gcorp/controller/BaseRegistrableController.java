@@ -29,6 +29,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
 public abstract class BaseRegistrableController<E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
@@ -41,11 +42,12 @@ public abstract class BaseRegistrableController<E extends BaseEntity, ID extends
 	@ResponseBody
 	@ApiOperation(value = "create", notes = "Save/Update given entity")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
 	@PostMapping(value = I18nMessage.EMPTY, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public E create(@Validated({ ValidationStep.Simple.class }) @RequestBody E entity, FieldFilter<E> fieldFilter) {
+	public E create(@Validated({ ValidationStep.Simple.class }) @RequestBody E entity,
+			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
 		log.info("Saving entity {} with values {}", service().getEntityClass(), entity);
 		return registrerService().create(entity, fieldFilter);
 	}
@@ -53,11 +55,12 @@ public abstract class BaseRegistrableController<E extends BaseEntity, ID extends
 	@ResponseBody
 	@ApiOperation(value = "create-multiple", notes = "Save/Update given entities")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
 	@PostMapping(value = "/multiple", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
-	public final Iterable<E> createMultiple(@RequestBody List<E> entities, FieldFilter<E> fieldFilter) {
+	public final Iterable<E> createMultiple(@RequestBody List<E> entities,
+			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
 		log.info("Saving entities {} with values {}", service().getEntityClass(), entities);
 		return registrerService().createMultiple(entities, fieldFilter);
 	}
@@ -65,12 +68,13 @@ public abstract class BaseRegistrableController<E extends BaseEntity, ID extends
 	@ResponseBody
 	@ApiOperation(value = "update", notes = "Update given entity")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
 	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	@Transactional
 	public final E update(@PathVariable(I18nMessage.ID_PARAMETER) ID id,
-			@Validated({ ValidationStep.Complex.class }) @RequestBody E entity, FieldFilter<E> fieldFilter) {
+			@Validated({ ValidationStep.Complex.class }) @RequestBody E entity,
+			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
 		log.info("Updating entity {} with values {}", service().getEntityClass(), entity);
 		return registrerService().update(id, entity, fieldFilter);
 	}
@@ -78,12 +82,12 @@ public abstract class BaseRegistrableController<E extends BaseEntity, ID extends
 	@ResponseBody
 	@ApiOperation(value = "patch", notes = "Update non-null fields of given entity")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataType = I18nMessage.STRING_DATA_TYPE, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
 	@PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
 	@Transactional
 	public final E patch(@PathVariable(I18nMessage.ID_PARAMETER) ID id, @RequestBody E entity,
-			FieldFilter<E> fieldFilter) {
+			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
 		log.info("Patching entity {} with values {}", service().getEntityClass(), entity);
 		return registrerService().patch(id, entity, fieldFilter);
 	}
