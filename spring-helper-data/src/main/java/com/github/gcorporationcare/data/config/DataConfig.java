@@ -5,11 +5,9 @@ import java.time.LocalDateTime;
 import javax.annotation.PostConstruct;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,8 +19,6 @@ import com.github.gcorporationcare.data.listener.AuditorAwareListener;
 import com.github.gcorporationcare.data.serializer.LocalDateTimeDeserializer;
 import com.github.gcorporationcare.data.serializer.LocalDateTimeSerializer;
 
-@Configuration
-@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public abstract class DataConfig {
 
 	protected AuditorAwareListener auditorAwareListener;

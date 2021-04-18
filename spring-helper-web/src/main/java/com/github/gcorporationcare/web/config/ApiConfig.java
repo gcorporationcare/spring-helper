@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
@@ -20,7 +19,6 @@ import com.github.gcorporationcare.web.listener.SecuredUserAuditor;
 import com.github.gcorporationcare.web.resolver.FieldFilterArgumentResolver;
 import com.github.gcorporationcare.web.resolver.SearchFiltersArgumentResolver;
 
-@Configuration
 public abstract class ApiConfig extends DataConfig implements WebMvcConfigurer {
 
 	/**
