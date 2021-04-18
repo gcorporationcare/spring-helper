@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import com.github.gcorporationcare.data.enumeration.Gender;
 import com.github.gcorporationcare.data.enumeration.PhoneNumberType;
 import com.github.gcorporationcare.data.field.Country;
 import com.github.gcorporationcare.data.field.FaxNumber;
@@ -22,6 +21,7 @@ import com.github.gcorporationcare.notest.entity.Office;
 import com.github.gcorporationcare.notest.entity.Person;
 import com.github.gcorporationcare.notest.entity.Promotion;
 import com.github.gcorporationcare.notest.entity.PromotionTranslation;
+import com.github.gcorporationcare.notest.enumeration.Gender;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

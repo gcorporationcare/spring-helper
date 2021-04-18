@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AllArgsConstructor;
 
-public class AuditorAwareListenerTest {
+class AuditorAwareListenerTest {
 
 	class AccessRight implements GrantedAuthority {
 		private static final long serialVersionUID = 1L;

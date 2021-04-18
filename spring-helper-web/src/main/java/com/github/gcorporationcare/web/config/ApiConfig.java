@@ -15,7 +15,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.github.gcorporationcare.data.config.DataConfig;
 import com.github.gcorporationcare.data.i18n.I18nMessage;
-import com.github.gcorporationcare.web.interceptor.RequestIdGenerator;
+import com.github.gcorporationcare.web.common.RequestIdGenerator;
 import com.github.gcorporationcare.web.listener.SecuredUserAuditor;
 import com.github.gcorporationcare.web.resolver.FieldFilterArgumentResolver;
 import com.github.gcorporationcare.web.resolver.SearchFiltersArgumentResolver;

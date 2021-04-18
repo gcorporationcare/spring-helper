@@ -23,10 +23,10 @@ import com.github.gcorporationcare.data.domain.PropertyPath;
 import com.github.gcorporationcare.data.domain.SearchFilter;
 import com.github.gcorporationcare.data.domain.SearchFilter.SearchFilterOperator;
 import com.github.gcorporationcare.data.domain.SearchFilters;
-import com.github.gcorporationcare.data.enumeration.Gender;
 import com.github.gcorporationcare.notest.common.RandomUtils;
 import com.github.gcorporationcare.notest.config.H2Config;
 import com.github.gcorporationcare.notest.entity.Person;
+import com.github.gcorporationcare.notest.enumeration.Gender;
 import com.github.gcorporationcare.notest.repository.PersonRepository;
 
 @ActiveProfiles("test")

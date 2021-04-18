@@ -23,7 +23,7 @@ import com.github.gcorporationcare.data.common.Utils;
 import com.github.gcorporationcare.data.constraint.InvalidWhen;
 import com.github.gcorporationcare.data.domain.FieldFilter;
 import com.github.gcorporationcare.data.entity.BaseIdentifiedEntity;
-import com.github.gcorporationcare.data.enumeration.Gender;
+import com.github.gcorporationcare.notest.enumeration.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

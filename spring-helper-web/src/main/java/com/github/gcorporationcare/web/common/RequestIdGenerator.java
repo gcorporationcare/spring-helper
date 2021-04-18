@@ -1,4 +1,4 @@
-package com.github.gcorporationcare.web.interceptor;
+package com.github.gcorporationcare.web.common;
 
 import java.util.UUID;
 
