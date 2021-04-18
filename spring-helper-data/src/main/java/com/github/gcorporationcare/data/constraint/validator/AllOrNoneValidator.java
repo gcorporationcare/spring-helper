@@ -12,7 +12,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import com.github.gcorporationcare.data.constraint.AllOrNone;
 
 /**
- * Dealing with validation for {@link com.gcorp.constraint.AllOrNone}
+ * Dealing with validation for {@link com.github.gcorporationcare.data.constraint.AllOrNone}
  */
 public class AllOrNoneValidator implements ConstraintValidator<AllOrNone, Object> {
 	private static final SpelExpressionParser PARSER = new SpelExpressionParser();

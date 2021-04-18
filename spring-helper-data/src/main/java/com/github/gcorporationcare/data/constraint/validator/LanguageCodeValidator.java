@@ -10,7 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 import com.github.gcorporationcare.data.constraint.LanguageCode;
 
 /**
- * Dealing with validation for {@link com.gcorp.constraint.LanguageCode}
+ * Dealing with validation for {@link com.github.gcorporationcare.data.constraint.LanguageCode}
  */
 public class LanguageCodeValidator implements ConstraintValidator<LanguageCode, Object> {
 
