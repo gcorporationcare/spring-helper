@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Indicates the default sorting when browsing database
  * 
- * @see com.gcorp.annotation.Configure
+ * @see com.github.gcorporationcare.data.annotation.Configure
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * Indicates that a field could not be copied via the copy method
  * 
- * @see com.gcorp.entity.BaseEntity
+ * @see com.github.gcorporationcare.data.entity.BaseEntity
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
