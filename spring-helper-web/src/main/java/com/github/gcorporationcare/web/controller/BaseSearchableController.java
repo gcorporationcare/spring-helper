@@ -10,61 +10,60 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.gcorporationcare.data.domain.FieldFilter;
 import com.github.gcorporationcare.data.domain.SearchFilters;
 import com.github.gcorporationcare.data.entity.BaseEntity;
-import com.github.gcorporationcare.data.i18n.I18nMessage;
 import com.github.gcorporationcare.data.repository.BaseRepository;
+import com.github.gcorporationcare.web.annotation.ApiFilterableEndpoint;
+import com.github.gcorporationcare.web.annotation.ApiIdentifiableEndpoint;
+import com.github.gcorporationcare.web.annotation.ApiPageableEndpoint;
+import com.github.gcorporationcare.web.domain.FieldFilter;
+import com.github.gcorporationcare.web.dto.BaseDto;
+import com.github.gcorporationcare.web.i18n.ParameterKey;
 import com.github.gcorporationcare.web.service.BaseSearchableService;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
-public abstract class BaseSearchableController<E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>> {
+public abstract class BaseSearchableController<D extends BaseDto, E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
+		extends BaseController<D, E> {
 
 	public abstract BaseSearchableService<E, ID, R> service();
 
 	@ResponseBody
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
-	@ApiOperation(value = "read-by-id", notes = "Read the object with the given ID")
+	@ApiIdentifiableEndpoint
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public E read(@PathVariable(I18nMessage.ID_PARAMETER) ID id,
-			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
+	@ApiOperation(value = "read-by-id", notes = "Read the object with the given ID")
+	public D read(@PathVariable(ParameterKey.ID_PARAMETER) ID id,
+			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Reading {} with id {}", service().getEntityClass().getSimpleName(), id);
-		return service().read(id, fieldFilter);
+		E entity = service().read(id);
+		return mapToDto(entity, fieldFilter);
 	}
 
 	@ResponseBody
-	@ApiOperation(value = "read-by-filters", notes = "Find the objects where given filters are valid")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION),
-			@ApiImplicitParam(name = I18nMessage.FILTERS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FILTERS_PARAMETER_DESCRIPTION),
-			@ApiImplicitParam(name = I18nMessage.PAGE_PARAMETER, dataTypeClass = Integer.class, defaultValue = I18nMessage.PAGE_PARAMETER_DEFAULT, example = I18nMessage.PAGE_PARAMETER_DEFAULT, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.PAGE_PARAMETER_DESCRIPTION),
-			@ApiImplicitParam(name = I18nMessage.SIZE_PARAMETER, dataTypeClass = Integer.class, defaultValue = I18nMessage.SIZE_PARAMETER_DEFAULT, example = I18nMessage.SIZE_PARAMETER_DEFAULT, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.SIZE_PARAMETER_DESCRIPTION),
-			@ApiImplicitParam(name = I18nMessage.SORT_PARAMETER, allowMultiple = true, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.SORT_PARAMETER_DESCRIPTION) })
+	@ApiPageableEndpoint
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public Page<E> readMultiple(SearchFilters<E> filters,
-			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter,
-			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) Pageable pageable) {
+	@ApiOperation(value = "read-by-filters", notes = "Find the objects where given filters are valid")
+	public Page<D> readMultiple(SearchFilters<E> filters,
+			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter,
+			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) Pageable pageable) {
 		log.info("Reading {} with filters {} at page {}", service().getEntityClass().getSimpleName(), filters,
 				pageable);
-		return service().readMultiple(filters, fieldFilter, pageable);
+		Page<E> page = service().readMultiple(filters, pageable);
+		return mapToPageDto(page, fieldFilter);
 	}
 
 	@ResponseBody
-	@ApiOperation(value = "read-first-by-filters", notes = "Find the first object where given filters are valid")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION),
-			@ApiImplicitParam(name = I18nMessage.FILTERS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FILTERS_PARAMETER_DESCRIPTION) })
+	@ApiFilterableEndpoint
 	@GetMapping(value = "/first", produces = MediaType.APPLICATION_JSON_VALUE)
-	public E readOne(SearchFilters<E> filters, @ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
+	@ApiOperation(value = "read-first-by-filters", notes = "Find the first object where given filters are valid")
+	public D readOne(SearchFilters<E> filters,
+			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Reading first {} with filters {}", service().getEntityClass().getSimpleName(), filters);
-		return service().readOne(filters, fieldFilter);
+		E entity = service().readOne(filters);
+		return mapToDto(entity, fieldFilter);
 	}
 
 }

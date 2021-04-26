@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.gcorporationcare.notest.dto.PersonDto;
 import com.github.gcorporationcare.notest.entity.Person;
 import com.github.gcorporationcare.notest.repository.PersonRepository;
 import com.github.gcorporationcare.notest.service.PersonService;
@@ -12,7 +13,7 @@ import com.github.gcorporationcare.web.service.BaseSearchableService;
 
 @RestController
 @RequestMapping("/persons")
-public class PersonController extends BaseRegistrableController<Person, Long, PersonRepository> {
+public class PersonController extends BaseRegistrableController<PersonDto, Person, Long, PersonRepository> {
 
 	@Autowired
 	PersonService service;

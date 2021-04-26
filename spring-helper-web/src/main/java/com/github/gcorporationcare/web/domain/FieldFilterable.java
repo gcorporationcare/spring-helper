@@ -1,4 +1,4 @@
-package com.github.gcorporationcare.data.domain;
+package com.github.gcorporationcare.web.domain;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

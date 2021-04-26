@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.gcorporationcare.notest.dto.AddressDto;
 import com.github.gcorporationcare.notest.entity.Address;
 import com.github.gcorporationcare.notest.entity.Person;
 import com.github.gcorporationcare.notest.repository.AddressRepository;
@@ -15,7 +16,7 @@ import com.github.gcorporationcare.web.service.BaseChildSearchableService;
 @RestController
 @RequestMapping("/persons/{parent}/addresses")
 public class AddressController
-		extends BaseChildRegistrableController<Address, Long, Person, Long, AddressRepository, PersonRepository> {
+		extends BaseChildRegistrableController<AddressDto, Address, Long, Person, Long, AddressRepository, PersonRepository> {
 
 	@Autowired
 	AddressService service;

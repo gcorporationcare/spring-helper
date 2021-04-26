@@ -1,26 +1,17 @@
 package com.github.gcorporationcare.notest.common;
 
 import java.security.SecureRandom;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import com.github.gcorporationcare.data.enumeration.PhoneNumberType;
 import com.github.gcorporationcare.data.field.Country;
-import com.github.gcorporationcare.data.field.FaxNumber;
-import com.github.gcorporationcare.data.field.HomeNumber;
-import com.github.gcorporationcare.data.field.MobileNumber;
-import com.github.gcorporationcare.data.field.MoneyCurrency;
-import com.github.gcorporationcare.data.field.PhoneNumber;
 import com.github.gcorporationcare.notest.entity.Address;
-import com.github.gcorporationcare.notest.entity.Office;
 import com.github.gcorporationcare.notest.entity.Person;
-import com.github.gcorporationcare.notest.entity.Promotion;
-import com.github.gcorporationcare.notest.entity.PromotionTranslation;
+import com.github.gcorporationcare.notest.entity.PersonTag;
+import com.github.gcorporationcare.notest.entity.PersonTagAuthor;
+import com.github.gcorporationcare.notest.entity.PersonTagDescription;
 import com.github.gcorporationcare.notest.enumeration.Gender;
 
 import lombok.AccessLevel;
@@ -75,50 +66,14 @@ public final class RandomUtils {
 				new String[] { "add", "sub" }, new HashSet<>());
 	}
 
+	public static PersonTag randomPersonTag(Person person, Country country) {
+		PersonTagAuthor author = new PersonTagAuthor("John", "DOE", country);
+		PersonTagDescription description = new PersonTagDescription("A title", "My description", author);
+		return new PersonTag("Simple tag", person.getId(), description);
+	}
+
 	public static Address randomAddress(Person person) {
 		Person owner = person == null ? randomPerson() : person;
 		return new Address("Personal address", "A given street", "12345", "Code-City", "Test-State", true, owner);
-	}
-
-	public static Promotion randomPromotion() {
-		return new Promotion(null, "Super", "This is great", "en", LocalDateTime.now(),
-				LocalDateTime.now().plusDays(30));
-	}
-
-	public static PromotionTranslation randomPromotionTranslation(Promotion promotion) {
-		Promotion source = promotion == null ? randomPromotion() : promotion;
-		PromotionTranslation translation = new PromotionTranslation(source, source.getName(), source.getDescription());
-		translation.setLanguage(source.getLanguage());
-		return translation;
-	}
-
-	public static PhoneNumber randomPhoneNumber(PhoneNumberType type) {
-		PhoneNumberType theType = type != null ? type
-				: PhoneNumberType.values()[randomInteger(PhoneNumberType.values().length)];
-		return PhoneNumber.newPhoneNumber(theType, "us", String.valueOf(randomInteger(2)),
-				String.valueOf(randomInteger(5)), String.valueOf(randomInteger(2)));
-	}
-
-	public static MobileNumber randomMobileNumber() {
-		PhoneNumber phoneNumber = randomPhoneNumber(PhoneNumberType.MOBILE);
-		return new MobileNumber(phoneNumber.getAreaCode(), phoneNumber.getPrefix(), phoneNumber.getSuffix(),
-				phoneNumber.getExtension());
-	}
-
-	public static FaxNumber randomFaxNumber() {
-		PhoneNumber phoneNumber = randomPhoneNumber(PhoneNumberType.FAX);
-		return new FaxNumber(phoneNumber.getAreaCode(), phoneNumber.getPrefix(), phoneNumber.getSuffix(),
-				phoneNumber.getExtension());
-	}
-
-	public static HomeNumber randomHomeNumber() {
-		PhoneNumber phoneNumber = randomPhoneNumber(PhoneNumberType.HOME);
-		return new HomeNumber(phoneNumber.getAreaCode(), phoneNumber.getPrefix(), phoneNumber.getSuffix(),
-				phoneNumber.getExtension());
-	}
-
-	public static Office randomOffice() {
-		return new Office(randomString(), LocalDate.now(), LocalTime.NOON, Country.find("us"),
-				MoneyCurrency.find("USD"), randomFaxNumber(), randomHomeNumber(), randomMobileNumber());
 	}
 }

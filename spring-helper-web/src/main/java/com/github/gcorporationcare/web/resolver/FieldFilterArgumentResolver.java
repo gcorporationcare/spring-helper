@@ -6,7 +6,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.github.gcorporationcare.data.domain.FieldFilter;
+import com.github.gcorporationcare.web.domain.FieldFilter;
 
 public class FieldFilterArgumentResolver implements HandlerMethodArgumentResolver {
 

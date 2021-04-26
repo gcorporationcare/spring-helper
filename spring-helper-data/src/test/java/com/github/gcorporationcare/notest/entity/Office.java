@@ -7,14 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.gcorporationcare.ApiStarter;
 import com.github.gcorporationcare.data.annotation.DefaultField;
-import com.github.gcorporationcare.data.domain.FieldFilter;
 import com.github.gcorporationcare.data.entity.BaseIdentifiedEntity;
 import com.github.gcorporationcare.data.field.Country;
 import com.github.gcorporationcare.data.field.FaxNumber;
@@ -38,7 +36,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "office")
-@JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class Office extends BaseIdentifiedEntity {
 
@@ -53,8 +50,7 @@ public class Office extends BaseIdentifiedEntity {
 
 	private static final long serialVersionUID = 1L;
 	// -------------------------------------------------
-	@NotNull
-	@NotEmpty
+	@NotBlank
 	@Column(name = NAME_COLUMN, nullable = false)
 	private String name;
 	// -------------------------------------------------

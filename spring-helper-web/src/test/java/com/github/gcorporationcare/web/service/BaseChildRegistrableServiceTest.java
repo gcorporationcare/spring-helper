@@ -4,9 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -22,16 +24,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.TransactionSystemException;
 
 import com.github.gcorporationcare.ApiStarter;
-import com.github.gcorporationcare.data.domain.FieldFilter;
 import com.github.gcorporationcare.data.domain.SearchFilter.SearchFilterOperator;
 import com.github.gcorporationcare.data.domain.SearchFilters;
 import com.github.gcorporationcare.notest.common.RandomUtils;
 import com.github.gcorporationcare.notest.config.H2Config;
 import com.github.gcorporationcare.notest.entity.Address;
+import com.github.gcorporationcare.notest.entity.IdentityCard;
 import com.github.gcorporationcare.notest.entity.Person;
 import com.github.gcorporationcare.notest.repository.AddressRepository;
+import com.github.gcorporationcare.notest.repository.IdentityCardRepository;
 import com.github.gcorporationcare.notest.repository.PersonRepository;
 import com.github.gcorporationcare.notest.service.AddressService;
+import com.github.gcorporationcare.notest.service.IdentityCardService;
 import com.github.gcorporationcare.web.exception.RequestException;
 
 @ActiveProfiles("test")
@@ -46,8 +50,10 @@ class BaseChildRegistrableServiceTest {
 	PersonRepository personRepository;
 	@Autowired
 	AddressRepository addressRepository;
-	FieldFilter<Address> allFieldFilter = FieldFilter.allFields();
-	FieldFilter<Address> defaultFieldFilter = FieldFilter.defaultFields();
+	@Autowired
+	IdentityCardService identityCardService;
+	@Autowired
+	IdentityCardRepository identityCardRepository;
 
 	@BeforeEach
 	public void setUp() {
@@ -57,7 +63,7 @@ class BaseChildRegistrableServiceTest {
 	@Test
 	void testRead_OK() {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
-		Address addressExist = addressService.read(person.getId(), address.getId(), allFieldFilter);
+		Address addressExist = addressService.read(person.getId(), address.getId());
 		assertEquals(address.getId(), addressExist.getId());
 		assertEquals(address.getName(), addressExist.getName());
 		assertEquals(address.isActive(), addressExist.isActive());
@@ -65,7 +71,7 @@ class BaseChildRegistrableServiceTest {
 
 	@Test
 	void testRead_KO() {
-		assertThrows(RequestException.class, () -> addressService.read(person.getId(), 0L, allFieldFilter));
+		assertThrows(RequestException.class, () -> addressService.read(person.getId(), 0L));
 	}
 
 	@Test
@@ -80,7 +86,7 @@ class BaseChildRegistrableServiceTest {
 		}).collect(Collectors.toList());
 		addressRepository.saveAll(addresses);
 		SearchFilters<Address> filters = SearchFilters.of("street", SearchFilterOperator.IS_EQUAL, street);
-		Page<Address> addressesPage = addressService.readMultiple(person.getId(), filters, allFieldFilter, null);
+		Page<Address> addressesPage = addressService.readMultiple(person.getId(), filters, null);
 		assertEquals(4, addressesPage.getTotalElements());
 	}
 
@@ -89,7 +95,7 @@ class BaseChildRegistrableServiceTest {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		SearchFilters<Address> filters = SearchFilters.of("owner.id", SearchFilterOperator.IS_EQUAL, person.getId());
 		assertThrows(InvalidDataAccessApiUsageException.class,
-				() -> addressService.readMultiple(address.getPerson().getId(), filters, allFieldFilter, null));
+				() -> addressService.readMultiple(address.getPerson().getId(), filters, null));
 	}
 
 	@Test
@@ -102,29 +108,27 @@ class BaseChildRegistrableServiceTest {
 		}).collect(Collectors.toList());
 		addressRepository.saveAll(addresses);
 		SearchFilters<Address> filters = SearchFilters.of("city", SearchFilterOperator.IS_EQUAL, city);
-		assertNotNull(addressService.readOne(person.getId(), SearchFilters.fromString("-id,!0"), allFieldFilter));
-		assertEquals(city, addressService.readOne(person.getId(), filters, allFieldFilter).getCity());
+		assertNotNull(addressService.readOne(person.getId(), SearchFilters.fromString("-id,!0")));
+		assertEquals(city, addressService.readOne(person.getId(), filters).getCity());
 	}
 
 	@Test
 	void testReadOne_KO() {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		SearchFilters<Address> filters = SearchFilters.of("name.id", SearchFilterOperator.IS_EQUAL, address.getName());
-		assertThrows(BasicPathUsageException.class,
-				() -> addressService.readOne(person.getId(), filters, allFieldFilter));
+		assertThrows(BasicPathUsageException.class, () -> addressService.readOne(person.getId(), filters));
 	}
 
 	@Test
 	void testCreate_OK() {
-		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person), allFieldFilter);
+		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person));
 		assertNotNull(address.getId());
 		assertEquals(person.getId(), address.getPerson().getId());
 	}
 
 	@Test
 	void testCreate_KO() {
-		assertThrows(NullPointerException.class,
-				() -> addressService.create(person.getId(), new Address(), defaultFieldFilter));
+		assertThrows(NullPointerException.class, () -> addressService.create(person.getId(), new Address()));
 	}
 
 	@Test
@@ -133,7 +137,7 @@ class BaseChildRegistrableServiceTest {
 			Address address = RandomUtils.randomAddress(person);
 			return address;
 		}).collect(Collectors.toList());
-		addresses = (List<Address>) addressService.createMultiple(person.getId(), addresses, allFieldFilter);
+		addresses = (List<Address>) addressService.createMultiple(person.getId(), addresses);
 		assertEquals(10, addresses.size());
 		Address address = addresses.get(RandomUtils.randomInteger(9));
 		assertEquals(person.getId(), address.getPerson().getId());
@@ -142,36 +146,34 @@ class BaseChildRegistrableServiceTest {
 	@Test
 	void testCreateMultiple_KO() {
 		List<Address> addresses = Arrays.asList(new Address[] { RandomUtils.randomAddress(person), new Address() });
-		assertThrows(NullPointerException.class,
-				() -> addressService.createMultiple(person.getId(), addresses, defaultFieldFilter));
+		assertThrows(NullPointerException.class, () -> addressService.createMultiple(person.getId(), addresses));
 	}
 
 	@Test
 	void testUpdate_OK() {
-		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person), allFieldFilter);
+		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person));
 		assertNotNull(address.getId());
 		final String newStreet = "My New street";
 		address.setStreet(newStreet);
-		addressService.update(person.getId(), address.getId(), address, allFieldFilter);
+		addressService.update(person.getId(), address.getId(), address);
 		assertEquals(newStreet, addressRepository.findById(address.getId()).get().getStreet());
 	}
 
 	@Test
 	void testUpdate_KO() {
-		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person), defaultFieldFilter);
+		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person));
 		address.setCity("");
 		assertThrows(TransactionSystemException.class,
-				() -> addressService.update(person.getId(), address.getId(), address, defaultFieldFilter));
+				() -> addressService.update(person.getId(), address.getId(), address));
 	}
 
 	@Test
 	void testPatch_OK() {
-		Address notValidAddress = addressService.create(person.getId(), RandomUtils.randomAddress(person),
-				defaultFieldFilter);
+		Address notValidAddress = addressService.create(person.getId(), RandomUtils.randomAddress(person));
 		notValidAddress.setCity(null);
 		final String newState = "New State";
 		notValidAddress.setState(newState);
-		addressService.patch(person.getId(), notValidAddress.getId(), notValidAddress, defaultFieldFilter);
+		addressService.patch(person.getId(), notValidAddress.getId(), notValidAddress);
 		Address address = addressRepository.findById(notValidAddress.getId()).get();
 		assertNotNull(address.getCity());
 		assertEquals(newState, address.getState());
@@ -180,12 +182,12 @@ class BaseChildRegistrableServiceTest {
 	@Test
 	void testPatch_KO() {
 		assertThrows(RequestException.class,
-				() -> addressService.patch(person.getId(), 0L, RandomUtils.randomAddress(person), defaultFieldFilter));
+				() -> addressService.patch(person.getId(), 0L, RandomUtils.randomAddress(person)));
 	}
 
 	@Test
 	void testDelete_OK() {
-		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person), allFieldFilter);
+		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person));
 		address.setActive(false);
 		addressRepository.save(address);
 		addressService.delete(person.getId(), address.getId());
@@ -194,15 +196,15 @@ class BaseChildRegistrableServiceTest {
 
 	@Test
 	void testDelete_KO() {
-		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person), defaultFieldFilter);
+		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person));
 		assertThrows(RequestException.class, () -> addressService.delete(person.getId(), address.getId()));
 
 	}
 
 	@Test
 	void testDeleteMutiple_OK() {
-		Address address1 = addressService.create(person.getId(), RandomUtils.randomAddress(person), allFieldFilter);
-		Address address2 = addressService.create(person.getId(), RandomUtils.randomAddress(person), allFieldFilter);
+		Address address1 = addressService.create(person.getId(), RandomUtils.randomAddress(person));
+		Address address2 = addressService.create(person.getId(), RandomUtils.randomAddress(person));
 		address1.setActive(false);
 		address2.setActive(false);
 		address1 = addressRepository.save(address1);
@@ -210,9 +212,31 @@ class BaseChildRegistrableServiceTest {
 		addressService.deleteMultiple(person.getId(), Arrays.asList(address1.getId(), address2.getId()));
 		assertFalse(addressRepository.findById(address1.getId()).isPresent());
 		assertFalse(addressRepository.findById(address2.getId()).isPresent());
-		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person), allFieldFilter);
+		Address address = addressService.create(person.getId(), RandomUtils.randomAddress(person));
 		address.setActive(false);
 		address = addressRepository.save(address);
 		addressService.deleteMultiple(person.getId(), Arrays.asList(address.getId(), 0L));
+	}
+
+	@Test
+	void testReadWithNull() {
+		IdentityCard identityCard1 = identityCardRepository
+				.save(new IdentityCard(UUID.randomUUID().toString(), person));
+		IdentityCard identityCard2 = identityCardRepository
+				.save(new IdentityCard(UUID.randomUUID().toString(), person));
+
+		List<IdentityCard> identityCards = identityCardRepository.findByPersonId(person.getId());
+		assertEquals(identityCards.size(), 2);
+		identityCardService.delete(person.getId(), identityCard1.getId());
+		List<IdentityCard> currentIdentityCards = identityCardRepository.findByPersonId(person.getId());
+		assertEquals(currentIdentityCards.size(), 1);
+
+		assertTrue(identityCardRepository.findById(identityCard1.getId()).isPresent());
+		assertTrue(identityCardRepository.findById(identityCard2.getId()).isPresent());
+	}
+
+	@Test
+	void testSoftdelete() {
+		assertThrows(RequestException.class, () -> identityCardService.read(person.getId(), null));
 	}
 }

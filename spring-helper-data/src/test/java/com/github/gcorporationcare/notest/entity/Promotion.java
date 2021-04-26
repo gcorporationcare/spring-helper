@@ -8,16 +8,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.gcorporationcare.ApiStarter;
 import com.github.gcorporationcare.data.annotation.DefaultField;
 import com.github.gcorporationcare.data.annotation.Translated;
 import com.github.gcorporationcare.data.common.Utils;
-import com.github.gcorporationcare.data.domain.FieldFilter;
+import com.github.gcorporationcare.data.constraint.LanguageCode;
 import com.github.gcorporationcare.data.entity.BaseTranslatableEntity;
 
 import lombok.AllArgsConstructor;
@@ -31,7 +29,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "promotion")
-@JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class Promotion extends BaseTranslatableEntity<PromotionTranslation> {
 
@@ -50,20 +47,17 @@ public class Promotion extends BaseTranslatableEntity<PromotionTranslation> {
 	@Column(name = Promotion.ID_COLUMN)
 	private Long id;
 	// -------------------------------------------------
-	@NotNull
-	@NotEmpty
+	@NotBlank
 	@Translated
 	@Column(name = Promotion.NAME_COLUMN, nullable = false)
 	private String name;
 	// -------------------------------------------------
-	@NotNull
-	@NotEmpty
+	@NotBlank
 	@Translated
 	@Column(name = Promotion.DESCRIPTION_COLUMN, nullable = false)
 	private String description;
 	// -------------------------------------------------
-	@NotNull
-	@NotEmpty
+	@LanguageCode
 	@Column(name = Promotion.LANGUAGE_COLUMN, nullable = false)
 	private String language;
 	// -------------------------------------------------

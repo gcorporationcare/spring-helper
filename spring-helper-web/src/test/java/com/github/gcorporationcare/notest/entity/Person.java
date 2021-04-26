@@ -13,7 +13,6 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -21,9 +20,9 @@ import com.github.gcorporationcare.ApiStarter;
 import com.github.gcorporationcare.data.annotation.DefaultField;
 import com.github.gcorporationcare.data.common.Utils;
 import com.github.gcorporationcare.data.constraint.InvalidWhen;
-import com.github.gcorporationcare.data.domain.FieldFilter;
 import com.github.gcorporationcare.data.entity.BaseIdentifiedEntity;
 import com.github.gcorporationcare.notest.enumeration.Gender;
+import com.github.gcorporationcare.web.domain.FieldFilter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,7 +50,6 @@ public class Person extends BaseIdentifiedEntity {
 
 	private static final long serialVersionUID = 1L;
 	// -------------------------------------------------
-	@NotNull
 	@NotEmpty
 	@Column(name = Person.NAME_COLUMN, nullable = false)
 	private String name;

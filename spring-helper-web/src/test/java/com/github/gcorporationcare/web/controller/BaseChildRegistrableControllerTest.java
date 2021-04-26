@@ -79,7 +79,7 @@ class BaseChildRegistrableControllerTest extends BaseControllerTest {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		SearchFilters<Address> filters = SearchFilters.of("name", SearchFilterOperator.IS_EQUAL, address.getName());
 		service.perform(get(String.format("%s%s", readByFilters, filters.toString()))
-				.header(BaseControllerTest.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+				.header(BaseControllerTest.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -99,7 +99,7 @@ class BaseChildRegistrableControllerTest extends BaseControllerTest {
 		addresses = (List<Address>) addressRepository.saveAll(addresses);
 		SearchFilters<Address> filters = SearchFilters.of("city", SearchFilterOperator.IS_LIKE, "City");
 		service.perform(get(String.format("%s%s", readOne, filters.toString())).header(BaseControllerTest.CONTENT_TYPE,
-				MediaType.APPLICATION_JSON_VALUE));
+				MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -200,7 +200,7 @@ class BaseChildRegistrableControllerTest extends BaseControllerTest {
 		address2 = addressRepository.save(address2);
 		String[] ids = new String[] { address1.getId().toString(), address2.getId().toString() };
 		service.perform(delete(String.format("%s%s", deleteMultiple, String.join(MULTIPLE_DELIMITER, ids)))
-				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE));
+				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isNoContent());
 	}
 
 	@Test

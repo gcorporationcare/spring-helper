@@ -4,14 +4,15 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
 
 import com.github.gcorporationcare.data.exception.ValidationException;
 import com.github.gcorporationcare.data.i18n.I18nMessage;
 import com.github.gcorporationcare.web.exception.RequestException;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  * @param <T> the type of the body contained in the response
  */
 @Slf4j
+@EqualsAndHashCode(callSuper = true)
 public class ApiResponse<T> extends ResponseEntity<T> {
 
 	public static final String DEFAULT_RESPONSE_ROOT = "content";
@@ -30,6 +32,7 @@ public class ApiResponse<T> extends ResponseEntity<T> {
 	public static final String TIMESTAMP_FIELD = "timestamp";
 	public static final String STATUS_FIELD = "status";
 	public static final String ERROR_FIELD = "error";
+	public static final String REQUEST_ID_FIELD = "requestId";
 
 	@Getter
 	private final boolean success;
@@ -69,14 +72,15 @@ public class ApiResponse<T> extends ResponseEntity<T> {
 	 * @return a Map with keys (code, message, time stamp, etc...)
 	 */
 	public static Map<String, Object> exceptionToMap(Exception e, HttpStatus statusCode, Object... objects) {
-		I18nMessage apiMessage = I18nMessage.getInstance();
+		I18nMessage i18nMessage = I18nMessage.getInstance();
 
 		Map<String, Object> map = new HashMap<>();
 		if (!log.isDebugEnabled()) {
 			map.put(TYPE_FIELD, e.getClass().getName());
 		}
 		map.put(CODE_FIELD, e.getMessage());
-		map.put(MESSAGE_FIELD, apiMessage.getMessage(e.getMessage(), objects));
+		map.put(MESSAGE_FIELD, i18nMessage.getMessage(e.getMessage(), objects));
+		map.put(REQUEST_ID_FIELD, MDC.get(RequestIdGenerator.REQUEST_ID_MDC_KEY));
 		map.put(TIMESTAMP_FIELD, LocalDateTime.now().toString());
 		if (statusCode != null) {
 			map.put(STATUS_FIELD, String.valueOf(statusCode.value()));
@@ -87,19 +91,5 @@ public class ApiResponse<T> extends ResponseEntity<T> {
 
 	private boolean isSuccessStatusCode(HttpStatus statusCode) {
 		return !statusCode.is4xxClientError() && !statusCode.is5xxServerError();
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean equals(Object other) {
-		if (!(other instanceof ApiResponse))
-			return false;
-		ApiResponse<T> o = (ApiResponse<T>) other;
-		return this.success == o.success && ObjectUtils.nullSafeEquals(this.getStatusCode(), o.getStatusCode());
-	}
-
-	@Override
-	public int hashCode() {
-		return this.getStatusCode().hashCode() * 17 + super.hashCode();
 	}
 }

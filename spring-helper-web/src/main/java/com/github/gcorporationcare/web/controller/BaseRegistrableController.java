@@ -19,95 +19,100 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.github.gcorporationcare.data.constraint.ValidationStep;
-import com.github.gcorporationcare.data.domain.FieldFilter;
 import com.github.gcorporationcare.data.entity.BaseEntity;
-import com.github.gcorporationcare.data.i18n.I18nMessage;
 import com.github.gcorporationcare.data.repository.BaseRepository;
+import com.github.gcorporationcare.web.annotation.ApiIdentifiableEndpoint;
+import com.github.gcorporationcare.web.annotation.ApiSimpleEndpoint;
+import com.github.gcorporationcare.web.domain.FieldFilter;
+import com.github.gcorporationcare.web.dto.BaseDto;
+import com.github.gcorporationcare.web.i18n.ParameterKey;
 import com.github.gcorporationcare.web.service.BaseRegistrableService;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
-public abstract class BaseRegistrableController<E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
-		extends BaseSearchableController<E, ID, R> {
+public abstract class BaseRegistrableController<D extends BaseDto, E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
+		extends BaseSearchableController<D, E, ID, R> {
 
 	private BaseRegistrableService<E, ID, R> registrerService() {
 		return (BaseRegistrableService<E, ID, R>) service();
 	}
 
 	@ResponseBody
+	@Transactional
+	@ApiSimpleEndpoint
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = ParameterKey.EMPTY, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "create", notes = "Save/Update given entity")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
-	@PostMapping(value = I18nMessage.EMPTY, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
-	public E create(@Validated({ ValidationStep.Simple.class }) @RequestBody E entity,
-			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
-		log.info("Saving entity {} with values {}", service().getEntityClass(), entity);
-		return registrerService().create(entity, fieldFilter);
+	public D create(@Validated({ ValidationStep.Simple.class }) @RequestBody D dto,
+			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
+		log.info("Saving entity {} with values {}", service().getEntityClass(), dto);
+		E entity = mapFromDto(dto);
+		E newEntity = registrerService().create(entity);
+		return mapToDto(newEntity, fieldFilter);
 	}
 
 	@ResponseBody
-	@ApiOperation(value = "create-multiple", notes = "Save/Update given entities")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+	@Transactional
+	@ApiSimpleEndpoint
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = "/multiple", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.CREATED)
-	@Transactional
-	public final Iterable<E> createMultiple(@RequestBody List<E> entities,
-			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
-		log.info("Saving entities {} with values {}", service().getEntityClass(), entities);
-		return registrerService().createMultiple(entities, fieldFilter);
+	@ApiOperation(value = "create-multiple", notes = "Save/Update given entities")
+	public Iterable<D> createMultiple(@RequestBody List<D> dtos,
+			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
+		log.info("Saving entities {} with values {}", service().getEntityClass(), dtos);
+		Iterable<E> entities = mapFromIterableDto(dtos);
+		Iterable<E> newEntities = registrerService().createMultiple(entities);
+		return mapToIterableDto(newEntities, fieldFilter);
 	}
 
 	@ResponseBody
-	@ApiOperation(value = "update", notes = "Update given entity")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+	@Transactional
+	@ApiIdentifiableEndpoint
+	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.OK)
-	@Transactional
-	public final E update(@PathVariable(I18nMessage.ID_PARAMETER) ID id,
-			@Validated({ ValidationStep.Complex.class }) @RequestBody E entity,
-			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
-		log.info("Updating entity {} with values {}", service().getEntityClass(), entity);
-		return registrerService().update(id, entity, fieldFilter);
+	@ApiOperation(value = "update", notes = "Update given entity")
+	public D update(@PathVariable(ParameterKey.ID_PARAMETER) ID id,
+			@Validated({ ValidationStep.Complex.class }) @RequestBody D dto,
+			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
+		log.info("Updating entity {} with values {}", service().getEntityClass(), dto);
+		E entity = mapFromDto(dto);
+		E newEntity = registrerService().update(id, entity);
+		return mapToDto(newEntity, fieldFilter);
 	}
 
 	@ResponseBody
-	@ApiOperation(value = "patch", notes = "Update non-null fields of given entity")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = I18nMessage.FIELDS_PARAMETER, dataTypeClass = String.class, paramType = I18nMessage.QUERY_PARAM_TYPE, value = I18nMessage.FIELDS_PARAMETER_DESCRIPTION) })
+	@Transactional
+	@ApiIdentifiableEndpoint
+	@ResponseStatus(HttpStatus.OK)
 	@PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.OK)
-	@Transactional
-	public final E patch(@PathVariable(I18nMessage.ID_PARAMETER) ID id, @RequestBody E entity,
-			@ApiIgnore(I18nMessage.IGNORE_PARAMETER) FieldFilter<E> fieldFilter) {
-		log.info("Patching entity {} with values {}", service().getEntityClass(), entity);
-		return registrerService().patch(id, entity, fieldFilter);
+	@ApiOperation(value = "patch", notes = "Update non-null fields of given entity")
+	public D patch(@PathVariable(ParameterKey.ID_PARAMETER) ID id, @RequestBody D dto,
+			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
+		log.info("Patching entity {} with values {}", service().getEntityClass(), dto);
+		E entity = mapFromDto(dto);
+		E newEntity = registrerService().patch(id, entity);
+		return mapToDto(newEntity, fieldFilter);
 	}
 
 	@ResponseBody
-	@ApiOperation(value = "delete", notes = "Delete the given entity")
-	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Transactional
-	public final void delete(@PathVariable(I18nMessage.ID_PARAMETER) ID id) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "delete", notes = "Delete the given entity")
+	public void delete(@PathVariable(ParameterKey.ID_PARAMETER) ID id) {
 		log.info("Deleting entity {} with id {}", service().getEntityClass(), id);
 		registrerService().delete(id);
 	}
 
 	@ResponseBody
-	@ApiOperation(value = "delete-by-ids", notes = "Delete the entities with the given ids")
-	@DeleteMapping(value = "/multiple", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Transactional
-	public final void deleteMultiple(@RequestParam(I18nMessage.IDS_PARAMETER) List<ID> ids) {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping(value = "/multiple", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "delete-by-ids", notes = "Delete the entities with the given ids")
+	public void deleteMultiple(@RequestParam(ParameterKey.IDS_PARAMETER) List<ID> ids) {
 		log.info("Deleting entities with ids {} with values {}", service().getEntityClass(), ids);
 		registrerService().deleteMultiple(ids);
 	}

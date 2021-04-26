@@ -6,13 +6,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.github.gcorporationcare.data.annotation.Configure;
 import com.github.gcorporationcare.data.annotation.DefaultField;
 import com.github.gcorporationcare.data.annotation.FieldSort;
 import com.github.gcorporationcare.data.annotation.NotCopyable;
 import com.github.gcorporationcare.data.convention.SqlNamingConvention;
-import com.github.gcorporationcare.data.domain.FieldFilter;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +24,6 @@ import lombok.ToString;
 @Getter
 @MappedSuperclass
 @NoArgsConstructor
-@JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @ToString(callSuper = true, includeFieldNames = true)
 @Configure(defaultSort = { @FieldSort(SqlNamingConvention.Column.ID) })
 public abstract class BaseIdentifiedEntity extends BaseEntity {

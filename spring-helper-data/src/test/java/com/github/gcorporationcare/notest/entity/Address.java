@@ -7,12 +7,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.gcorporationcare.ApiStarter;
 import com.github.gcorporationcare.data.common.Utils;
 import com.github.gcorporationcare.data.constraint.AllOrNone;
-import com.github.gcorporationcare.data.domain.FieldFilter;
 import com.github.gcorporationcare.data.entity.BaseIdentifiedEntity;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +24,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "address", indexes = { @Index(columnList = Address.PERSON_ID_COLUMN) })
-@JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @AllOrNone(value = { Address.ZIP_COLUMN, Address.CITY_COLUMN, Address.STATE_COLUMN })
 @JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class Address extends BaseIdentifiedEntity {

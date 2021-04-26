@@ -12,7 +12,6 @@ import com.google.common.base.Strings;
 
 import lombok.Getter;
 
-
 /**
  * Assign a request identifier to an HTTP request. Later the request id will be
  * used for logging purpose
@@ -20,6 +19,7 @@ import lombok.Getter;
  */
 public class RequestIdGenerator implements HandlerInterceptor {
 
+	public static final String REQUEST_ID_MDC_KEY = "RequestId";
 	@Getter
 	private final String headerName;
 
@@ -31,7 +31,7 @@ public class RequestIdGenerator implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) {
 		String uid = UUID.randomUUID().toString();
-		MDC.put("RequestId", uid);
+		MDC.put(REQUEST_ID_MDC_KEY, uid);
 		String header = httpServletResponse.getHeader(headerName);
 		if (Strings.isNullOrEmpty(header)) {
 			httpServletResponse.setHeader(headerName, uid);

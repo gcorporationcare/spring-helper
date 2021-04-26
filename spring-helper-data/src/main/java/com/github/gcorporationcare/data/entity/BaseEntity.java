@@ -22,6 +22,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -39,7 +40,6 @@ import com.github.gcorporationcare.data.annotation.Translated;
 import com.github.gcorporationcare.data.common.Utils;
 import com.github.gcorporationcare.data.convention.SqlNamingConvention;
 import com.github.gcorporationcare.data.domain.Constrainable;
-import com.github.gcorporationcare.data.domain.FieldFilterable;
 import com.github.gcorporationcare.data.domain.Formattable;
 import com.github.gcorporationcare.data.exception.StandardRuntimeException;
 import com.github.gcorporationcare.data.exception.ValidationException;
@@ -60,7 +60,7 @@ import lombok.extern.slf4j.Slf4j;
 @MappedSuperclass
 @NoArgsConstructor
 @EntityListeners({ AuditingEntityListener.class, AuditorAwareListener.class })
-public abstract class BaseEntity implements Serializable, FieldFilterable, Constrainable, Formattable {
+public abstract class BaseEntity implements Serializable, Constrainable, Formattable {
 
 	private static final long serialVersionUID = 1L;
 	// -------------------------------------------------
@@ -107,7 +107,7 @@ public abstract class BaseEntity implements Serializable, FieldFilterable, Const
 	public final void validate() {
 		BaseEntity.validateObject(this);
 		Object[] embbededFields = embbeded();
-		if (embbededFields == null) {
+		if (ArrayUtils.isEmpty(embbededFields)) {
 			return;
 		}
 		Arrays.stream(embbededFields).filter(Objects::nonNull).forEach(BaseEntity::validateObject);
@@ -188,11 +188,6 @@ public abstract class BaseEntity implements Serializable, FieldFilterable, Const
 				.map(s -> s.ascending() ? Sort.Order.asc(s.value()) : Sort.Order.desc(s.value()))
 				.collect(Collectors.toList());
 		return Sort.by(orders);
-	}
-
-	@Override
-	public final Set<String> defaultFields() {
-		return FieldFilterable.defaultFields(getClass(), BaseEntity.class);
 	}
 
 	/**

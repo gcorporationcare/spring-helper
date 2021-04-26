@@ -6,7 +6,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -42,13 +42,11 @@ public class PromotionTranslation extends BaseTranslation {
 	@JoinColumn(name = PromotionTranslation.SOURCE_ID_COLUMN)
 	protected Promotion source;
 	// -------------------------------------------------
-	@NotNull
-	@NotEmpty
+	@NotBlank
 	@Column(name = PromotionTranslation.NAME_COLUMN, nullable = false)
 	private String name;
 	// -------------------------------------------------
-	@NotNull
-	@NotEmpty
+	@NotBlank
 	@Column(name = PromotionTranslation.DESCRIPTION_COLUMN, nullable = false)
 	private String description;
 

@@ -3,6 +3,7 @@ package com.github.gcorporationcare.web.config;
 import java.util.List;
 import java.util.Locale;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -13,8 +14,8 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.github.gcorporationcare.data.config.DataConfig;
-import com.github.gcorporationcare.data.i18n.I18nMessage;
 import com.github.gcorporationcare.web.common.RequestIdGenerator;
+import com.github.gcorporationcare.web.i18n.ParameterKey;
 import com.github.gcorporationcare.web.listener.SecuredUserAuditor;
 import com.github.gcorporationcare.web.resolver.FieldFilterArgumentResolver;
 import com.github.gcorporationcare.web.resolver.SearchFiltersArgumentResolver;
@@ -46,12 +47,12 @@ public abstract class ApiConfig extends DataConfig implements WebMvcConfigurer {
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-		resolver.setPageParameterName(I18nMessage.PAGE_PARAMETER);
-		resolver.setSizeParameterName(I18nMessage.SIZE_PARAMETER);
+		resolver.setPageParameterName(ParameterKey.PAGE_PARAMETER);
+		resolver.setSizeParameterName(ParameterKey.SIZE_PARAMETER);
 		resolver.setOneIndexedParameters(true);
 		argumentResolvers.add(resolver);
-		argumentResolvers.add(new SearchFiltersArgumentResolver(I18nMessage.FILTERS_PARAMETER));
-		argumentResolvers.add(new FieldFilterArgumentResolver(I18nMessage.FIELDS_PARAMETER));
+		argumentResolvers.add(new SearchFiltersArgumentResolver(ParameterKey.FILTERS_PARAMETER));
+		argumentResolvers.add(new FieldFilterArgumentResolver(ParameterKey.FIELDS_PARAMETER));
 	}
 
 	/**
@@ -72,7 +73,7 @@ public abstract class ApiConfig extends DataConfig implements WebMvcConfigurer {
 	@Bean
 	public LocaleChangeInterceptor localeChangeInterceptor() {
 		LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-		interceptor.setParamName(I18nMessage.LANGUAGE_PARAMETER);
+		interceptor.setParamName(ParameterKey.LANGUAGE_PARAMETER);
 		return interceptor;
 	}
 
@@ -81,11 +82,20 @@ public abstract class ApiConfig extends DataConfig implements WebMvcConfigurer {
 	 * 
 	 * @return an instance of the given bean
 	 */
-
 	@Bean
 	public LocaleResolver localeResolver() {
 		SessionLocaleResolver resolver = new SessionLocaleResolver();
 		resolver.setDefaultLocale(Locale.ENGLISH);
 		return resolver;
+	}
+
+	/**
+	 * Used for mapping entity objects into DTO
+	 * 
+	 * @return the mapper instance
+	 */
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
 	}
 }

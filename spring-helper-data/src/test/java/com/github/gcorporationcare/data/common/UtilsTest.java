@@ -195,13 +195,15 @@ class UtilsTest {
 
 	@Test
 	void testSetFieldValue_WithBadSupertype() {
-		assertThrows(StandardRuntimeException.class,
-				() -> Utils.setFieldValue("created", new Person(), Person.class, LocalDateTime.now()));
+		Person person = new Person();
+		LocalDateTime now = LocalDateTime.now();
+		assertThrows(StandardRuntimeException.class, () -> Utils.setFieldValue("created", person, Person.class, now));
 	}
 
 	@Test
 	void testSetFieldValue_WithBadValue() {
+		Person person = new Person();
 		assertThrows(StandardRuntimeException.class,
-				() -> Utils.setFieldValue("updated", new Person(), BaseEntity.class, "Wrong value"));
+				() -> Utils.setFieldValue("updated", person, BaseEntity.class, "Wrong value"));
 	}
 }

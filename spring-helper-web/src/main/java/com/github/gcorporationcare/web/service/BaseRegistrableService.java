@@ -12,9 +12,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gcorporationcare.data.common.Utils;
-import com.github.gcorporationcare.data.domain.FieldFilter;
-import com.github.gcorporationcare.data.domain.SearchFilters;
 import com.github.gcorporationcare.data.domain.SearchFilter.SearchFilterOperator;
+import com.github.gcorporationcare.data.domain.SearchFilters;
 import com.github.gcorporationcare.data.entity.BaseEntity;
 import com.github.gcorporationcare.data.i18n.I18nMessage;
 import com.github.gcorporationcare.data.repository.BaseRepository;
@@ -39,24 +38,24 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 
 	public abstract void canCreate(@NonNull E entity);
 
-	protected void afterCreate(E entity) {
+	protected void afterCreate(@NonNull E entity) {
 		log.info("Created {}", entity);
 	}
 
 	@Transactional
-	public E create(E entity, @NonNull FieldFilter<E> fieldFilter) {
+	public E create(@NonNull E entity) {
 		canCreate(entity);
 		E saved = repository().save(entity);
 		afterCreate(saved);
-		return fieldFilter.parseEntity(saved);
+		return saved;
 	}
 
 	@Transactional
-	public Iterable<E> createMultiple(@NonNull Iterable<E> entities, @NonNull FieldFilter<E> fieldFilter) {
+	public Iterable<E> createMultiple(@NonNull Iterable<E> entities) {
 		Streams.stream(entities).forEach(this::canCreate);
 		Iterable<E> saved = repository().saveAll(entities);
 		StreamSupport.stream(saved.spliterator(), false).forEach(this::afterCreate);
-		return fieldFilter.parseIterable(saved);
+		return saved;
 	}
 
 	public abstract void canUpdate(@NonNull E entity, @NonNull E savedEntity);
@@ -70,22 +69,22 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 		return repository().save(saved);
 	}
 
-	protected void afterUpdate(E entity) {
+	protected void afterUpdate(@NonNull E entity) {
 		log.info("Updated {}", entity);
 	}
 
 	@Transactional
-	public E update(@NonNull ID id, @NonNull E entity, @NonNull FieldFilter<E> fieldFilter) {
+	public E update(@NonNull ID id, @NonNull E entity) {
 		E saved = merge(id, entity, false);
 		afterUpdate(saved);
-		return fieldFilter.parseEntity(saved);
+		return saved;
 	}
 
 	@Transactional
-	public E patch(@NonNull ID id, @NonNull E entity, @NonNull FieldFilter<E> fieldFilter) {
+	public E patch(@NonNull ID id, @NonNull E entity) {
 		E saved = merge(id, entity, true);
 		afterUpdate(saved);
-		return fieldFilter.parseEntity(saved);
+		return saved;
 	}
 
 	public abstract void canDelete(@NonNull E entity);
@@ -94,7 +93,7 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 	public void delete(@NonNull ID id) {
 		// Since we will need all available fields to decide whether an user can delete
 		// a record or not
-		E entity = read(id, FieldFilter.allFields());
+		E entity = read(id);
 		canDelete(entity);
 		repository().deleteById(id);
 	}
@@ -104,7 +103,7 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 		SearchFilters<E> idsFilters = new SearchFilters<>();
 		Streams.stream(ids).filter(Objects::nonNull)
 				.forEach(i -> idsFilters.or(getIdField(), SearchFilterOperator.IS_EQUAL, i));
-		List<E> entities = readMultiple(idsFilters, FieldFilter.allFields(), null).getContent();
+		List<E> entities = readMultiple(idsFilters, null).getContent();
 		entities.stream().forEach(this::canDelete);
 		repository().deleteAll();
 	}

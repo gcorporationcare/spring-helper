@@ -26,8 +26,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @ControllerAdvice
-public class ExceptionInterceptor {
-	static final Object[] EMPTY_OBJECTS = new Object[0];
+public class BaseExceptionInterceptor {
+	protected static final Object[] EMPTY_OBJECTS = new Object[0];
 
 	/**
 	 * Catch any technical exception and return an HTTP response.

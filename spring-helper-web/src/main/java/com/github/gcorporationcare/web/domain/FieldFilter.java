@@ -1,4 +1,4 @@
-package com.github.gcorporationcare.data.domain;
+package com.github.gcorporationcare.web.domain;
 
 import java.io.IOException;
 import java.io.Serializable;

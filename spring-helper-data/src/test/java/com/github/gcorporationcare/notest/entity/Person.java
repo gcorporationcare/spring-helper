@@ -12,16 +12,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.gcorporationcare.ApiStarter;
 import com.github.gcorporationcare.data.annotation.DefaultField;
 import com.github.gcorporationcare.data.common.Utils;
 import com.github.gcorporationcare.data.constraint.InvalidWhen;
-import com.github.gcorporationcare.data.domain.FieldFilter;
 import com.github.gcorporationcare.data.entity.BaseIdentifiedEntity;
 import com.github.gcorporationcare.notest.enumeration.Gender;
 
@@ -37,7 +34,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "person", uniqueConstraints = { @UniqueConstraint(columnNames = Person.EMAIL_COLUMN) }, indexes = {
 		@Index(columnList = Person.EMAIL_COLUMN) })
-@JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @InvalidWhen("email == null")
 @JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class Person extends BaseIdentifiedEntity {
@@ -51,12 +47,12 @@ public class Person extends BaseIdentifiedEntity {
 
 	private static final long serialVersionUID = 1L;
 	// -------------------------------------------------
-	@NotNull
-	@NotEmpty
+	@NotBlank
 	@Column(name = Person.NAME_COLUMN, nullable = false)
 	private String name;
 	// -------------------------------------------------
 	@Email
+	@NotBlank
 	@DefaultField
 	@Column(name = Person.EMAIL_COLUMN, nullable = false)
 	private String email;

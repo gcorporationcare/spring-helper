@@ -6,13 +6,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.github.gcorporationcare.data.domain.FieldFilter;
+import com.github.gcorporationcare.web.domain.FieldFilter;
 
 public abstract class BaseControllerTest {
 	protected static final String CONTENT_TYPE = "Content-Type";
@@ -38,6 +39,7 @@ public abstract class BaseControllerTest {
 				SimpleBeanPropertyFilter.serializeAll());
 		mapper.setFilterProvider(filterProvider);
 		mapper.registerModule(new JavaTimeModule());
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		mapper.configure(MapperFeature.USE_ANNOTATIONS, true);
 

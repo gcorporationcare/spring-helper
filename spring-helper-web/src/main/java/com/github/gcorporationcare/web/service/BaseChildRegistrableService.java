@@ -14,9 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import com.github.gcorporationcare.data.common.Utils;
-import com.github.gcorporationcare.data.domain.FieldFilter;
-import com.github.gcorporationcare.data.domain.SearchFilters;
 import com.github.gcorporationcare.data.domain.SearchFilter.SearchFilterOperator;
+import com.github.gcorporationcare.data.domain.SearchFilters;
 import com.github.gcorporationcare.data.entity.BaseEntity;
 import com.github.gcorporationcare.data.exception.StandardRuntimeException;
 import com.github.gcorporationcare.data.i18n.I18nMessage;
@@ -76,23 +75,22 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 
 	public abstract void canCreate(@NonNull P_ID parentId, @NonNull E child);
 
-	protected void afterCreate(E entity) {
+	protected void afterCreate(@NonNull E entity) {
 		log.info("Created {}", entity);
 	}
 
 	@Transactional
-	public E create(@NonNull P_ID parentId, @NonNull E child, @NonNull FieldFilter<E> fieldFilter) {
+	public E create(@NonNull P_ID parentId, @NonNull E child) {
 		P_E parent = getParent(parentId);
 		Utils.setFieldValue(getParentField(), child, BaseEntity.class, parent);
 		canCreate(parentId, child);
 		E saved = repository().save(child);
 		afterCreate(saved);
-		return fieldFilter.parseEntity(saved);
+		return saved;
 	}
 
 	@Transactional
-	public Iterable<E> createMultiple(@NonNull P_ID parentId, Iterable<E> children,
-			@NonNull FieldFilter<E> fieldFilter) {
+	public Iterable<E> createMultiple(@NonNull P_ID parentId, Iterable<E> children) {
 		P_E parent = getParent(parentId);
 		Streams.stream(children).forEach(c -> {
 			Utils.setFieldValue(getParentField(), c, BaseEntity.class, parent);
@@ -100,13 +98,13 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 		});
 		Iterable<E> saved = repository().saveAll(children);
 		StreamSupport.stream(saved.spliterator(), false).forEach(this::afterCreate);
-		return fieldFilter.parseIterable(saved);
+		return saved;
 	}
 
 	public abstract void canUpdate(@NonNull P_ID parentId, @NonNull E child, @NonNull E savedChild);
 
 	private E merge(@NonNull P_ID parentId, @NonNull ID childId, @NonNull E child, boolean excludeNull) {
-		E saved = read(parentId, childId, FieldFilter.allFields());
+		E saved = read(parentId, childId);
 		Utils.setFieldValue(getIdField(), child, BaseEntity.class, childId);
 		final String parentField = getParentField();
 		String[] excludedFields = excludeNull ? Utils.getNullPropertyNames(child) : null;
@@ -117,30 +115,29 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 		return repository().save(saved);
 	}
 
-	protected void afterUpdate(E entity) {
+	protected void afterUpdate(@NonNull E entity) {
 		log.info("Updated {}", entity);
 	}
 
 	@Transactional
-	public E update(@NonNull P_ID parentId, @NonNull ID childId, @NonNull E child,
-			@NonNull FieldFilter<E> fieldFilter) {
+	public E update(@NonNull P_ID parentId, @NonNull ID childId, @NonNull E child) {
 		E saved = merge(parentId, childId, child, false);
 		afterUpdate(saved);
-		return fieldFilter.parseEntity(saved);
+		return saved;
 	}
 
 	@Transactional
-	public E patch(@NonNull P_ID parentId, @NonNull ID childId, @NonNull E child, @NonNull FieldFilter<E> fieldFilter) {
+	public E patch(@NonNull P_ID parentId, @NonNull ID childId, @NonNull E child) {
 		E saved = merge(parentId, childId, child, true);
 		afterUpdate(saved);
-		return fieldFilter.parseEntity(saved);
+		return saved;
 	}
 
 	public abstract void canDelete(@NonNull P_ID parentId, @NonNull E child);
 
 	@Transactional
 	public void delete(@NonNull P_ID parentId, @NonNull ID childId) {
-		E child = read(parentId, childId, FieldFilter.allFields());
+		E child = read(parentId, childId);
 		canDelete(parentId, child);
 		if (isHardDelete())
 			repository().delete(child);

@@ -87,6 +87,7 @@ public abstract class DataConfig {
 	@Primary
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper().setFilterProvider(new SimpleFilterProvider().setFailOnUnknownId(false))
-				.setSerializationInclusion(JsonInclude.Include.NON_NULL).registerModule(javaTimeModule());
+				.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+				.setSerializationInclusion(JsonInclude.Include.NON_EMPTY).registerModule(javaTimeModule());
 	}
 }
