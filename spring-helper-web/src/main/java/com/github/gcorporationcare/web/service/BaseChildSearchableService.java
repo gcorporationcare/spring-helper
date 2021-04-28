@@ -20,12 +20,12 @@ import com.github.gcorporationcare.web.exception.RequestException;
 import lombok.NonNull;
 
 @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-public abstract class BaseChildSearchableService<E extends BaseEntity, ID extends Serializable, P_ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
-		extends BaseService<E, ID, R> {
+public abstract class BaseChildSearchableService<E extends BaseEntity, I extends Serializable, P extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
+		extends BaseService<E, I, R> {
 
 	public abstract String getParentIdField();
 
-	public SearchFilters<E> getParentFilters(@NonNull P_ID id) {
+	public SearchFilters<E> getParentFilters(@NonNull P id) {
 		SearchFilters<E> defaultFilters = getDefaultFilters();
 		if (defaultFilters == null)
 			throw new RequestException(I18nMessage.RequestError.FORBIDDEN_OPERATION, HttpStatus.FORBIDDEN);
@@ -35,7 +35,7 @@ public abstract class BaseChildSearchableService<E extends BaseEntity, ID extend
 	}
 
 	@Transactional(readOnly = true)
-	public E read(@NonNull P_ID parentId, ID id) {
+	public E read(@NonNull P parentId, I id) {
 		if (id == null)
 			throw new RequestException(I18nMessage.RequestError.INVALID_GIVEN_PARAMETERS, HttpStatus.BAD_REQUEST);
 		SearchFilters<E> filters = getParentFilters(parentId).and(getIdField(), SearchFilterOperator.IS_EQUAL, id);
@@ -46,18 +46,18 @@ public abstract class BaseChildSearchableService<E extends BaseEntity, ID extend
 	}
 
 	@Transactional(readOnly = true)
-	public Page<E> readMultiple(@NonNull P_ID parentId, SearchFilters<E> filters, Pageable pageable) {
+	public Page<E> readMultiple(@NonNull P parentId, SearchFilters<E> filters, Pageable pageable) {
 		SearchFilters<E> parentFilters = safeParentFilters(parentId, filters);
 		return repository().findByFilters(parentFilters, pageable);
 	}
 
 	@Transactional(readOnly = true)
-	public E readOne(@NonNull P_ID parentId, SearchFilters<E> filters) {
+	public E readOne(@NonNull P parentId, SearchFilters<E> filters) {
 		SearchFilters<E> parentFilters = safeParentFilters(parentId, filters);
 		return repository().findOneByFilters(parentFilters);
 	}
 
-	private SearchFilters<E> safeParentFilters(@NonNull P_ID parentId, SearchFilters<E> filters) {
+	private SearchFilters<E> safeParentFilters(@NonNull P parentId, SearchFilters<E> filters) {
 		SearchFilters<E> parentFilters = getParentFilters(parentId);
 		if (filters != null)
 			parentFilters = parentFilters.and(filters);

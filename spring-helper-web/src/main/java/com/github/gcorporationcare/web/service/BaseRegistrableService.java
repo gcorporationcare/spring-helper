@@ -25,10 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Transactional(propagation = Propagation.REQUIRED)
-public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
-		extends BaseSearchableService<E, ID, R> {
+public abstract class BaseRegistrableService<E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
+		extends BaseSearchableService<E, I, R> {
 
-	public E getObject(ID id) {
+	public E getObject(I id) {
 		Optional<E> object = repository().findById(id);
 		if (!object.isPresent())
 			throw new RequestException(I18nMessage.RequestError.OBJECT_NOT_FOUND, HttpStatus.NOT_FOUND, getIdField(),
@@ -60,7 +60,7 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 
 	public abstract void canUpdate(@NonNull E entity, @NonNull E savedEntity);
 
-	private E merge(@NonNull ID id, @NonNull E entity, boolean excludeNull) {
+	private E merge(@NonNull I id, @NonNull E entity, boolean excludeNull) {
 		E saved = getObject(id);
 		Utils.setFieldValue(getIdField(), entity, BaseEntity.class, id);
 		String[] excludedFields = excludeNull ? Utils.getNullPropertyNames(entity) : null;
@@ -74,14 +74,14 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 	}
 
 	@Transactional
-	public E update(@NonNull ID id, @NonNull E entity) {
+	public E update(@NonNull I id, @NonNull E entity) {
 		E saved = merge(id, entity, false);
 		afterUpdate(saved);
 		return saved;
 	}
 
 	@Transactional
-	public E patch(@NonNull ID id, @NonNull E entity) {
+	public E patch(@NonNull I id, @NonNull E entity) {
 		E saved = merge(id, entity, true);
 		afterUpdate(saved);
 		return saved;
@@ -90,7 +90,7 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 	public abstract void canDelete(@NonNull E entity);
 
 	@Transactional
-	public void delete(@NonNull ID id) {
+	public void delete(@NonNull I id) {
 		// Since we will need all available fields to decide whether an user can delete
 		// a record or not
 		E entity = read(id);
@@ -99,7 +99,7 @@ public abstract class BaseRegistrableService<E extends BaseEntity, ID extends Se
 	}
 
 	@Transactional
-	public void deleteMultiple(@NonNull Iterable<ID> ids) {
+	public void deleteMultiple(@NonNull Iterable<I> ids) {
 		SearchFilters<E> idsFilters = new SearchFilters<>();
 		Streams.stream(ids).filter(Objects::nonNull)
 				.forEach(i -> idsFilters.or(getIdField(), SearchFilterOperator.IS_EQUAL, i));

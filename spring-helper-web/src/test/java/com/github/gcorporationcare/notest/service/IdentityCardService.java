@@ -1,5 +1,7 @@
 package com.github.gcorporationcare.notest.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +14,8 @@ import com.github.gcorporationcare.web.service.BaseChildRegistrableService;
 import lombok.NonNull;
 
 @Service
-public class IdentityCardService extends
-		BaseChildRegistrableService<IdentityCard, Long, Person, Long, IdentityCardRepository, PersonRepository> {
+public class IdentityCardService
+		extends BaseChildRegistrableService<IdentityCard, Long, Long, IdentityCardRepository, Person> {
 	@Autowired
 	PersonRepository personRepository;
 	@Autowired
@@ -22,11 +24,6 @@ public class IdentityCardService extends
 	@Override
 	public IdentityCardRepository repository() {
 		return identityCardRepository;
-	}
-
-	@Override
-	public PersonRepository parentRepository() {
-		return personRepository;
 	}
 
 	@Override
@@ -60,5 +57,10 @@ public class IdentityCardService extends
 	@Override
 	public void canDelete(@NonNull Long parentId, @NonNull IdentityCard child) {
 		// Everybody can delete
+	}
+
+	@Override
+	public Optional<Person> findParent(@NonNull Long parentId) {
+		return personRepository.findById(parentId);
 	}
 }

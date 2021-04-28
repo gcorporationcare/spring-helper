@@ -21,7 +21,6 @@ public final class ParameterKey {
 	// Request parameters names
 	public static final String LANGUAGE_PARAMETER = "lang";
 	public static final String PARENT_PARAMETER = "parent";
-	public static final String MASTER_PARAMETER = "master";
 	public static final String ID_PARAMETER = "id";
 	public static final String IDS_PARAMETER = "ids";
 	public static final String SORT_PARAMETER = "sort";
@@ -37,7 +36,6 @@ public final class ParameterKey {
 	public static final String FILTERS_PARAMETER_EXAMPLE = "createdBy,!0";
 	public static final String ID_PARAMETER_EXAMPLE = "12";
 	public static final String IDS_PARAMETER_EXAMPLE = "1,2,5,16";
-	public static final String MASTER_PARAMETER_EXAMPLE = "9";
 	public static final String PARENT_PARAMETER_EXAMPLE = "8";
 	public static final String LANGUAGE_PARAMETER_EXAMPLE = "en";
 	public static final String SORT_PARAMETER_EXAMPLE = "created,desc";
@@ -45,7 +43,6 @@ public final class ParameterKey {
 	// -------------------------------------------------------------
 	// Parameters description
 	public static final String ID_PARAMETER_DESCRIPTION = "Unique ID allowing to access a resource";
-	public static final String MASTER_PARAMETER_DESCRIPTION = "Unique ID allowing to access a master resource";
 	public static final String PARENT_PARAMETER_DESCRIPTION = "Unique ID allowing to access a parent resource";
 	public static final String PAGE_PARAMETER_DESCRIPTION = "Results page you want to retrieve (0..N)";
 	public static final String LANGUAGE_PARAMETER_DESCRIPTION = "Language for searching data";

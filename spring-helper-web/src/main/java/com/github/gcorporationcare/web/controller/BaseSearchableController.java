@@ -26,16 +26,16 @@ import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
-public abstract class BaseSearchableController<D extends BaseDto, E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
+public abstract class BaseSearchableController<D extends BaseDto, E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
 		extends BaseController<D, E> {
 
-	public abstract BaseSearchableService<E, ID, R> service();
+	public abstract BaseSearchableService<E, I, R> service();
 
 	@ResponseBody
 	@ApiIdentifiableEndpoint
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "read-by-id", notes = "Read the object with the given ID")
-	public D read(@PathVariable(ParameterKey.ID_PARAMETER) ID id,
+	public D read(@PathVariable(ParameterKey.ID_PARAMETER) I id,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Reading {} with id {}", service().getEntityClass().getSimpleName(), id);
 		E entity = service().read(id);

@@ -1,5 +1,7 @@
 package com.github.gcorporationcare.notest.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,8 +16,7 @@ import com.github.gcorporationcare.web.service.BaseChildRegistrableService;
 import lombok.NonNull;
 
 @Service
-public class AddressService
-		extends BaseChildRegistrableService<Address, Long, Person, Long, AddressRepository, PersonRepository> {
+public class AddressService extends BaseChildRegistrableService<Address, Long, Long, AddressRepository, Person> {
 	@Autowired
 	PersonRepository personRepository;
 	@Autowired
@@ -24,11 +25,6 @@ public class AddressService
 	@Override
 	public AddressRepository repository() {
 		return addressRepository;
-	}
-
-	@Override
-	public PersonRepository parentRepository() {
-		return personRepository;
 	}
 
 	@Override
@@ -57,5 +53,10 @@ public class AddressService
 	@Override
 	public String getParentIdField() {
 		return "person.id";
+	}
+
+	@Override
+	public Optional<Person> findParent(@NonNull Long parentId) {
+		return personRepository.findById(parentId);
 	}
 }

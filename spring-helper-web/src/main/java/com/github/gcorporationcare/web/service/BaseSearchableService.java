@@ -23,11 +23,11 @@ import com.github.gcorporationcare.web.exception.RequestException;
  *
  */
 @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-public abstract class BaseSearchableService<E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
-		extends BaseService<E, ID, R> {
+public abstract class BaseSearchableService<E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
+		extends BaseService<E, I, R> {
 
 	@Transactional(readOnly = true)
-	public E read(ID id) {
+	public E read(I id) {
 		if (id == null)
 			throw new RequestException(I18nMessage.RequestError.INVALID_GIVEN_PARAMETERS, HttpStatus.BAD_REQUEST);
 		SearchFilters<E> filters = SearchFilters.of(getIdField(), SearchFilterOperator.IS_EQUAL, id);

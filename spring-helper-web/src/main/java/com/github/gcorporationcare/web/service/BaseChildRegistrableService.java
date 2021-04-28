@@ -1,7 +1,6 @@
 package com.github.gcorporationcare.web.service;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,13 +10,11 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
 
 import com.github.gcorporationcare.data.common.Utils;
 import com.github.gcorporationcare.data.domain.SearchFilter.SearchFilterOperator;
 import com.github.gcorporationcare.data.domain.SearchFilters;
 import com.github.gcorporationcare.data.entity.BaseEntity;
-import com.github.gcorporationcare.data.exception.StandardRuntimeException;
 import com.github.gcorporationcare.data.i18n.I18nMessage;
 import com.github.gcorporationcare.data.repository.BaseRepository;
 import com.github.gcorporationcare.web.exception.RequestException;
@@ -28,12 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Transactional(propagation = Propagation.REQUIRED)
-public abstract class BaseChildRegistrableService<E extends BaseEntity, ID extends Serializable, P_E extends BaseEntity, P_ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>, P_R extends BaseRepository<P_E, P_ID> & PagingAndSortingRepository<P_E, P_ID>>
-		extends BaseChildSearchableService<E, ID, P_ID, R> {
+public abstract class BaseChildRegistrableService<E extends BaseEntity, I extends Serializable, P extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>, V extends Serializable>
+		extends BaseChildSearchableService<E, I, P, R> {
 
 	public abstract R repository();
-
-	public abstract P_R parentRepository();
 
 	public abstract String getParentField();
 
@@ -46,42 +41,22 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 		return getParentField();
 	}
 
-	@SuppressWarnings("unchecked")
-	public ID getFieldOfChild(@NonNull String fieldName, @NonNull E child) {
-		try {
-			Field field = child.getClass().getDeclaredField(fieldName);
-			ReflectionUtils.makeAccessible(field);
-			return (ID) field.get(child);
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-			throw new StandardRuntimeException(e);
-		}
+	private V getParent(@NonNull P parentId) {
+		return findParent(parentId).orElseThrow(() -> new RequestException(I18nMessage.RequestError.OBJECT_NOT_FOUND,
+				HttpStatus.NOT_FOUND, getParentIdField(), parentId));
 	}
 
-	public P_E getParent(@NonNull P_ID id) {
-		Optional<P_E> parent = parentRepository().findById(id);
-		if (!parent.isPresent())
-			throw new RequestException(I18nMessage.RequestError.OBJECT_NOT_FOUND, HttpStatus.NOT_FOUND,
-					getParentIdField(), id);
-		return parent.get();
-	}
+	public abstract Optional<V> findParent(@NonNull P parentId);
 
-	public E getChild(ID id) {
-		Optional<E> child = repository().findById(id);
-		if (!child.isPresent())
-			throw new RequestException(I18nMessage.RequestError.OBJECT_NOT_FOUND, HttpStatus.NOT_FOUND, getIdField(),
-					id);
-		return child.get();
-	}
-
-	public abstract void canCreate(@NonNull P_ID parentId, @NonNull E child);
+	public abstract void canCreate(@NonNull P parentId, @NonNull E child);
 
 	protected void afterCreate(@NonNull E entity) {
 		log.info("Created {}", entity);
 	}
 
 	@Transactional
-	public E create(@NonNull P_ID parentId, @NonNull E child) {
-		P_E parent = getParent(parentId);
+	public E create(@NonNull P parentId, @NonNull E child) {
+		V parent = getParent(parentId);
 		Utils.setFieldValue(getParentField(), child, BaseEntity.class, parent);
 		canCreate(parentId, child);
 		E saved = repository().save(child);
@@ -90,8 +65,8 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 	}
 
 	@Transactional
-	public Iterable<E> createMultiple(@NonNull P_ID parentId, Iterable<E> children) {
-		P_E parent = getParent(parentId);
+	public Iterable<E> createMultiple(@NonNull P parentId, Iterable<E> children) {
+		V parent = getParent(parentId);
 		Streams.stream(children).forEach(c -> {
 			Utils.setFieldValue(getParentField(), c, BaseEntity.class, parent);
 			canCreate(parentId, c);
@@ -101,9 +76,9 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 		return saved;
 	}
 
-	public abstract void canUpdate(@NonNull P_ID parentId, @NonNull E child, @NonNull E savedChild);
+	public abstract void canUpdate(@NonNull P parentId, @NonNull E child, @NonNull E savedChild);
 
-	private E merge(@NonNull P_ID parentId, @NonNull ID childId, @NonNull E child, boolean excludeNull) {
+	private E merge(@NonNull P parentId, @NonNull I childId, @NonNull E child, boolean excludeNull) {
 		E saved = read(parentId, childId);
 		Utils.setFieldValue(getIdField(), child, BaseEntity.class, childId);
 		final String parentField = getParentField();
@@ -120,23 +95,23 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 	}
 
 	@Transactional
-	public E update(@NonNull P_ID parentId, @NonNull ID childId, @NonNull E child) {
+	public E update(@NonNull P parentId, @NonNull I childId, @NonNull E child) {
 		E saved = merge(parentId, childId, child, false);
 		afterUpdate(saved);
 		return saved;
 	}
 
 	@Transactional
-	public E patch(@NonNull P_ID parentId, @NonNull ID childId, @NonNull E child) {
+	public E patch(@NonNull P parentId, @NonNull I childId, @NonNull E child) {
 		E saved = merge(parentId, childId, child, true);
 		afterUpdate(saved);
 		return saved;
 	}
 
-	public abstract void canDelete(@NonNull P_ID parentId, @NonNull E child);
+	public abstract void canDelete(@NonNull P parentId, @NonNull E child);
 
 	@Transactional
-	public void delete(@NonNull P_ID parentId, @NonNull ID childId) {
+	public void delete(@NonNull P parentId, @NonNull I childId) {
 		E child = read(parentId, childId);
 		canDelete(parentId, child);
 		if (isHardDelete())
@@ -148,7 +123,7 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, ID exten
 	}
 
 	@Transactional
-	public void deleteMultiple(@NonNull P_ID parentId, @NonNull Iterable<ID> ids) {
+	public void deleteMultiple(@NonNull P parentId, @NonNull Iterable<I> ids) {
 		SearchFilters<E> idsFilters = new SearchFilters<>();
 		Streams.stream(ids).filter(Objects::nonNull)
 				.forEach(i -> idsFilters.or(getIdField(), SearchFilterOperator.IS_EQUAL, i));

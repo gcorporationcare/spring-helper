@@ -26,17 +26,16 @@ import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
-public abstract class BaseChildSearchableController<D extends BaseDto, E extends BaseEntity, ID extends Serializable, P_ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
+public abstract class BaseChildSearchableController<D extends BaseDto, E extends BaseEntity, I extends Serializable, P extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
 		extends BaseController<D, E> {
 
-	public abstract BaseChildSearchableService<E, ID, P_ID, R> service();
+	public abstract BaseChildSearchableService<E, I, P, R> service();
 
 	@ResponseBody
 	@ApiSimpleEndpoint
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "read-by-id", notes = "Read the object with the given ID")
-	public D read(@PathVariable(ParameterKey.PARENT_PARAMETER) P_ID parent,
-			@PathVariable(ParameterKey.ID_PARAMETER) ID id,
+	public D read(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent, @PathVariable(ParameterKey.ID_PARAMETER) I id,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Reading {} from parent {} with id {}", service().getEntityClass().getSimpleName(), parent, id);
 		E entity = service().read(parent, id);
@@ -47,7 +46,7 @@ public abstract class BaseChildSearchableController<D extends BaseDto, E extends
 	@ApiPageableEndpoint
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "read-multiple-by-filters", notes = "Find the objects where given filters are valid")
-	public Page<D> readMultiple(@PathVariable(ParameterKey.PARENT_PARAMETER) P_ID parent, SearchFilters<E> filters,
+	public Page<D> readMultiple(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent, SearchFilters<E> filters,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) Pageable pageable) {
 		log.info("Reading first {} with filters {}", service().getEntityClass().getSimpleName(), filters);
@@ -59,7 +58,7 @@ public abstract class BaseChildSearchableController<D extends BaseDto, E extends
 	@ApiFilterableEndpoint
 	@GetMapping(value = "/first", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "read-one-by-filters", notes = "Find the first object where given filters are valid")
-	public D readOne(@PathVariable(ParameterKey.PARENT_PARAMETER) P_ID parent, SearchFilters<E> filters,
+	public D readOne(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent, SearchFilters<E> filters,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Reading first {} from parent {} with filters {}", service().getEntityClass().getSimpleName(),
 				filters);

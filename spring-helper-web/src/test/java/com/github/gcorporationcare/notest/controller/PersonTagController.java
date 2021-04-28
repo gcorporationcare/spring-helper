@@ -8,19 +8,19 @@ import com.github.gcorporationcare.notest.dto.PersonTagDto;
 import com.github.gcorporationcare.notest.entity.PersonTag;
 import com.github.gcorporationcare.notest.repository.PersonTagRepository;
 import com.github.gcorporationcare.notest.service.PersonTagService;
-import com.github.gcorporationcare.web.controller.BaseSlaveRegistrableController;
-import com.github.gcorporationcare.web.service.BaseSlaveSearchableService;
+import com.github.gcorporationcare.web.controller.BaseChildRegistrableController;
+import com.github.gcorporationcare.web.service.BaseChildSearchableService;
 
 @RestController
-@RequestMapping("/persons/{master}/tags")
+@RequestMapping("/persons/{parent}/tags")
 public class PersonTagController
-		extends BaseSlaveRegistrableController<PersonTagDto, PersonTag, Long, PersonTagRepository, Long> {
+		extends BaseChildRegistrableController<PersonTagDto, PersonTag, Long, Long, PersonTagRepository, Long> {
 
 	@Autowired
 	PersonTagService service;
 
 	@Override
-	public BaseSlaveSearchableService<PersonTag, Long, PersonTagRepository, Long> service() {
+	public BaseChildSearchableService<PersonTag, Long, Long, PersonTagRepository> service() {
 		return service;
 	}
 }

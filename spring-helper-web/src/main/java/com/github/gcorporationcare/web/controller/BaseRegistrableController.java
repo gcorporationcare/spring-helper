@@ -33,11 +33,11 @@ import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
-public abstract class BaseRegistrableController<D extends BaseDto, E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>>
-		extends BaseSearchableController<D, E, ID, R> {
+public abstract class BaseRegistrableController<D extends BaseDto, E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
+		extends BaseSearchableController<D, E, I, R> {
 
-	private BaseRegistrableService<E, ID, R> registrerService() {
-		return (BaseRegistrableService<E, ID, R>) service();
+	private BaseRegistrableService<E, I, R> registrerService() {
+		return (BaseRegistrableService<E, I, R>) service();
 	}
 
 	@ResponseBody
@@ -74,7 +74,7 @@ public abstract class BaseRegistrableController<D extends BaseDto, E extends Bas
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "update", notes = "Update given entity")
-	public D update(@PathVariable(ParameterKey.ID_PARAMETER) ID id,
+	public D update(@PathVariable(ParameterKey.ID_PARAMETER) I id,
 			@Validated({ ValidationStep.Complex.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Updating entity {} with values {}", service().getEntityClass(), dto);
@@ -89,7 +89,7 @@ public abstract class BaseRegistrableController<D extends BaseDto, E extends Bas
 	@ResponseStatus(HttpStatus.OK)
 	@PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "patch", notes = "Update non-null fields of given entity")
-	public D patch(@PathVariable(ParameterKey.ID_PARAMETER) ID id, @RequestBody D dto,
+	public D patch(@PathVariable(ParameterKey.ID_PARAMETER) I id, @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Patching entity {} with values {}", service().getEntityClass(), dto);
 		E entity = mapFromDto(dto);
@@ -102,7 +102,7 @@ public abstract class BaseRegistrableController<D extends BaseDto, E extends Bas
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "delete", notes = "Delete the given entity")
-	public void delete(@PathVariable(ParameterKey.ID_PARAMETER) ID id) {
+	public void delete(@PathVariable(ParameterKey.ID_PARAMETER) I id) {
 		log.info("Deleting entity {} with id {}", service().getEntityClass(), id);
 		registrerService().delete(id);
 	}
@@ -112,7 +112,7 @@ public abstract class BaseRegistrableController<D extends BaseDto, E extends Bas
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping(value = "/multiple", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "delete-by-ids", notes = "Delete the entities with the given ids")
-	public void deleteMultiple(@RequestParam(ParameterKey.IDS_PARAMETER) List<ID> ids) {
+	public void deleteMultiple(@RequestParam(ParameterKey.IDS_PARAMETER) List<I> ids) {
 		log.info("Deleting entities with ids {} with values {}", service().getEntityClass(), ids);
 		registrerService().deleteMultiple(ids);
 	}

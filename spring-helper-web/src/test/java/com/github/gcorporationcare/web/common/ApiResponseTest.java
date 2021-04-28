@@ -9,9 +9,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
@@ -23,9 +21,6 @@ import com.github.gcorporationcare.notest.config.H2Config;
 import com.github.gcorporationcare.notest.entity.Person;
 import com.github.gcorporationcare.web.exception.RequestException;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-
 @ActiveProfiles("test")
 @SpringBootTest(classes = { ApiStarter.class, H2Config.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
@@ -35,12 +30,6 @@ class ApiResponseTest {
 	private static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 	// -------------------------------------------------
 	private static Validator validator = validatorFactory.getValidator();
-
-	@BeforeEach
-	void changeLogLevel() {
-		final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		logger.setLevel(Level.DEBUG);
-	}
 
 	@Test
 	void testConstructors() {
