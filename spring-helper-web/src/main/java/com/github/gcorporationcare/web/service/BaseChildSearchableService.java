@@ -1,11 +1,14 @@
 package com.github.gcorporationcare.web.service;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +22,25 @@ import com.github.gcorporationcare.web.exception.RequestException;
 
 import lombok.NonNull;
 
+@PreAuthorize("this.canRead(authentication, #parent)")
 @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 public abstract class BaseChildSearchableService<E extends BaseEntity, I extends Serializable, P extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
 		extends BaseService<E, I, R> {
 
 	public abstract String getParentIdField();
+
+	/**
+	 * Used to check if user have required access to read data from this service
+	 * methods. The filtering of the record the user can see is dealt with via
+	 * getDefaultFilters
+	 * 
+	 * @param authentication the current authentication object from security context
+	 * @param parent         the parent ID
+	 * @return true if user is allowed
+	 */
+	public boolean canRead(Authentication authentication, P parent) {
+		return !Objects.isNull(parent);
+	}
 
 	public SearchFilters<E> getParentFilters(@NonNull P id) {
 		SearchFilters<E> defaultFilters = getDefaultFilters();

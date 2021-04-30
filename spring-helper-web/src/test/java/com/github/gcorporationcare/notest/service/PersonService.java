@@ -16,17 +16,17 @@ public class PersonService extends BaseRegistrableService<Person, Long, PersonRe
 	PersonRepository personRepository;
 
 	@Override
-	public void canCreate(@NonNull Person entity) {
+	public void checkForCreate(@NonNull Person entity) {
 		// Test class : Can always create
 	}
 
 	@Override
-	public void canUpdate(@NonNull Person entity, @NonNull Person savedEntity) {
+	public void checkForUpdate(@NonNull Person entity, @NonNull Person savedEntity) {
 		// Test class : Can always update
 	}
 
 	@Override
-	public void canDelete(@NonNull Person entity) {
+	public void checkForDelete(@NonNull Person entity) {
 		// Test class : Can always delete
 	}
 

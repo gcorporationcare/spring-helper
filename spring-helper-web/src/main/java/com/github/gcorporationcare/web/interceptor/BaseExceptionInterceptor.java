@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -100,7 +101,8 @@ public class BaseExceptionInterceptor {
 	 */
 	@ResponseBody
 	@org.springframework.web.bind.annotation.ExceptionHandler({ NullPointerException.class,
-			IllegalArgumentException.class, StandardRuntimeException.class, HttpMessageNotWritableException.class })
+			IllegalArgumentException.class, StandardRuntimeException.class, HttpMessageNotWritableException.class,
+			AccessDeniedException.class })
 	public ApiResponse<Map<String, Object>> runtimeException(RuntimeException e) {
 		log.error("Error occured because of runtime exception {}", e);
 		return new ApiResponse<>(e, HttpStatus.BAD_REQUEST, EMPTY_OBJECTS);

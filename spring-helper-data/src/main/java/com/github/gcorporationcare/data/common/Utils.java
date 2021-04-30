@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.util.ReflectionUtils;
@@ -41,6 +42,40 @@ public final class Utils {
 
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	public static final String UTC_ZONE = "UTC";
+
+	/**
+	 * Replace some characters of given string with another character
+	 * 
+	 * @param strText  the original text
+	 * @param start    the first character to mask
+	 * @param end      the last character to mask
+	 * @param maskChar the mask character
+	 * @return the string with its hidden characters
+	 */
+	public static final String toSecretString(String strText, int start, int end, char maskChar) {
+		if (Strings.isNullOrEmpty(strText)) {
+			return "";
+		}
+		if (start < 0) {
+			// Starts at first character
+			start = 0;
+		}
+		if (end > strText.length()) {
+			// Ends at last character
+			end = strText.length();
+		}
+		if (start > end) {
+			throw new IllegalArgumentException("End index cannot be greater than start index");
+		}
+		int maskLength = end - start;
+		if (maskLength == 0) {
+			// No need to go further
+			return strText;
+		}
+
+		String strMaskString = StringUtils.repeat(maskChar, maskLength);
+		return StringUtils.overlay(strText, strMaskString, start, end);
+	}
 
 	/**
 	 * Get the type of a parameterized class

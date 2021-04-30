@@ -10,8 +10,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.github.gcorporationcare.ApiStarter;
 import com.github.gcorporationcare.data.annotation.DefaultField;
 import com.github.gcorporationcare.data.entity.BaseIdentifiedEntity;
 import com.github.gcorporationcare.data.field.Country;
@@ -36,7 +34,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "office")
-@JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class Office extends BaseIdentifiedEntity {
 
 	protected static final String NAME_COLUMN = "name";

@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +24,22 @@ import com.github.gcorporationcare.web.exception.RequestException;
 /**
  *
  */
+@PreAuthorize("this.canRead(authentication)")
 @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 public abstract class BaseSearchableService<E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
 		extends BaseService<E, I, R> {
+
+	/**
+	 * Used to check if user have required access to read data from this service
+	 * methods. The filtering of the record the user can see is dealt with via
+	 * getDefaultFilters
+	 * 
+	 * @param authentication the current authentication object from security context
+	 * @return true if user is allowed
+	 */
+	public boolean canRead(Authentication authentication) {
+		return true;
+	}
 
 	@Transactional(readOnly = true)
 	public E read(I id) {

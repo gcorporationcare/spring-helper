@@ -9,9 +9,6 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.github.gcorporationcare.ApiStarter;
 import com.github.gcorporationcare.data.convention.SqlNamingConvention;
 import com.github.gcorporationcare.data.entity.BaseTranslation;
 import com.google.common.base.Strings;
@@ -28,7 +25,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "promotion_translation", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		SqlNamingConvention.Column.LANGUAGE, PromotionTranslation.SOURCE_ID_COLUMN }) })
-@JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class PromotionTranslation extends BaseTranslation {
 	protected static final String NAME_COLUMN = "name";
 	protected static final String SOURCE_ID_COLUMN = "source_id";
@@ -37,7 +33,6 @@ public class PromotionTranslation extends BaseTranslation {
 	private static final long serialVersionUID = 1L;
 	// -------------------------------------------------
 	@NotNull
-	@JsonBackReference
 	@ManyToOne(optional = false)
 	@JoinColumn(name = PromotionTranslation.SOURCE_ID_COLUMN)
 	protected Promotion source;

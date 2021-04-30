@@ -14,15 +14,11 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.github.gcorporationcare.ApiStarter;
 import com.github.gcorporationcare.data.annotation.DefaultField;
 import com.github.gcorporationcare.data.common.Utils;
 import com.github.gcorporationcare.data.constraint.InvalidWhen;
 import com.github.gcorporationcare.data.entity.BaseIdentifiedEntity;
 import com.github.gcorporationcare.notest.enumeration.Gender;
-import com.github.gcorporationcare.web.domain.FieldFilter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,9 +32,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "person", uniqueConstraints = { @UniqueConstraint(columnNames = Person.EMAIL_COLUMN) }, indexes = {
 		@Index(columnList = Person.EMAIL_COLUMN) })
-@JsonFilter(FieldFilter.JSON_FILTER_NAME)
 @InvalidWhen("email == null")
-@JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class Person extends BaseIdentifiedEntity {
 
 	protected static final String NAME_COLUMN = "name";

@@ -31,9 +31,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.github.gcorporationcare.data.annotation.Configure;
 import com.github.gcorporationcare.data.annotation.NotCopyable;
 import com.github.gcorporationcare.data.annotation.Translated;
@@ -65,35 +62,29 @@ public abstract class BaseEntity implements Serializable, Constrainable, Formatt
 	private static final long serialVersionUID = 1L;
 	// -------------------------------------------------
 	@Transient
-	@JsonIgnore
 	private static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 	// -------------------------------------------------
 	@Transient
-	@JsonIgnore
 	private static Validator validator = validatorFactory.getValidator();
 
 	// -------------------------------------------------
 	@Getter
 	@CreatedDate
-	@JsonProperty(access = Access.READ_ONLY)
 	@Column(name = SqlNamingConvention.Column.CREATED, nullable = false, updatable = false)
 	private LocalDateTime created;
 	// -------------------------------------------------
 	@Getter
 	@LastModifiedDate
-	@JsonProperty(access = Access.READ_ONLY)
 	@Column(name = SqlNamingConvention.Column.UPDATED, nullable = false)
 	private LocalDateTime updated;
 	// -------------------------------------------------
 	@Getter
 	@CreatedBy
-	@JsonProperty(access = Access.READ_ONLY)
 	@Column(name = SqlNamingConvention.Column.CREATED_BY, nullable = false, updatable = false)
 	private String createdBy;
 	// -------------------------------------------------
 	@Getter
 	@LastModifiedBy
-	@JsonProperty(access = Access.READ_ONLY)
 	@Column(name = SqlNamingConvention.Column.UPDATED_BY, nullable = false)
 	private String updatedBy;
 	// ----------------------------------------------------
@@ -101,7 +92,6 @@ public abstract class BaseEntity implements Serializable, Constrainable, Formatt
 	 * This field is the master of everything
 	 */
 	@Transient
-	@JsonIgnore
 	private transient List<Configure> configurations;
 
 	public final void validate() {

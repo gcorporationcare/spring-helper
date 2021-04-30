@@ -10,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.github.gcorporationcare.ApiStarter;
 import com.github.gcorporationcare.data.annotation.DefaultField;
 import com.github.gcorporationcare.data.annotation.Translated;
 import com.github.gcorporationcare.data.common.Utils;
@@ -29,7 +27,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "promotion")
-@JsonIgnoreProperties(value = { ApiStarter.HIBERNATE_LAZY_INITIALIZER, ApiStarter.HANDLER }, ignoreUnknown = true)
 public class Promotion extends BaseTranslatableEntity<PromotionTranslation> {
 
 	protected static final String ID_COLUMN = "id";

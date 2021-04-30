@@ -15,9 +15,6 @@ import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.github.gcorporationcare.data.annotation.NotCopyable;
 import com.github.gcorporationcare.data.common.Utils;
 import com.github.gcorporationcare.data.convention.SqlNamingConvention;
@@ -36,15 +33,12 @@ import lombok.ToString;
 public abstract class BaseTranslatableEntity<T extends BaseTranslation> extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	// -------------------------------------------------
-	@JsonIgnore
 	@NotCopyable
-	@JsonProperty(access = Access.READ_ONLY)
 	@OneToMany(mappedBy = SqlNamingConvention.Column.SOURCE, cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	private Set<T> translations = new HashSet<>();
 
 	public abstract String getCurrentLanguage();
 
-	@JsonIgnore
 	public Set<T> getTranslations() {
 		if (translations == null) {
 			translations = new HashSet<>();
@@ -78,7 +72,6 @@ public abstract class BaseTranslatableEntity<T extends BaseTranslation> extends 
 	}
 	// Database translation management :: END
 
-	@JsonIgnore
 	public T getCurrentTranslation() {
 		String language = getCurrentLanguage();
 		T translation;
