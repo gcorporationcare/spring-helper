@@ -19,6 +19,7 @@ import com.github.gcorporationcare.web.i18n.ParameterKey;
 import com.github.gcorporationcare.web.listener.SecuredUserAuditor;
 import com.github.gcorporationcare.web.resolver.FieldFilterArgumentResolver;
 import com.github.gcorporationcare.web.resolver.SearchFiltersArgumentResolver;
+import com.github.gcorporationcare.web.security.IpLockingService;
 
 public abstract class ApiConfig extends DataConfig implements WebMvcConfigurer {
 
@@ -30,6 +31,15 @@ public abstract class ApiConfig extends DataConfig implements WebMvcConfigurer {
 	 */
 	protected String requestIdHeaderName() {
 		return "Request-Id";
+	}
+
+	/**
+	 * Number of failed authentication attempts before locking IP.
+	 * 
+	 * @return the max allowed attempts or -1 for disabling
+	 */
+	protected long ipFailureLimit() {
+		return -1;
 	}
 
 	@Override
@@ -53,6 +63,13 @@ public abstract class ApiConfig extends DataConfig implements WebMvcConfigurer {
 		argumentResolvers.add(resolver);
 		argumentResolvers.add(new SearchFiltersArgumentResolver(ParameterKey.FILTERS_PARAMETER));
 		argumentResolvers.add(new FieldFilterArgumentResolver(ParameterKey.FIELDS_PARAMETER));
+	}
+
+	@Bean
+	public IpLockingService ipLockingService() {
+		IpLockingService ipLockingService = new IpLockingService();
+		ipLockingService.setLimit(ipFailureLimit());
+		return ipLockingService;
 	}
 
 	/**

@@ -44,18 +44,18 @@ public class IdentityCardService
 	}
 
 	@Override
-	public void checkForCreate(@NonNull Long parentId, @NonNull IdentityCard child) {
+	public void beforeCreate(@NonNull Long parentId, @NonNull IdentityCard child) {
 		// Everybody can create
 
 	}
 
 	@Override
-	public void checkForUpdate(@NonNull Long parentId, @NonNull IdentityCard child, @NonNull IdentityCard savedChild) {
+	public void beforeUpdate(@NonNull Long parentId, @NonNull IdentityCard child, @NonNull IdentityCard savedChild, boolean patching) {
 		// Everybody can update
 	}
 
 	@Override
-	public void checkForDelete(@NonNull Long parentId, @NonNull IdentityCard child) {
+	public void beforeDelete(@NonNull Long parentId, @NonNull IdentityCard child) {
 		// Everybody can delete
 	}
 

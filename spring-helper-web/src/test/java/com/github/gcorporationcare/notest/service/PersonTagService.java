@@ -33,17 +33,17 @@ public class PersonTagService extends BaseChildRegistrableService<PersonTag, Lon
 	}
 
 	@Override
-	public void checkForCreate(@NonNull Long parentId, @NonNull PersonTag child) {
+	public void beforeCreate(@NonNull Long parentId, @NonNull PersonTag child) {
 		// Test class : Can always create
 	}
 
 	@Override
-	public void checkForUpdate(@NonNull Long parentId, @NonNull PersonTag child, @NonNull PersonTag savedChild) {
+	public void beforeUpdate(@NonNull Long parentId, @NonNull PersonTag child, @NonNull PersonTag savedChild, boolean patching) {
 		// Test class : Can always update
 	}
 
 	@Override
-	public void checkForDelete(@NonNull Long parentId, @NonNull PersonTag child) {
+	public void beforeDelete(@NonNull Long parentId, @NonNull PersonTag child) {
 		// Test class : Can always delete
 	}
 

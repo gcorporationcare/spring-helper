@@ -18,7 +18,7 @@ public class SecuredUserAuditor implements CurrentUserAuditor {
 	 *         N/A if none
 	 */
 	public static String getUsernameOfAuthenticatedUser() {
-		UserDetails securedUser = getAuthenticatedUser();
+		UserDetails securedUser = (UserDetails) getAuthenticatedUser();
 		return (securedUser != null) ? securedUser.getUsername() : "N/A";
 	}
 
@@ -27,13 +27,13 @@ public class SecuredUserAuditor implements CurrentUserAuditor {
 	 * 
 	 * @return the UserDetails of the current authenticated user (null if none)
 	 */
-	public static UserDetails getAuthenticatedUser() {
+	public static Object getAuthenticatedUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null || !authentication.isAuthenticated()
 				|| !UserDetails.class.isAssignableFrom(authentication.getPrincipal().getClass())) {
 			return null;
 		}
-		return (UserDetails) authentication.getPrincipal();
+		return authentication.getPrincipal();
 	}
 
 	@Override

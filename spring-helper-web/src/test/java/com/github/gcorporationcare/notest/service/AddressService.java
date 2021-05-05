@@ -33,17 +33,17 @@ public class AddressService extends BaseChildRegistrableService<Address, Long, L
 	}
 
 	@Override
-	public void checkForCreate(@NonNull Long parentId, @NonNull Address child) {
+	public void beforeCreate(@NonNull Long parentId, @NonNull Address child) {
 		child.setActive(true);
 	}
 
 	@Override
-	public void checkForUpdate(@NonNull Long parentId, @NonNull Address child, @NonNull Address savedChild) {
+	public void beforeUpdate(@NonNull Long parentId, @NonNull Address child, @NonNull Address savedChild, boolean patching) {
 		// Test class : nothing here
 	}
 
 	@Override
-	public void checkForDelete(@NonNull Long parentId, @NonNull Address child) {
+	public void beforeDelete(@NonNull Long parentId, @NonNull Address child) {
 		if (!child.isActive()) {
 			return;
 		}

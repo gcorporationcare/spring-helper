@@ -79,7 +79,7 @@ class AuditorAwareListenerTest {
 		context.setAuthentication(
 				new UsernamePasswordAuthenticationToken(user, user.getUsername(), user.getAuthorities()));
 		SecurityContextHolder.setContext(context);
-		assertEquals(username, SecuredUserAuditor.getAuthenticatedUser().getUsername());
+		assertEquals(username, ((UserDetails) SecuredUserAuditor.getAuthenticatedUser()).getUsername());
 		context.setAuthentication(new UsernamePasswordAuthenticationToken(user, user.getUsername()));
 		assertNull(SecuredUserAuditor.getAuthenticatedUser());
 		context.setAuthentication(

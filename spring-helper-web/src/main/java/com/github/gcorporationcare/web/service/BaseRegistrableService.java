@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
@@ -99,16 +98,29 @@ public abstract class BaseRegistrableService<E extends BaseEntity, I extends Ser
 		return object.get();
 	}
 
-	public abstract void checkForCreate(@NonNull E entity);
+	/**
+	 * Do some action before creating
+	 * 
+	 * @param entity the entity to save
+	 * @throws RequestException when something is off with given data
+	 */
+	protected void beforeCreate(@NonNull E entity) throws RequestException {
+		log.debug("Attempting to create {}", entity);
+	}
 
+	/**
+	 * Do some action after data has been created
+	 * 
+	 * @param entity the created data
+	 */
 	protected void afterCreate(@NonNull E entity) {
-		log.info("Created {}", entity);
+		log.debug("Created {}", entity);
 	}
 
 	@Transactional
 	@PreAuthorize("this.canCreate(authentication, #entity)")
 	public E create(@NonNull E entity) {
-		checkForCreate(entity);
+		beforeCreate(entity);
 		E saved = repository().save(entity);
 		afterCreate(saved);
 		return saved;
@@ -117,44 +129,72 @@ public abstract class BaseRegistrableService<E extends BaseEntity, I extends Ser
 	@Transactional
 	@PreAuthorize("this.canCreate(authentication, #entities)")
 	public Iterable<E> createMultiple(@NonNull Iterable<E> entities) {
-		Streams.stream(entities).forEach(this::checkForCreate);
+		Streams.stream(entities).forEach(this::beforeCreate);
 		Iterable<E> saved = repository().saveAll(entities);
-		StreamSupport.stream(saved.spliterator(), false).forEach(this::afterCreate);
+		Streams.stream(saved).forEach(this::afterCreate);
 		return saved;
 	}
 
-	public abstract void checkForUpdate(@NonNull E entity, @NonNull E savedEntity);
-
-	private E merge(@NonNull I id, @NonNull E entity, boolean excludeNull) {
-		E saved = getObject(id);
-		Utils.setFieldValue(getIdField(), entity, BaseEntity.class, id);
-		String[] excludedFields = excludeNull ? Utils.getNullPropertyNames(entity) : null;
-		checkForUpdate(entity, saved);
-		saved.merge(entity, excludedFields);
-		return repository().save(saved);
+	/**
+	 * Do some action before updating
+	 * 
+	 * @param entity the entity to save
+	 * @throws RequestException when something is off with given data
+	 */
+	protected void beforeUpdate(@NonNull E entity, @NonNull E savedEntity, boolean patching) {
+		log.debug("Attempting to update {}", entity);
 	}
 
+	/**
+	 * Do some action after data has been updated
+	 * 
+	 * @param entity the updated data
+	 */
 	protected void afterUpdate(@NonNull E entity) {
-		log.info("Updated {}", entity);
+		log.debug("Updated {}", entity);
+	}
+
+	private E merge(@NonNull I id, @NonNull E entity, boolean patching) {
+		E saved = getObject(id);
+		Utils.setFieldValue(getIdField(), entity, BaseEntity.class, id);
+		String[] excludedFields = patching ? Utils.getNullPropertyNames(entity) : null;
+		beforeUpdate(entity, saved, patching);
+		saved.merge(entity, excludedFields);
+		saved = repository().save(saved);
+		afterUpdate(saved);
+		return saved;
 	}
 
 	@Transactional
 	@PreAuthorize("this.canUpdate(authentication, #id, #entity)")
 	public E update(@NonNull I id, @NonNull E entity) {
-		E saved = merge(id, entity, false);
-		afterUpdate(saved);
-		return saved;
+		return merge(id, entity, false);
 	}
 
 	@Transactional
 	@PreAuthorize("this.canUpdate(authentication, #id, #entity)")
 	public E patch(@NonNull I id, @NonNull E entity) {
-		E saved = merge(id, entity, true);
-		afterUpdate(saved);
-		return saved;
+		return merge(id, entity, true);
 	}
 
-	public abstract void checkForDelete(@NonNull E entity);
+	/**
+	 * Do some action before deleting
+	 * 
+	 * @param entity the entity to remove
+	 * @throws RequestException when something is off with given data
+	 */
+	protected void beforeDelete(@NonNull E entity) {
+		log.debug("Attempting to delete {}", entity);
+	}
+
+	/**
+	 * Do some action after data has been deleted
+	 * 
+	 * @param entity the removed data
+	 */
+	protected void afterDelete(@NonNull E entity) {
+		log.debug("Deleted {}", entity);
+	}
 
 	@Transactional
 	@PreAuthorize("this.canDelete(authentication, #id)")
@@ -162,8 +202,9 @@ public abstract class BaseRegistrableService<E extends BaseEntity, I extends Ser
 		// Since we will need all available fields to decide whether an user can delete
 		// a record or not
 		E entity = read(id);
-		checkForDelete(entity);
+		beforeDelete(entity);
 		repository().deleteById(id);
+		afterDelete(entity);
 	}
 
 	@Transactional
@@ -173,7 +214,8 @@ public abstract class BaseRegistrableService<E extends BaseEntity, I extends Ser
 		Streams.stream(ids).filter(Objects::nonNull)
 				.forEach(i -> idsFilters.or(getIdField(), SearchFilterOperator.IS_EQUAL, i));
 		List<E> entities = readMultiple(idsFilters, null).getContent();
-		entities.stream().forEach(this::checkForDelete);
+		entities.stream().forEach(this::beforeDelete);
 		repository().deleteAll();
+		entities.stream().forEach(this::afterDelete);
 	}
 }

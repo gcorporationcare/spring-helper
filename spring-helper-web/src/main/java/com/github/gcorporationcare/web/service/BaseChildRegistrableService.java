@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
@@ -114,10 +113,25 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, I extend
 
 	public abstract Optional<V> findParent(@NonNull P parentId);
 
-	public abstract void checkForCreate(@NonNull P parentId, @NonNull E child);
+	/**
+	 * Do some action before creating
+	 * 
+	 * @param parentId the ID of parent record
+	 * @param entity   the entity to save
+	 * @throws RequestException when something is off with given data
+	 */
+	protected void beforeCreate(@NonNull P parentId, @NonNull E entity) {
+		log.debug("Attempting to create {} for parentId {}", entity, parentId);
+	}
 
-	protected void afterCreate(@NonNull E entity) {
-		log.info("Created {}", entity);
+	/**
+	 * Do some action after data has been created
+	 * 
+	 * @param parentId the ID of parent record
+	 * @param entity   the created data
+	 */
+	protected void afterCreate(@NonNull P parentId, @NonNull E entity) {
+		log.debug("Created {} for parentId {}", entity, parentId);
 	}
 
 	@Transactional
@@ -125,9 +139,9 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, I extend
 	public E create(@NonNull P parentId, @NonNull E child) {
 		V parent = getParent(parentId);
 		Utils.setFieldValue(getParentField(), child, BaseEntity.class, parent);
-		checkForCreate(parentId, child);
+		beforeCreate(parentId, child);
 		E saved = repository().save(child);
-		afterCreate(saved);
+		afterCreate(parentId, saved);
 		return saved;
 	}
 
@@ -137,60 +151,93 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, I extend
 		V parent = getParent(parentId);
 		Streams.stream(entities).forEach(c -> {
 			Utils.setFieldValue(getParentField(), c, BaseEntity.class, parent);
-			checkForCreate(parentId, c);
+			beforeCreate(parentId, c);
 		});
 		Iterable<E> saved = repository().saveAll(entities);
-		StreamSupport.stream(saved.spliterator(), false).forEach(this::afterCreate);
+		Streams.stream(saved).forEach(s -> afterCreate(parentId, s));
 		return saved;
 	}
 
-	public abstract void checkForUpdate(@NonNull P parentId, @NonNull E child, @NonNull E savedChild);
+	/**
+	 * Do some action before updating
+	 * 
+	 * @param parentId the ID of parent record
+	 * @param entity   the entity to save
+	 * @throws RequestException when something is off with given data
+	 */
+	protected void beforeUpdate(@NonNull P parentId, @NonNull E entity, @NonNull E savedEntity, boolean patching) {
+		log.debug("Attempting to update {} for parentId", entity, parentId);
+	}
 
-	private E merge(@NonNull P parentId, @NonNull I childId, @NonNull E entity, boolean excludeNull) {
+	/**
+	 * Do some action after data has been updated
+	 * 
+	 * @param parentId the ID of parent record
+	 * @param entity   the updated data
+	 */
+	protected void afterUpdate(@NonNull P parentId, @NonNull E entity) {
+		log.debug("Updated {} for parentId", entity, parentId);
+	}
+
+	private E merge(@NonNull P parentId, @NonNull I childId, @NonNull E entity, boolean patching) {
 		E saved = read(parentId, childId);
 		Utils.setFieldValue(getIdField(), entity, BaseEntity.class, childId);
 		final String parentField = getParentField();
-		String[] excludedFields = excludeNull ? Utils.getNullPropertyNames(entity) : null;
+		String[] excludedFields = patching ? Utils.getNullPropertyNames(entity) : null;
 		Utils.setFieldValue(parentField, entity, BaseEntity.class,
 				Utils.getFieldValue(parentField, saved, BaseEntity.class));
-		checkForUpdate(parentId, entity, saved);
+		beforeUpdate(parentId, entity, saved, patching);
 		saved.merge(entity, excludedFields);
-		return repository().save(saved);
-	}
-
-	protected void afterUpdate(@NonNull E entity) {
-		log.info("Updated {}", entity);
+		saved = repository().save(saved);
+		afterUpdate(parentId, saved);
+		return saved;
 	}
 
 	@Transactional
 	@PreAuthorize("this.canUpdate(authentication, #parentId, #childId, #entity)")
 	public E update(@NonNull P parentId, @NonNull I childId, @NonNull E entity) {
-		E saved = merge(parentId, childId, entity, false);
-		afterUpdate(saved);
-		return saved;
+		return merge(parentId, childId, entity, false);
 	}
 
 	@Transactional
 	@PreAuthorize("this.canUpdate(authentication, #parentId, #childId, #entity)")
 	public E patch(@NonNull P parentId, @NonNull I childId, @NonNull E entity) {
-		E saved = merge(parentId, childId, entity, true);
-		afterUpdate(saved);
-		return saved;
+		return merge(parentId, childId, entity, true);
 	}
 
-	public abstract void checkForDelete(@NonNull P parentId, @NonNull E child);
+	/**
+	 * Do some action before deleting
+	 * 
+	 * @param parentId the ID of parent record
+	 * @param entity   the entity to remove
+	 * @throws RequestException when something is off with given data
+	 */
+	protected void beforeDelete(@NonNull P parentId, @NonNull E entity) {
+		log.debug("Attempting to delete {} for parentId {}", entity, parentId);
+	}
+
+	/**
+	 * Do some action after data has been deleted
+	 * 
+	 * @param parentId the ID of parent record
+	 * @param entity   the removed data
+	 */
+	protected void afterDelete(@NonNull P parentId, @NonNull E entity) {
+		log.debug("Deleted {}", entity);
+	}
 
 	@Transactional
 	@PreAuthorize("this.canDelete(authentication, #parentId, #childId)")
 	public void delete(@NonNull P parentId, @NonNull I childId) {
-		E child = read(parentId, childId);
-		checkForDelete(parentId, child);
+		E entity = read(parentId, childId);
+		beforeDelete(parentId, entity);
 		if (isHardDelete())
-			repository().delete(child);
+			repository().delete(entity);
 		else {
-			Utils.setFieldValue(softDeleteField(child), child, BaseEntity.class, null);
-			repository().save(child);
+			Utils.setFieldValue(softDeleteField(entity), entity, BaseEntity.class, null);
+			repository().save(entity);
 		}
+		afterDelete(parentId, entity);
 	}
 
 	@Transactional
@@ -199,13 +246,14 @@ public abstract class BaseChildRegistrableService<E extends BaseEntity, I extend
 		SearchFilters<E> idsFilters = new SearchFilters<>();
 		Streams.stream(ids).filter(Objects::nonNull)
 				.forEach(i -> idsFilters.or(getIdField(), SearchFilterOperator.IS_EQUAL, i));
-		List<E> children = repository().findByFilters(idsFilters, null).getContent();
-		children.stream().forEach(c -> checkForDelete(parentId, c));
+		List<E> entities = repository().findByFilters(idsFilters, null).getContent();
+		entities.stream().forEach(e -> beforeDelete(parentId, e));
 		if (isHardDelete())
-			repository().deleteAll(children);
+			repository().deleteAll(entities);
 		else {
-			children.stream().forEach(c -> Utils.setFieldValue(softDeleteField(c), c, BaseEntity.class, null));
-			repository().saveAll(children);
+			entities.stream().forEach(c -> Utils.setFieldValue(softDeleteField(c), c, BaseEntity.class, null));
+			repository().saveAll(entities);
 		}
+		entities.stream().forEach(e -> afterDelete(parentId, e));
 	}
 }
