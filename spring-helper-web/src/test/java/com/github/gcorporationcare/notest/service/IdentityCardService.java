@@ -15,7 +15,7 @@ import lombok.NonNull;
 
 @Service
 public class IdentityCardService
-		extends BaseChildRegistrableService<IdentityCard, Long, Long, IdentityCardRepository, Person> {
+		extends BaseChildRegistrableService<IdentityCard, Long, IdentityCardRepository, Long, Person> {
 	@Autowired
 	PersonRepository personRepository;
 	@Autowired
@@ -41,22 +41,6 @@ public class IdentityCardService
 		// We do not want to delete identity card, we will disable instead
 		// It will also be unlinked with owning person
 		return false;
-	}
-
-	@Override
-	public void beforeCreate(@NonNull Long parentId, @NonNull IdentityCard child) {
-		// Everybody can create
-
-	}
-
-	@Override
-	public void beforeUpdate(@NonNull Long parentId, @NonNull IdentityCard child, @NonNull IdentityCard savedChild, boolean patching) {
-		// Everybody can update
-	}
-
-	@Override
-	public void beforeDelete(@NonNull Long parentId, @NonNull IdentityCard child) {
-		// Everybody can delete
 	}
 
 	@Override

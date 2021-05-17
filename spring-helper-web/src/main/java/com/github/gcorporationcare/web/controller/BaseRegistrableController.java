@@ -46,7 +46,7 @@ public abstract class BaseRegistrableController<D extends BaseDto, E extends Bas
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = ParameterKey.EMPTY, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "create", notes = "Save/Update given entity")
-	public D create(@Validated({ ValidationStep.Simple.class }) @RequestBody D dto,
+	public D create(@Validated({ ValidationStep.OnCreate.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Saving entity {} with values {}", service().getEntityClass(), dto);
 		E entity = mapFromDto(dto);
@@ -62,6 +62,7 @@ public abstract class BaseRegistrableController<D extends BaseDto, E extends Bas
 	@ApiOperation(value = "create-multiple", notes = "Save/Update given entities")
 	public Iterable<D> createMultiple(@RequestBody List<D> dtos,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
+		dtos.stream().forEach(this::validateCreateMultiple);
 		log.info("Saving entities {} with values {}", service().getEntityClass(), dtos);
 		Iterable<E> entities = mapFromIterableDto(dtos);
 		Iterable<E> newEntities = registrerService().createMultiple(entities);
@@ -75,7 +76,7 @@ public abstract class BaseRegistrableController<D extends BaseDto, E extends Bas
 	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "update", notes = "Update given entity")
 	public D update(@PathVariable(ParameterKey.ID_PARAMETER) I id,
-			@Validated({ ValidationStep.Complex.class }) @RequestBody D dto,
+			@Validated({ ValidationStep.OnUpdate.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Updating entity {} with values {}", service().getEntityClass(), dto);
 		E entity = mapFromDto(dto);
@@ -89,7 +90,8 @@ public abstract class BaseRegistrableController<D extends BaseDto, E extends Bas
 	@ResponseStatus(HttpStatus.OK)
 	@PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "patch", notes = "Update non-null fields of given entity")
-	public D patch(@PathVariable(ParameterKey.ID_PARAMETER) I id, @RequestBody D dto,
+	public D patch(@PathVariable(ParameterKey.ID_PARAMETER) I id,
+			@Validated({ ValidationStep.OnPatch.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Patching entity {} with values {}", service().getEntityClass(), dto);
 		E entity = mapFromDto(dto);

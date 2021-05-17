@@ -24,7 +24,7 @@ import lombok.NonNull;
 
 @PreAuthorize("this.canRead(authentication, #parent)")
 @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-public abstract class BaseChildSearchableService<E extends BaseEntity, I extends Serializable, P extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
+public abstract class BaseChildSearchableService<E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>, P extends Serializable>
 		extends BaseService<E, I, R> {
 
 	public abstract String getParentIdField();

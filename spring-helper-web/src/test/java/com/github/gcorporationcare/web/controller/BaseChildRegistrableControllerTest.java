@@ -162,6 +162,7 @@ class BaseChildRegistrableControllerTest extends BaseControllerTest {
 	void testPatch_OK() throws Exception {
 		Address address = addressRepository.save(RandomUtils.randomAddress(person));
 		Address newAddress = new Address();
+		newAddress.setId(address.getId());
 		newAddress.setCity("alphabet");
 		service.perform(patch(String.format("%s%s", patch, address.getId()))
 				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).content(toJson(newAddress, false)))
@@ -170,8 +171,10 @@ class BaseChildRegistrableControllerTest extends BaseControllerTest {
 
 	@Test
 	void testPatch_KO() throws Exception {
+		Address address = new Address();
+		address.setId(0L);
 		service.perform(patch(String.format("%s%s", patch, 0)).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.content(toJson(new Address(), false))).andExpect(status().isNotFound());
+				.content(toJson(address, false))).andExpect(status().isNotFound());
 	}
 
 	@Test

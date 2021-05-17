@@ -13,19 +13,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.annotation.Validated;
 
+import com.github.gcorporationcare.data.constraint.ValidationStep;
 import com.github.gcorporationcare.data.entity.BaseEntity;
 import com.github.gcorporationcare.web.domain.FieldFilter;
 import com.github.gcorporationcare.web.dto.BaseDto;
+import com.google.common.collect.Streams;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public abstract class BaseController<D extends BaseDto, E extends BaseEntity> {
 
 	Class<D> dtoClazz;
 	Class<E> entityClazz;
 	@Autowired
-	ModelMapper modelMapper;
+	protected ModelMapper modelMapper;
 
 	@PostConstruct
 	@SuppressWarnings("unchecked")
@@ -74,9 +79,7 @@ public abstract class BaseController<D extends BaseDto, E extends BaseEntity> {
 	 * @return the list of corresponding DTO
 	 */
 	public Iterable<D> mapToIterableDto(@NonNull Iterable<E> entities, @NonNull FieldFilter<D> fieldFilter) {
-		List<D> dtoList = StreamSupport.stream(entities.spliterator(), false).map(e -> modelMapper.map(e, dtoClazz))
-				.collect(Collectors.toList());
-		return fieldFilter.parseIterable(dtoList);
+		return Streams.stream(entities).map(e -> mapToDto(e, fieldFilter)).collect(Collectors.toList());
 	}
 
 	/**
@@ -101,5 +104,9 @@ public abstract class BaseController<D extends BaseDto, E extends BaseEntity> {
 		List<D> dtos = (List<D>) mapToIterableDto(page.getContent(), fieldFilter);
 		return new PageImpl<>(dtos, PageRequest.of(page.getPageable().getPageNumber(), page.getSize()),
 				page.getTotalElements());
+	}
+
+	protected void validateCreateMultiple(@Validated({ ValidationStep.OnCreate.class }) D dto) {
+		log.debug("Entity {} is valid", dto);
 	}
 }

@@ -14,13 +14,13 @@ import com.github.gcorporationcare.web.service.BaseChildSearchableService;
 @RestController
 @RequestMapping("/persons/{parent}/tags")
 public class PersonTagController
-		extends BaseChildRegistrableController<PersonTagDto, PersonTag, Long, Long, PersonTagRepository, Long> {
+		extends BaseChildRegistrableController<PersonTagDto, PersonTag, Long, PersonTagRepository, Long, Long> {
 
 	@Autowired
 	PersonTagService service;
 
 	@Override
-	public BaseChildSearchableService<PersonTag, Long, Long, PersonTagRepository> service() {
+	public BaseChildSearchableService<PersonTag, Long, PersonTagRepository, Long> service() {
 		return service;
 	}
 }

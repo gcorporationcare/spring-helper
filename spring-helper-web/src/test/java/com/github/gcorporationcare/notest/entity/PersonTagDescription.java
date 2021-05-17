@@ -30,7 +30,7 @@ public class PersonTagDescription extends BaseEmbedded {
 	@Column(name = PersonTagDescription.TITLE_COLUMN, nullable = false)
 	private String title;
 	// -------------------------------------------------
-	@NotEmpty(groups = { ValidationStep.Complex.class })
+	@NotEmpty(groups = { ValidationStep.OnPatch.class })
 	@Column(name = PersonTagDescription.DESCRIPTION_COLUMN, nullable = false)
 	private String description;
 	// -------------------------------------------------

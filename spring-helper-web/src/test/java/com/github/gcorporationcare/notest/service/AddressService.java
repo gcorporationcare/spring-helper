@@ -16,7 +16,7 @@ import com.github.gcorporationcare.web.service.BaseChildRegistrableService;
 import lombok.NonNull;
 
 @Service
-public class AddressService extends BaseChildRegistrableService<Address, Long, Long, AddressRepository, Person> {
+public class AddressService extends BaseChildRegistrableService<Address, Long, AddressRepository, Long, Person> {
 	@Autowired
 	PersonRepository personRepository;
 	@Autowired
@@ -33,18 +33,13 @@ public class AddressService extends BaseChildRegistrableService<Address, Long, L
 	}
 
 	@Override
-	public void beforeCreate(@NonNull Long parentId, @NonNull Address child) {
-		child.setActive(true);
+	public void beforeCreate(@NonNull Address entity) {
+		entity.setActive(true);
 	}
 
 	@Override
-	public void beforeUpdate(@NonNull Long parentId, @NonNull Address child, @NonNull Address savedChild, boolean patching) {
-		// Test class : nothing here
-	}
-
-	@Override
-	public void beforeDelete(@NonNull Long parentId, @NonNull Address child) {
-		if (!child.isActive()) {
+	public void beforeDelete(@NonNull Address entity) {
+		if (!entity.isActive()) {
 			return;
 		}
 		throw new RequestException("Cannot delete active address", HttpStatus.FORBIDDEN);

@@ -26,10 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
-public abstract class BaseChildSearchableController<D extends BaseDto, E extends BaseEntity, I extends Serializable, P extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
+public abstract class BaseChildSearchableController<D extends BaseDto, E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>, P extends Serializable>
 		extends BaseController<D, E> {
 
-	public abstract BaseChildSearchableService<E, I, P, R> service();
+	public abstract BaseChildSearchableService<E, I, R, P> service();
 
 	@ResponseBody
 	@ApiSimpleEndpoint

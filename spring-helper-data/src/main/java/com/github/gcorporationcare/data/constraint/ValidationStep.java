@@ -1,42 +1,31 @@
 package com.github.gcorporationcare.data.constraint;
 
-import javax.validation.groups.Default;
-
 /**
  * Collection of interfaces for different validation steps From Simple to
  * Complex<br>
- * Simple being for validating recurrent fields used for search (user's name for
- * example) Medium for intermediary state (an order without its code for
- * example) Complex for most of the fields, without the one that are for
- * technical purposes (createdBy for example)<br>
- * Validation on a complex type will trigger validation on simpler field
  */
 public interface ValidationStep {
 
 	/**
-	 * Group for validating recurrent fields used for search (user's name for
-	 * example)
+	 * For validating mandatory fields when patching.
 	 */
-	public interface Simple extends Default {
+	public interface OnPatch {
 	}
 
 	/**
-	 * Group for validating intermediary state fields (an order without its code for
-	 * example)
+	 * For validating mandatory fields when creating (fields like Id does not need
+	 * to be present when creating).
 	 */
-	public interface Medium extends Simple {
+	public interface OnCreate {
 	}
 
 	/**
-	 * Group for validating most of the fields, without the one that are for
-	 * technical purposes (createdBy for example)
+	 * For validating mandatory fields when updating (fields like Id are mandatory
+	 * while audit fields like createdBy are not).
 	 */
-	public interface Complex extends Medium {
+	public interface OnUpdate extends OnPatch {
 	}
 
-	/**
-	 * Group for validating system fields (createdBy for example)
-	 */
-	public interface System extends Complex {
+	public interface OnCreateAndUpdate extends OnCreate, OnUpdate {
 	}
 }

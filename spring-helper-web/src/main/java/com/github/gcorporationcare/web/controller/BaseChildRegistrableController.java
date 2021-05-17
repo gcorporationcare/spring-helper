@@ -32,12 +32,12 @@ import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
-public abstract class BaseChildRegistrableController<D extends BaseDto, E extends BaseEntity, I extends Serializable, P extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>, V extends Serializable>
-		extends BaseChildSearchableController<D, E, I, P, R> {
+public abstract class BaseChildRegistrableController<D extends BaseDto, E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>, P extends Serializable, V extends Serializable>
+		extends BaseChildSearchableController<D, E, I, R, P> {
 
 	@SuppressWarnings({ "unchecked" })
-	private BaseChildRegistrableService<E, I, P, R, V> registrerService() {
-		return (BaseChildRegistrableService<E, I, P, R, V>) service();
+	private BaseChildRegistrableService<E, I, R, P, V> registrerService() {
+		return (BaseChildRegistrableService<E, I, R, P, V>) service();
 	}
 
 	@ResponseBody
@@ -47,7 +47,7 @@ public abstract class BaseChildRegistrableController<D extends BaseDto, E extend
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "create", notes = "Save/Update given entity")
 	public D create(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent,
-			@Validated({ ValidationStep.Simple.class }) @RequestBody D dto,
+			@Validated({ ValidationStep.OnCreate.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Saving entity {} from parent {} with values {}", service().getEntityClass(), parent, dto);
 		E child = mapFromDto(dto);
@@ -63,6 +63,7 @@ public abstract class BaseChildRegistrableController<D extends BaseDto, E extend
 	@ApiOperation(value = "create-multiple", notes = "Save/Update given entities")
 	public Iterable<D> createMultiple(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent, @RequestBody List<D> dtos,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
+		dtos.stream().forEach(this::validateCreateMultiple);
 		log.info("Saving entities {} from parent {} with values {}", service().getEntityClass(), parent, dtos);
 		Iterable<E> children = mapFromIterableDto(dtos);
 		Iterable<E> newEntities = registrerService().createMultiple(parent, children);
@@ -77,7 +78,7 @@ public abstract class BaseChildRegistrableController<D extends BaseDto, E extend
 	@ApiOperation(value = "update", notes = "Update given entity")
 	public D update(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent,
 			@PathVariable(ParameterKey.ID_PARAMETER) I childId,
-			@Validated({ ValidationStep.Simple.class }) @RequestBody D dto,
+			@Validated({ ValidationStep.OnUpdate.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Updating entity {} from parent {} with values {}", service().getEntityClass(), parent, dto);
 		E child = mapFromDto(dto);
@@ -92,7 +93,8 @@ public abstract class BaseChildRegistrableController<D extends BaseDto, E extend
 	@PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "patch", notes = "Update non-null fields of given entity")
 	public D patch(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent,
-			@PathVariable(ParameterKey.ID_PARAMETER) I childId, @RequestBody D dto,
+			@PathVariable(ParameterKey.ID_PARAMETER) I childId,
+			@Validated({ ValidationStep.OnPatch.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Patching entity {} from parent {} with values {}", service().getEntityClass(), parent, dto);
 		E child = mapFromDto(dto);

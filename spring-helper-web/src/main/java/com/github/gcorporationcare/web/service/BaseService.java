@@ -16,7 +16,7 @@ import com.github.gcorporationcare.data.domain.SearchFilter.SearchFilterOperator
 import com.github.gcorporationcare.data.entity.BaseEntity;
 import com.github.gcorporationcare.data.repository.BaseRepository;
 
-public abstract class BaseService<E extends BaseEntity, ID extends Serializable, R extends BaseRepository<E, ID> & PagingAndSortingRepository<E, ID>> {
+public abstract class BaseService<E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>> {
 	public static final String ID_FIELD = "id";
 
 	public abstract R repository();

@@ -15,13 +15,13 @@ import com.github.gcorporationcare.web.service.BaseChildSearchableService;
 @RestController
 @RequestMapping("/persons/{parent}/addresses")
 public class AddressController
-		extends BaseChildRegistrableController<AddressDto, Address, Long, Long, AddressRepository, Person> {
+		extends BaseChildRegistrableController<AddressDto, Address, Long, AddressRepository, Long, Person> {
 
 	@Autowired
 	AddressService service;
 
 	@Override
-	public BaseChildSearchableService<Address, Long, Long, AddressRepository> service() {
+	public BaseChildSearchableService<Address, Long, AddressRepository, Long> service() {
 		return service;
 	}
 }

@@ -22,12 +22,10 @@ import com.github.gcorporationcare.web.exception.RequestException;
 import com.google.common.collect.Streams;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Transactional(propagation = Propagation.REQUIRED)
 public abstract class BaseRegistrableService<E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>>
-		extends BaseSearchableService<E, I, R> {
+		extends BaseSearchableService<E, I, R> implements BaseCrudService<E, I, R> {
 
 	/**
 	 * Used to check if user have required access to create data from this service.
@@ -98,25 +96,6 @@ public abstract class BaseRegistrableService<E extends BaseEntity, I extends Ser
 		return object.get();
 	}
 
-	/**
-	 * Do some action before creating
-	 * 
-	 * @param entity the entity to save
-	 * @throws RequestException when something is off with given data
-	 */
-	protected void beforeCreate(@NonNull E entity) throws RequestException {
-		log.debug("Attempting to create {}", entity);
-	}
-
-	/**
-	 * Do some action after data has been created
-	 * 
-	 * @param entity the created data
-	 */
-	protected void afterCreate(@NonNull E entity) {
-		log.debug("Created {}", entity);
-	}
-
 	@Transactional
 	@PreAuthorize("this.canCreate(authentication, #entity)")
 	public E create(@NonNull E entity) {
@@ -135,30 +114,19 @@ public abstract class BaseRegistrableService<E extends BaseEntity, I extends Ser
 		return saved;
 	}
 
-	/**
-	 * Do some action before updating
-	 * 
-	 * @param entity the entity to save
-	 * @throws RequestException when something is off with given data
-	 */
-	protected void beforeUpdate(@NonNull E entity, @NonNull E savedEntity, boolean patching) {
-		log.debug("Attempting to update {}", entity);
-	}
-
-	/**
-	 * Do some action after data has been updated
-	 * 
-	 * @param entity the updated data
-	 */
-	protected void afterUpdate(@NonNull E entity) {
-		log.debug("Updated {}", entity);
-	}
-
 	private E merge(@NonNull I id, @NonNull E entity, boolean patching) {
+		if (!id.equals(Utils.getFieldValue(getIdField(), entity, BaseEntity.class))) {
+			// Maybe the user did some mistake
+			throw new RequestException(I18nMessage.RequestError.INVALID_GIVEN_PARAMETERS, HttpStatus.BAD_REQUEST, id);
+		}
 		E saved = getObject(id);
-		Utils.setFieldValue(getIdField(), entity, BaseEntity.class, id);
-		String[] excludedFields = patching ? Utils.getNullPropertyNames(entity) : null;
-		beforeUpdate(entity, saved, patching);
+		String[] excludedFields = null;
+		if (patching) {
+			excludedFields = Utils.getNullPropertyNames(entity);
+			beforePatch(entity, saved);
+		} else {
+			beforeUpdate(entity, saved);
+		}
 		saved.merge(entity, excludedFields);
 		saved = repository().save(saved);
 		afterUpdate(saved);
@@ -175,25 +143,6 @@ public abstract class BaseRegistrableService<E extends BaseEntity, I extends Ser
 	@PreAuthorize("this.canUpdate(authentication, #id, #entity)")
 	public E patch(@NonNull I id, @NonNull E entity) {
 		return merge(id, entity, true);
-	}
-
-	/**
-	 * Do some action before deleting
-	 * 
-	 * @param entity the entity to remove
-	 * @throws RequestException when something is off with given data
-	 */
-	protected void beforeDelete(@NonNull E entity) {
-		log.debug("Attempting to delete {}", entity);
-	}
-
-	/**
-	 * Do some action after data has been deleted
-	 * 
-	 * @param entity the removed data
-	 */
-	protected void afterDelete(@NonNull E entity) {
-		log.debug("Deleted {}", entity);
 	}
 
 	@Transactional

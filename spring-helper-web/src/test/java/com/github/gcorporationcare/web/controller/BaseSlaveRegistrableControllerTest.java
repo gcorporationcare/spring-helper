@@ -168,6 +168,7 @@ class BaseSlaveRegistrableControllerTest extends BaseControllerTest {
 		PersonTag personTag = personTagRepository.save(RandomUtils.randomPersonTag(person, null));
 		PersonTag newPersonTag = new PersonTag();
 		newPersonTag.setName("alphabet");
+		newPersonTag.setId(personTag.getId());
 		service.perform(patch(String.format("%s%s", patch, personTag.getId()))
 				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).content(toJson(newPersonTag, false)))
 				.andExpect(status().isOk());
@@ -175,8 +176,10 @@ class BaseSlaveRegistrableControllerTest extends BaseControllerTest {
 
 	@Test
 	void testPatch_KO() throws Exception {
+		PersonTag personTag = new PersonTag();
+		personTag.setId(0L);
 		service.perform(patch(String.format("%s%s", patch, 0)).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.content(toJson(new Address(), false))).andExpect(status().isNotFound());
+				.content(toJson(personTag, false))).andExpect(status().isNotFound());
 	}
 
 	@Test

@@ -12,7 +12,7 @@ import com.github.gcorporationcare.web.service.BaseChildRegistrableService;
 import lombok.NonNull;
 
 @Service
-public class PersonTagService extends BaseChildRegistrableService<PersonTag, Long, Long, PersonTagRepository, Long> {
+public class PersonTagService extends BaseChildRegistrableService<PersonTag, Long, PersonTagRepository, Long, Long> {
 
 	@Autowired
 	PersonTagRepository personTagRepository;
@@ -30,21 +30,6 @@ public class PersonTagService extends BaseChildRegistrableService<PersonTag, Lon
 	@Override
 	public Optional<Long> findParent(@NonNull Long parentId) {
 		return Optional.of(parentId);
-	}
-
-	@Override
-	public void beforeCreate(@NonNull Long parentId, @NonNull PersonTag child) {
-		// Test class : Can always create
-	}
-
-	@Override
-	public void beforeUpdate(@NonNull Long parentId, @NonNull PersonTag child, @NonNull PersonTag savedChild, boolean patching) {
-		// Test class : Can always update
-	}
-
-	@Override
-	public void beforeDelete(@NonNull Long parentId, @NonNull PersonTag child) {
-		// Test class : Can always delete
 	}
 
 	@Override
