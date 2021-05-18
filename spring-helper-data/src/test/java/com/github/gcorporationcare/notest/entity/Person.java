@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 
 import com.github.gcorporationcare.data.annotation.DefaultField;
 import com.github.gcorporationcare.data.common.Utils;
+import com.github.gcorporationcare.data.constraint.InvalidExpression;
 import com.github.gcorporationcare.data.constraint.InvalidWhen;
 import com.github.gcorporationcare.data.entity.BaseIdentifiedEntity;
 import com.github.gcorporationcare.notest.enumeration.Gender;
@@ -32,7 +33,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "person", uniqueConstraints = { @UniqueConstraint(columnNames = Person.EMAIL_COLUMN) }, indexes = {
 		@Index(columnList = Person.EMAIL_COLUMN) })
-@InvalidWhen("email == null")
+@InvalidWhen(@InvalidExpression(value = "email == null", field = "email"))
 public class Person extends BaseIdentifiedEntity {
 
 	protected static final String NAME_COLUMN = "name";

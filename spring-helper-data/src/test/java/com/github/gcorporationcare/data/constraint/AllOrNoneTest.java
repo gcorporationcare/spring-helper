@@ -65,17 +65,15 @@ class AllOrNoneTest extends DataProviderTestHelper {
 	void testValidation() {
 		final int zeroViolation = 0;
 		final int twoViolations = 2;
-		validateConstraint(new SimpleClass1(FIELD_1, null), twoViolations,
-				I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
-		validateConstraint(new SimpleClass1(FIELD_1, true), zeroViolation,
-				I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
+		String[] expectedMessages = new String[] { I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED,
+				I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED };
+		validateConstraint(new SimpleClass1(FIELD_1, null), twoViolations, expectedMessages);
+		validateConstraint(new SimpleClass1(FIELD_1, true), zeroViolation, null);
 
-		validateConstraint(new SimpleClass2(null, zeroViolation, 2.2), twoViolations,
-				I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
-		validateConstraint(new SimpleClass2(FIELD_1, zeroViolation, null), zeroViolation,
-				I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
+		validateConstraint(new SimpleClass2(null, zeroViolation, 2.2), twoViolations, expectedMessages);
+		validateConstraint(new SimpleClass2(FIELD_1, zeroViolation, null), zeroViolation, null);
 
-		validateConstraint(new SimpleClass3(null), zeroViolation, I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
-		validateConstraint(new SimpleClass3(FIELD_1), zeroViolation, I18nMessage.DataError.MULTIPLE_OR_NONE_EXPECTED);
+		validateConstraint(new SimpleClass3(null), zeroViolation, null);
+		validateConstraint(new SimpleClass3(FIELD_1), zeroViolation, null);
 	}
 }

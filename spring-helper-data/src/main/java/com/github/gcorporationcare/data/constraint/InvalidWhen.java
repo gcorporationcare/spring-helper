@@ -31,7 +31,7 @@ public @interface InvalidWhen {
 	 * 
 	 * @return the list of expressions to evaluate
 	 */
-	String[] value();
+	InvalidExpression[] value();
 
 	/**
 	 * The error message that will be displayed

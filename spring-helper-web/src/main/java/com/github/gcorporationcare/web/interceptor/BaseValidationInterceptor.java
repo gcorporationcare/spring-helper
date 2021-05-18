@@ -34,7 +34,7 @@ public class BaseValidationInterceptor extends ResponseEntityExceptionHandler {
 			if (!messages.contains(message))
 				messages.add(message);
 		});
-		Exception exception = new Exception(String.join(",", messages.toArray(new String[] {})));
+		Exception exception = new Exception(String.join(", ", messages.toArray(new String[] {})));
 		return new ApiResponse<>(ApiResponse.exceptionToMap(exception, HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
 	}
 

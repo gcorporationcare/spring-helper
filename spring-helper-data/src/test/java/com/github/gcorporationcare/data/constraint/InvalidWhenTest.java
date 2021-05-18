@@ -2,6 +2,7 @@ package com.github.gcorporationcare.data.constraint;
 
 import org.junit.jupiter.api.Test;
 
+import com.github.gcorporationcare.data.i18n.I18nMessage;
 import com.github.gcorporationcare.notest.common.DataProviderTestHelper;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ class InvalidWhenTest extends DataProviderTestHelper {
 	}
 
 	@AllArgsConstructor
-	@InvalidWhen(value = { "numberName == null || numberName.value != numberValue" }, message = EXPECTED_MESSAGE)
+	@InvalidWhen(value = @InvalidExpression(value = "numberName == null || numberName.value != numberValue", field = "numberName", message = EXPECTED_MESSAGE))
 	public class SimpleTestClass {
 		@Getter
 		@Setter
@@ -36,12 +37,13 @@ class InvalidWhenTest extends DataProviderTestHelper {
 	@Test
 	void testValidation() {
 		final int expectedViolations = 2;
+		String[] expectedMessages = new String[] { I18nMessage.DataError.INCONSISTENT_VALUE_GIVEN, EXPECTED_MESSAGE };
 		validateConstraint(new SimpleTestClass(SimpleNumber.TWO.value, SimpleNumber.THREE), expectedViolations,
-				EXPECTED_MESSAGE);
+				expectedMessages);
 		validateConstraint(new SimpleTestClass(SimpleNumber.THREE.value, SimpleNumber.TWO), expectedViolations,
-				EXPECTED_MESSAGE);
+				expectedMessages);
 		validateConstraint(new SimpleTestClass(SimpleNumber.ONE.value, SimpleNumber.THREE), expectedViolations,
-				EXPECTED_MESSAGE);
-		validateConstraint(new SimpleTestClass(SimpleNumber.ONE.value, SimpleNumber.ONE), 0, EXPECTED_MESSAGE);
+				expectedMessages);
+		validateConstraint(new SimpleTestClass(SimpleNumber.ONE.value, SimpleNumber.ONE), 0, expectedMessages);
 	}
 }

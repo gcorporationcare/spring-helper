@@ -1,8 +1,12 @@
 package com.github.gcorporationcare.notest.common;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -34,10 +38,15 @@ public class DataProviderTestHelper {
 		validator = validatorFactory.getValidator();
 	}
 
-	protected void validateConstraint(Object obj, int expectedViolations, String exepctedMessage) {
+	protected void validateConstraint(Object obj, int expectedViolations, String[] expectedMessages) {
 		Set<ConstraintViolation<Object>> violations = validator.validate(obj);
 		assertEquals(expectedViolations, violations.size());
-		if (expectedViolations > 0)
-			assertEquals(exepctedMessage, violations.toArray(new ConstraintViolation[] {})[0].getMessage());
+		if (expectedViolations <= 0 || Objects.isNull(expectedMessages)) {
+			return;
+		}
+		String[] messages = violations.stream().map(ConstraintViolation::getMessage).toArray(String[]::new);
+
+		assertEquals(expectedMessages.length, messages.length);
+		assertThat(Arrays.asList(messages), containsInAnyOrder(expectedMessages));
 	}
 }
