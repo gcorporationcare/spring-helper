@@ -42,6 +42,15 @@ public abstract class ApiConfig extends DataConfig implements WebMvcConfigurer {
 		return -1;
 	}
 
+	/**
+	 * Number of minutes the IP will be locked
+	 * 
+	 * @return the duration of the cache
+	 */
+	protected long ipLockDuration() {
+		return 3;
+	}
+
 	@Override
 	protected void configureUserAuditor() {
 		super.configureUserAuditor();
@@ -67,9 +76,7 @@ public abstract class ApiConfig extends DataConfig implements WebMvcConfigurer {
 
 	@Bean
 	public IpLockingService ipLockingService() {
-		IpLockingService ipLockingService = new IpLockingService();
-		ipLockingService.setLimit(ipFailureLimit());
-		return ipLockingService;
+		return new IpLockingService(ipLockDuration(), ipFailureLimit());
 	}
 
 	/**

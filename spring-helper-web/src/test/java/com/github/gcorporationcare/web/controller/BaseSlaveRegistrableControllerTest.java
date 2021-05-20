@@ -169,6 +169,7 @@ class BaseSlaveRegistrableControllerTest extends BaseControllerTest {
 		PersonTag newPersonTag = new PersonTag();
 		newPersonTag.setName("alphabet");
 		newPersonTag.setId(personTag.getId());
+		newPersonTag.setDescription(personTag.getDescription());
 		service.perform(patch(String.format("%s%s", patch, personTag.getId()))
 				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).content(toJson(newPersonTag, false)))
 				.andExpect(status().isOk());
@@ -177,9 +178,17 @@ class BaseSlaveRegistrableControllerTest extends BaseControllerTest {
 	@Test
 	void testPatch_KO() throws Exception {
 		PersonTag personTag = new PersonTag();
-		personTag.setId(0L);
-		service.perform(patch(String.format("%s%s", patch, 0)).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.content(toJson(personTag, false))).andExpect(status().isNotFound());
+		personTag.setId(9999L);
+		// Missing some required fields
+		service.perform(patch(String.format("%s%s", patch, personTag.getId()))
+				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).content(toJson(personTag, false)))
+				.andExpect(status().isBadRequest());
+
+		PersonTag validPersonTag = RandomUtils.randomPersonTag(person, null);
+		validPersonTag.setId(9999L);
+		service.perform(patch(String.format("%s%s", patch, validPersonTag.getId()))
+				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).content(toJson(validPersonTag, false)))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test

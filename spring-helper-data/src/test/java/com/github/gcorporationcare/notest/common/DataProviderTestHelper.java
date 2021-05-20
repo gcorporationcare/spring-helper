@@ -38,8 +38,10 @@ public class DataProviderTestHelper {
 		validator = validatorFactory.getValidator();
 	}
 
-	protected void validateConstraint(Object obj, int expectedViolations, String[] expectedMessages) {
-		Set<ConstraintViolation<Object>> violations = validator.validate(obj);
+	protected void validateConstraint(Object obj, int expectedViolations, String[] expectedMessages,
+			Class<?>... groups) {
+		Set<ConstraintViolation<Object>> violations = Objects.isNull(groups) ? validator.validate(obj)
+				: validator.validate(obj, groups);
 		assertEquals(expectedViolations, violations.size());
 		if (expectedViolations <= 0 || Objects.isNull(expectedMessages)) {
 			return;

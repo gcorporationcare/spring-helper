@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.github.gcorporationcare.data.constraint.ValidationStep;
 import com.github.gcorporationcare.data.entity.BaseEntity;
 import com.github.gcorporationcare.data.repository.BaseRepository;
 import com.github.gcorporationcare.web.annotation.ApiSimpleEndpoint;
+import com.github.gcorporationcare.web.constraint.ValidationStep.OnCreate;
+import com.github.gcorporationcare.web.constraint.ValidationStep.OnPatch;
+import com.github.gcorporationcare.web.constraint.ValidationStep.OnUpdate;
 import com.github.gcorporationcare.web.domain.FieldFilter;
 import com.github.gcorporationcare.web.dto.BaseDto;
 import com.github.gcorporationcare.web.i18n.ParameterKey;
@@ -47,7 +49,7 @@ public abstract class BaseChildRegistrableController<D extends BaseDto, E extend
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "create", notes = "Save/Update given entity")
 	public D create(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent,
-			@Validated({ ValidationStep.OnCreate.class }) @RequestBody D dto,
+			@Validated({ OnCreate.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Saving entity {} from parent {} with values {}", service().getEntityClass(), parent, dto);
 		E child = mapFromDto(dto);
@@ -77,8 +79,7 @@ public abstract class BaseChildRegistrableController<D extends BaseDto, E extend
 	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "update", notes = "Update given entity")
 	public D update(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent,
-			@PathVariable(ParameterKey.ID_PARAMETER) I childId,
-			@Validated({ ValidationStep.OnUpdate.class }) @RequestBody D dto,
+			@PathVariable(ParameterKey.ID_PARAMETER) I childId, @Validated({ OnUpdate.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Updating entity {} from parent {} with values {}", service().getEntityClass(), parent, dto);
 		E child = mapFromDto(dto);
@@ -93,8 +94,7 @@ public abstract class BaseChildRegistrableController<D extends BaseDto, E extend
 	@PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "patch", notes = "Update non-null fields of given entity")
 	public D patch(@PathVariable(ParameterKey.PARENT_PARAMETER) P parent,
-			@PathVariable(ParameterKey.ID_PARAMETER) I childId,
-			@Validated({ ValidationStep.OnPatch.class }) @RequestBody D dto,
+			@PathVariable(ParameterKey.ID_PARAMETER) I childId, @Validated({ OnPatch.class }) @RequestBody D dto,
 			@ApiIgnore(ParameterKey.IGNORE_PARAMETER_REASON) FieldFilter<D> fieldFilter) {
 		log.info("Patching entity {} from parent {} with values {}", service().getEntityClass(), parent, dto);
 		E child = mapFromDto(dto);

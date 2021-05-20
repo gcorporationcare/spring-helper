@@ -5,21 +5,24 @@ import java.io.Serializable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.gcorporationcare.data.constraint.ValidationStep;
 import com.github.gcorporationcare.data.entity.BaseEntity;
 import com.github.gcorporationcare.data.repository.BaseRepository;
+import com.github.gcorporationcare.web.constraint.ValidationStep.OnCreate;
+import com.github.gcorporationcare.web.constraint.ValidationStep.OnPatch;
+import com.github.gcorporationcare.web.constraint.ValidationStep.OnUpdate;
 import com.github.gcorporationcare.web.exception.RequestException;
 
 import lombok.NonNull;
 
 public interface BaseCrudService<E extends BaseEntity, I extends Serializable, R extends BaseRepository<E, I> & PagingAndSortingRepository<E, I>> {
 	/**
-	 * Do some action before creating
+	 * Do some action before creating. All Default and OnCreate constraints will be
+	 * verified.
 	 * 
 	 * @param entity the entity to save
 	 * @throws RequestException when something is off with given data
 	 */
-	default void beforeCreate(@NonNull @Validated({ ValidationStep.OnCreate.class }) E entity) throws RequestException {
+	default void beforeCreate(@Validated({ OnCreate.class }) E entity) throws RequestException {
 		// Override if needed
 	}
 
@@ -33,22 +36,24 @@ public interface BaseCrudService<E extends BaseEntity, I extends Serializable, R
 	}
 
 	/**
-	 * Do some action before updating
+	 * Do some action before updating. All Default, OnPatch and OnUpdate constraints
+	 * will be verified.
 	 * 
 	 * @param entity the entity to save
 	 * @throws RequestException when something is off with given data
 	 */
-	default void beforeUpdate(@NonNull @Validated({ ValidationStep.OnUpdate.class }) E entity, @NonNull E savedEntity) {
+	default void beforeUpdate(@Validated({ OnUpdate.class }) E entity, @NonNull E savedEntity) {
 		// Override if needed
 	}
 
 	/**
-	 * Do some action before patching
+	 * Do some action before patching. All Default and OnPatch constraints will be
+	 * verified.
 	 * 
 	 * @param entity the entity to save
 	 * @throws RequestException when something is off with given data
 	 */
-	default void beforePatch(@NonNull @Validated({ ValidationStep.OnPatch.class }) E entity, @NonNull E savedEntity) {
+	default void beforePatch(@Validated({ OnPatch.class }) E entity, @NonNull E savedEntity) {
 		// Override if needed
 	}
 

@@ -1,5 +1,7 @@
 package com.github.gcorporationcare.notest.dto;
 
+import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.gcorporationcare.web.domain.FieldFilter;
@@ -27,5 +29,6 @@ public class AddressDto extends BaseIdentifiedDto {
 	// -------------------------------------------------
 	private boolean active;
 	// -------------------------------------------------
+	@Valid
 	private PersonDto person;
 }

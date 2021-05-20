@@ -3,10 +3,9 @@ package com.github.gcorporationcare.notest.entity;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
-import com.github.gcorporationcare.data.constraint.ValidationStep;
 import com.github.gcorporationcare.data.entity.BaseEmbedded;
 
 import lombok.AllArgsConstructor;
@@ -30,11 +29,11 @@ public class PersonTagDescription extends BaseEmbedded {
 	@Column(name = PersonTagDescription.TITLE_COLUMN, nullable = false)
 	private String title;
 	// -------------------------------------------------
-	@NotEmpty(groups = { ValidationStep.OnPatch.class })
+	@NotEmpty
 	@Column(name = PersonTagDescription.DESCRIPTION_COLUMN, nullable = false)
 	private String description;
 	// -------------------------------------------------
-	@NotNull
+	@Valid
 	@Embedded
 	private PersonTagAuthor author;
 

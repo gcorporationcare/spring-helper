@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.github.gcorporationcare.data.enumeration.PhoneNumberType;
+import com.github.gcorporationcare.data.field.BusinessNumber;
 import com.github.gcorporationcare.data.field.Country;
 import com.github.gcorporationcare.data.field.FaxNumber;
 import com.github.gcorporationcare.data.field.HomeNumber;
@@ -117,8 +118,15 @@ public final class RandomUtils {
 				phoneNumber.getExtension());
 	}
 
+	public static BusinessNumber randomBusinessNumber() {
+		PhoneNumber phoneNumber = randomPhoneNumber(PhoneNumberType.BUSINESS);
+		return new BusinessNumber(phoneNumber.getAreaCode(), phoneNumber.getPrefix(), phoneNumber.getSuffix(),
+				phoneNumber.getExtension());
+	}
+
 	public static Office randomOffice() {
 		return new Office(randomString(), LocalDate.now(), LocalTime.NOON, Country.find("us"),
-				MoneyCurrency.find("USD"), randomFaxNumber(), randomHomeNumber(), randomMobileNumber());
+				MoneyCurrency.find("USD"), randomFaxNumber(), randomHomeNumber(), randomBusinessNumber(),
+				randomMobileNumber());
 	}
 }

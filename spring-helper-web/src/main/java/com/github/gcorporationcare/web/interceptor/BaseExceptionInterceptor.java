@@ -11,6 +11,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -29,6 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice
 public class BaseExceptionInterceptor {
 	protected static final Object[] EMPTY_OBJECTS = new Object[0];
+
+	@ResponseBody
+	@org.springframework.web.bind.annotation.ExceptionHandler(AuthenticationException.class)
+	public ApiResponse<Map<String, String>> authenticationException(AuthenticationException e) {
+		log.error("Error occured because of authentication exception", e);
+		return new ApiResponse<>(e, HttpStatus.UNAUTHORIZED, EMPTY_OBJECTS);
+	}
 
 	/**
 	 * Catch any technical exception and return an HTTP response.

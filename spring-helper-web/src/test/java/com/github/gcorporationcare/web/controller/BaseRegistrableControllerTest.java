@@ -166,9 +166,16 @@ class BaseRegistrableControllerTest extends BaseControllerTest {
 	@Test
 	void testPatch_KO() throws Exception {
 		Person person = new Person();
-		person.setId(0L);
-		service.perform(patch(String.format("%s%s", patch, 0)).header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.content(toJson(person, false))).andExpect(status().isNotFound());
+		person.setId(9999L);
+		// Missing mandatory field name
+		service.perform(patch(String.format("%s%s", patch, person.getId()))
+				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).content(toJson(person, false)))
+				.andExpect(status().isBadRequest());
+
+		person.setName("Any name");
+		service.perform(patch(String.format("%s%s", patch, person.getId()))
+				.header(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).content(toJson(person, false)))
+				.andExpect(status().isNotFound());
 	}
 
 	@Test

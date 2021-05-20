@@ -15,8 +15,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 
-import com.github.gcorporationcare.data.constraint.ValidationStep;
 import com.github.gcorporationcare.data.entity.BaseEntity;
+import com.github.gcorporationcare.web.constraint.ValidationStep.OnCreate;
 import com.github.gcorporationcare.web.domain.FieldFilter;
 import com.github.gcorporationcare.web.dto.BaseDto;
 import com.google.common.collect.Streams;
@@ -106,7 +106,7 @@ public abstract class BaseController<D extends BaseDto, E extends BaseEntity> {
 				page.getTotalElements());
 	}
 
-	protected void validateCreateMultiple(@Validated({ ValidationStep.OnCreate.class }) D dto) {
+	protected void validateCreateMultiple(@Validated({ OnCreate.class }) D dto) {
 		log.debug("Entity {} is valid", dto);
 	}
 }

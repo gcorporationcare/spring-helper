@@ -12,11 +12,13 @@ import javax.validation.constraints.NotNull;
 
 import com.github.gcorporationcare.data.annotation.DefaultField;
 import com.github.gcorporationcare.data.entity.BaseIdentifiedEntity;
+import com.github.gcorporationcare.data.field.BusinessNumber;
 import com.github.gcorporationcare.data.field.Country;
 import com.github.gcorporationcare.data.field.FaxNumber;
 import com.github.gcorporationcare.data.field.HomeNumber;
 import com.github.gcorporationcare.data.field.MobileNumber;
 import com.github.gcorporationcare.data.field.MoneyCurrency;
+import com.github.gcorporationcare.data.field.converter.BusinessNumberConverter;
 import com.github.gcorporationcare.data.field.converter.CountryConverter;
 import com.github.gcorporationcare.data.field.converter.FaxNumberConverter;
 import com.github.gcorporationcare.data.field.converter.HomeNumberConverter;
@@ -42,6 +44,7 @@ public class Office extends BaseIdentifiedEntity {
 	protected static final String FAX_COLUMN = "fax";
 	protected static final String HOME_COLUMN = "home";
 	protected static final String MOBILE_COLUMN = "mobile";
+	protected static final String BUSINESS_COLUMN = "business";
 	protected static final String EXPIRY_COLUMN = "expiry";
 	protected static final String OPENING_COLUMN = "opening";
 
@@ -84,6 +87,12 @@ public class Office extends BaseIdentifiedEntity {
 	@Convert(converter = HomeNumberConverter.class)
 	@Column(name = HOME_COLUMN, nullable = false)
 	protected HomeNumber home;
+	// -------------------------------------------------
+	@NotNull
+	@DefaultField
+	@Convert(converter = BusinessNumberConverter.class)
+	@Column(name = BUSINESS_COLUMN, nullable = false)
+	protected BusinessNumber business;
 	// -------------------------------------------------
 	@NotNull
 	@DefaultField

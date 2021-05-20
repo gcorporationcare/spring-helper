@@ -11,19 +11,30 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import lombok.Setter;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public class IpLockingService {
-	@Setter
-	private long limit;
+	/**
+	 * Duration of the cache wrote (in minutes)
+	 */
+	private final long duration;
+	/**
+	 * Max number of attempt before locking IP
+	 */
+	private final long limit;
+
 	@Autowired
 	HttpServletRequest request;
+
 	LoadingCache<String, Integer> attemptsCache;
 
-	public IpLockingService() {
-		attemptsCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS)
+	public IpLockingService(long duration, long limit) {
+		this.duration = duration;
+		this.limit = limit;
+		attemptsCache = CacheBuilder.newBuilder().expireAfterWrite(this.duration, TimeUnit.MINUTES)
 				.build(new CacheLoader<String, Integer>() {
 					public Integer load(String key) {
 						return 0;
