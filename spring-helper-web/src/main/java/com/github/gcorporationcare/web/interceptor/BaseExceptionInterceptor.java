@@ -39,6 +39,19 @@ public class BaseExceptionInterceptor {
 	}
 
 	/**
+	 * Catch usual access denied exceptions
+	 * 
+	 * @param e {@link AccessDeniedException}
+	 * @return {@link ApiResponse}
+	 */
+	@ResponseBody
+	@org.springframework.web.bind.annotation.ExceptionHandler({ AccessDeniedException.class })
+	public ApiResponse<Map<String, Object>> accessDeniedException(AccessDeniedException e) {
+		log.error("Error occured because of access denied exception {}", e);
+		return new ApiResponse<>(e, HttpStatus.FORBIDDEN, EMPTY_OBJECTS);
+	}
+
+	/**
 	 * Catch any technical exception and return an HTTP response.
 	 *
 	 * @param e {@link RequestException}
@@ -109,8 +122,7 @@ public class BaseExceptionInterceptor {
 	 */
 	@ResponseBody
 	@org.springframework.web.bind.annotation.ExceptionHandler({ NullPointerException.class,
-			IllegalArgumentException.class, StandardRuntimeException.class, HttpMessageNotWritableException.class,
-			AccessDeniedException.class })
+			IllegalArgumentException.class, StandardRuntimeException.class, HttpMessageNotWritableException.class })
 	public ApiResponse<Map<String, Object>> runtimeException(RuntimeException e) {
 		log.error("Error occured because of runtime exception {}", e);
 		return new ApiResponse<>(e, HttpStatus.BAD_REQUEST, EMPTY_OBJECTS);

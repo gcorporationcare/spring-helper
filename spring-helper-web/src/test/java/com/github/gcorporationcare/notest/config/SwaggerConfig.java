@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.gcorporationcare.web.i18n.ParameterKey;
+import com.github.gcorporationcare.web.common.ParameterKey;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;

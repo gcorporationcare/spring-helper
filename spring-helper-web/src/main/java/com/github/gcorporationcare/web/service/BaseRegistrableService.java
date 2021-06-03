@@ -3,7 +3,6 @@ package com.github.gcorporationcare.web.service;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
@@ -88,14 +87,6 @@ public abstract class BaseRegistrableService<E extends BaseEntity, I extends Ser
 		return Streams.stream(ids).filter(id -> !canDelete(authentication, id)).count() == 0;
 	}
 
-	public E getObject(I id) {
-		Optional<E> object = repository().findById(id);
-		if (!object.isPresent())
-			throw new RequestException(I18nMessage.RequestError.OBJECT_NOT_FOUND, HttpStatus.NOT_FOUND, getIdField(),
-					id);
-		return object.get();
-	}
-
 	@Transactional
 	@PreAuthorize("this.canCreate(authentication, #entity)")
 	public E create(@NonNull E entity) {
@@ -119,7 +110,7 @@ public abstract class BaseRegistrableService<E extends BaseEntity, I extends Ser
 			// Maybe the user did some mistake
 			throw new RequestException(I18nMessage.RequestError.INVALID_GIVEN_PARAMETERS, HttpStatus.BAD_REQUEST, id);
 		}
-		E saved = getObject(id);
+		E saved = read(id);
 		String[] excludedFields = null;
 		if (patching) {
 			excludedFields = Utils.getNullPropertyNames(entity);

@@ -1,4 +1,4 @@
 /**
  * Common objects and utilities classes
  */
-package com.github.gcorporationcare.data.common;
+package com.github.gcorporationcare.web.common;

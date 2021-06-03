@@ -1,4 +1,4 @@
-package com.github.gcorporationcare.web.i18n;
+package com.github.gcorporationcare.web.common;
 
 import com.github.gcorporationcare.data.domain.SearchFilter.SearchFilterOperator;
 import com.github.gcorporationcare.web.domain.FieldFilter;

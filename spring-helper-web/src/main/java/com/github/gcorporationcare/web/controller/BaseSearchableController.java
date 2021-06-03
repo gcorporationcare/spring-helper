@@ -16,9 +16,9 @@ import com.github.gcorporationcare.data.repository.BaseRepository;
 import com.github.gcorporationcare.web.annotation.ApiFilterableEndpoint;
 import com.github.gcorporationcare.web.annotation.ApiIdentifiableEndpoint;
 import com.github.gcorporationcare.web.annotation.ApiPageableEndpoint;
+import com.github.gcorporationcare.web.common.ParameterKey;
 import com.github.gcorporationcare.web.domain.FieldFilter;
 import com.github.gcorporationcare.web.dto.BaseDto;
-import com.github.gcorporationcare.web.i18n.ParameterKey;
 import com.github.gcorporationcare.web.service.BaseSearchableService;
 
 import io.swagger.annotations.ApiOperation;

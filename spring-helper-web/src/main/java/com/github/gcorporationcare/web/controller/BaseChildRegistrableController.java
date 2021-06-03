@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.github.gcorporationcare.data.entity.BaseEntity;
 import com.github.gcorporationcare.data.repository.BaseRepository;
 import com.github.gcorporationcare.web.annotation.ApiSimpleEndpoint;
+import com.github.gcorporationcare.web.common.ParameterKey;
 import com.github.gcorporationcare.web.constraint.ValidationStep.OnCreate;
 import com.github.gcorporationcare.web.constraint.ValidationStep.OnPatch;
 import com.github.gcorporationcare.web.constraint.ValidationStep.OnUpdate;
 import com.github.gcorporationcare.web.domain.FieldFilter;
 import com.github.gcorporationcare.web.dto.BaseDto;
-import com.github.gcorporationcare.web.i18n.ParameterKey;
 import com.github.gcorporationcare.web.service.BaseChildRegistrableService;
 
 import io.swagger.annotations.ApiOperation;
